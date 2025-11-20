@@ -1,0 +1,51 @@
+name: Release to GitHub Page
+on:
+  push:
+    branches:
+      - main
+jobs:
+  release:
+    env:
+      USERNAME: Kenton1989
+      PAGE_REPO_NAME: Kenton1989.github.io
+      PAGE_REPO_BRANCH: master
+      DEPLOY_FOLDER: patricks-parabox-editor
+    runs-on: ubuntu-latest
+    steps:
+      - name: validate DEPLOY_FOLDER
+        run: if [[ ! "$DEPLOY_FOLDER" =~ ^[a-zA-Z0-9][a-zA-Z0-9/_\\-]*$ ]]; then echo Invalid DEPLOY_FOLDER = "$DEPLOY_FOLDER". Required patten =~ ^[a-zA-Z0-9][a-zA-Z0-9/_\\-]*$; exit 1; fi
+
+      - uses: actions/checkout@v5
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - name: Use Node.js 24
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Unit test
+        run: pnpm run test:ci
+
+      - name: Build
+        run: pnpm run build
+
+      - name: Push to GitHub Page repo
+        run: |
+          git config --global user.email "ci@github.com"
+          git config --global user.name "CI"
+          git clone --branch "$PAGE_REPO_BRANCH" --depth=1 "https://github.com/$USERNAME/$PAGE_REPO_NAME.git" page-repo
+          cd page-repo
+          if [[ -d "$DEPLOY_FOLDER" ]]; then rm -rf "$DEPLOY_FOLDER"; echo Cleaned old folder "$DEPLOY_FOLDER"; fi
+          mv ../dist "$DEPLOY_FOLDER"; echo updated "$DEPLOY_FOLDER"
+          git add -A
+          git commit -m "deploy $DEPLOY_FOLDER"
+          git push https://${{ secrets.GITHUB_TOKEN }}@github.com/$USERNAME/$PAGE_REPO_NAME.git master
+          echo deployed $DEPLOY_FOLDER on https://github.com/$USERNAME/$PAGE_REPO_NAME
