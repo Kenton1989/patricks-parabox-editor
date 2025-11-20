@@ -5,7 +5,7 @@ on:
       - main
       - master
 jobs:
-  release:
+  build:
     env:
       USERNAME: Kenton1989
       PAGE_REPO_NAME: Kenton1989.github.io
@@ -38,15 +38,34 @@ jobs:
       - name: Build
         run: pnpm run build
 
-      - name: Push to GitHub Page repo
+      - name: Merge into GitHub Page
         run: |
-          git config --global user.email "ci@github.com"
-          git config --global user.name "CI"
           git clone --branch "$PAGE_REPO_BRANCH" --depth=1 "https://github.com/$USERNAME/$PAGE_REPO_NAME.git" page-repo
           cd page-repo
           if [[ -d "$DEPLOY_FOLDER" ]]; then rm -rf "$DEPLOY_FOLDER"; echo Cleaned old folder "$DEPLOY_FOLDER"; fi
           mv ../dist "$DEPLOY_FOLDER"; echo updated "$DEPLOY_FOLDER"
-          git add -A
-          git commit -m "deploy $DEPLOY_FOLDER"
-          git push https://${{ secrets.GITHUB_TOKEN }}@github.com/$USERNAME/$PAGE_REPO_NAME.git master
-          echo deployed $DEPLOY_FOLDER on https://github.com/$USERNAME/$PAGE_REPO_NAME
+          cd ..
+
+      - name: Upload GitHub Page artifact
+        id: deployment
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: page-repo/
+
+  deploy:
+    needs: build
+
+    permissions:
+      pages: write
+      id-token: write
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
