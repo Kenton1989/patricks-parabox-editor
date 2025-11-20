@@ -31,9 +31,10 @@ jobs:
         run: pnpm run build
 
       - name: Setup Pages
+        id: config
         uses: actions/configure-pages@v5
 
-      - run: Echo deploying to ${{ steps.deployment.outputs.page_url }}
+      - run: echo deploying to ${{ steps.config.outputs.base_url }}
 
       - name: Upload GitHub Page artifact
         id: deployment
