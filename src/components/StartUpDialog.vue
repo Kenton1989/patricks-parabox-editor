@@ -10,6 +10,7 @@ import {
 } from 'primevue'
 import { useConfirm } from 'primevue/useconfirm'
 import { ref } from 'vue'
+import logoUrl from '@/assets/logo192.png'
 
 const visible = ref(true)
 
@@ -39,7 +40,7 @@ const onFileSelect = (e: FileUploadSelectEvent) => {
   <Dialog v-model:visible="visible" modal header="Start with ..." class="w-1/2" :closable="false">
     <template #header>
       <div class="inline-flex items-center justify-center gap-2">
-        <Avatar image="/logo192.png" shape="square" />
+        <Avatar :image="logoUrl" shape="square" />
         <span class="text-3xl font-bold"> Starts Patrick's Parabox level editor with... </span>
       </div>
     </template>
