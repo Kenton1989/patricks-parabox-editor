@@ -105,7 +105,7 @@ export default class LevelParser {
 
   private checkPropCount(props: string[], expectedPropCount: number) {
     if (props.length !== expectedPropCount)
-      this.error(`expecting ${expectedPropCount} properties but got ${props.length} props`)
+      this.error(`expecting ${expectedPropCount} properties but got ${props.length} properties`)
   }
 
   private checkFirstHeader(line: LineInfo | undefined) {
