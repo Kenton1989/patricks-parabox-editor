@@ -24,7 +24,7 @@ export default class LevelParser {
 
   public parse(rawLevel: string): RawLevelRoot {
     const lines = rawLevel.split('\n')
-    const lineInfos = lines.map(this.preProcessLine)
+    const lineInfos = lines.map(this.preProcessLine).filter((m) => m.type !== TYPE_EMPTY_LINE)
     const { header } = this.parseRawHeader(lineInfos)
 
     return {
