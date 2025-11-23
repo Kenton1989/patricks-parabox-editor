@@ -6,11 +6,16 @@ import ConfirmationService from 'primevue/confirmationservice'
 
 import App from './App.vue'
 import router from './router'
+import { PiniaUndo } from 'pinia-undo'
 
 const app = createApp(App)
 
-app.use(createPinia())
+const pinia = createPinia()
+pinia.use(PiniaUndo)
+app.use(pinia)
+
 app.use(router)
+
 app.use(PrimeVue, {
   theme: {
     preset: Theme,

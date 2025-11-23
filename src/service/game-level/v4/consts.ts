@@ -1,39 +1,28 @@
-import type { RawAttemptOrder, RawBlock, RawLevelHeader } from './raw-types'
+import type { RawAttemptOrder } from './raw-types'
 
 export const DEFAULT_RAW_ATTEMPT_ORDER: RawAttemptOrder = ['push', 'enter', 'eat', 'possess']
 
-export function createDefaultRawHeader(): RawLevelHeader {
-  return {
-    type: 'Header',
-    version: '4',
-    attemptOrder: [...DEFAULT_RAW_ATTEMPT_ORDER],
-    shed: false,
-    innerPush: false,
-    drawStyle: '',
-    customLevelMusic: -1,
-    customLevelPalette: -1,
-  }
-}
-
-export function createDefaultRawBlock(): RawBlock {
-  return {
-    type: 'Block',
-    x: 0,
-    y: 0,
-    id: 0,
-    width: 0,
-    height: 0,
-    hue: 0,
-    sat: 0,
-    val: 0,
-    zoomFactor: 0,
-    fillWithWalls: false,
-    player: false,
-    playerOrder: 0,
-    possessable: false,
-    flipH: false,
-    floatInSpace: false,
-    specialEffect: 0,
-    children: [],
-  }
-}
+export const MUSICS = [
+  { id: -1, name: 'No Music' },
+  { id: 0, name: 'Intro' },
+  { id: 1, name: 'Enter' },
+  { id: 2, name: 'Empty' },
+  { id: 3, name: 'Reference' },
+  { id: 5, name: 'Swap' },
+  { id: 6, name: 'Center' },
+  { id: 7, name: 'Clone' },
+  { id: 8, name: 'Transfer' },
+  { id: 9, name: 'Open' },
+  { id: 10, name: 'Flip' },
+  { id: 11, name: 'Cycle' },
+  { id: 12, name: 'Player' },
+  { id: 13, name: 'Possess' },
+  { id: 14, name: 'Wall' },
+  { id: 15, name: 'Infinite Exit' },
+  { id: 16, name: 'Infinite Enter' },
+  { id: 17, name: 'Multi Infinite' },
+  { id: 18, name: 'Reception' },
+  { id: 19, name: 'Appendix' },
+  { id: 20, name: 'Menu' },
+  { id: 21, name: 'Credit' },
+]

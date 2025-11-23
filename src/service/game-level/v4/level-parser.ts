@@ -1,6 +1,6 @@
-import { createDefaultRawHeader } from './consts'
 import { isRawAttemptOrder } from './enum-check'
 import { LevelParserError } from './exception'
+import { createDefaultRawHeader } from './factory'
 import type {
   RawBlock,
   RawBlockChild,

@@ -1,7 +1,11 @@
 import { describe, it, expect } from 'vitest'
 
-import { LevelParser, LevelParserError } from '../service/game-level/v4'
-import { createDefaultRawBlock, createDefaultRawHeader } from '@/service/game-level/v4/consts'
+import {
+  createDefaultRawBlock,
+  createDefaultRawHeader,
+  LevelParser,
+  LevelParserError,
+} from '@/service/game-level/v4'
 
 const parse = LevelParser.parse
 

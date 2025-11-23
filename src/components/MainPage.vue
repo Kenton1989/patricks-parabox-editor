@@ -1,26 +1,14 @@
 <template>
   <h1>Main</h1>
-
+  <pre> {{ JSON.stringify(levelStore.levelHeader, undefined, 4) }} </pre>
+  <pre> {{ JSON.stringify(levelStore.levelBlocks, undefined, 4) }} </pre>
   <StartUpDialog v-if="isStartUpVisible"></StartUpDialog>
-  <Button @click="notifyUploadError">Aba </Button>
 </template>
 <script setup lang="ts">
 import { computed } from 'vue'
 import StartUpDialog from './StartUpDialog.vue'
-import { Button, useConfirm } from 'primevue'
-
-const confirm = useConfirm()
+import { useLevelStore } from '@/stores/level'
 
 const isStartUpVisible = computed(() => true)
-
-const notifyUploadError = () => {
-  confirm.require({
-    message: 'some error',
-    header: 'UploadError',
-    icon: 'pi pi-exclamation-triangle',
-    acceptProps: {
-      label: 'OK',
-    },
-  })
-}
+const levelStore = useLevelStore()
 </script>
