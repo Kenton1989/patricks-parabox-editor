@@ -1,12 +1,12 @@
 import type { LevelObject } from './level-object'
-import type { Hsv } from './property-type'
+import type { BlockColor } from './property-type'
 
 export type LevelBlock = {
   blockId: number
   name: string
   width: number
   height: number
-  color: Hsv
+  color: BlockColor
   zoomFactor: number
   children: LevelObject[]
 }

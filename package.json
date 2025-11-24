@@ -21,6 +21,7 @@
     "@primeuix/themes": "^1.2.5",
     "@tailwindcss/vite": "^4.1.17",
     "@vueuse/core": "^14.0.0",
+    "color": "^5.0.3",
     "pinia": "^3.0.3",
     "pinia-undo": "^0.2.4",
     "primeicons": "^7.0.0",
@@ -32,6 +33,7 @@
   },
   "devDependencies": {
     "@tsconfig/node22": "^22.0.2",
+    "@types/color": "^4.2.0",
     "@types/jsdom": "^27.0.0",
     "@types/node": "^22.18.11",
     "@vitejs/plugin-vue": "^6.0.1",

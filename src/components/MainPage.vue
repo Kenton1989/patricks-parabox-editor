@@ -17,6 +17,10 @@
       </aside>
       <main class="h-full grow overflow-auto">
         <BrushBar />
+        <p>{{ JSON.stringify(c) }}</p>
+        <p>remark: HSB is actually HSV</p>
+        <ColorPicker v-model="c" format="hsb" />
+        <p></p>
         <Button @click="levelStore.clearLevel">Clear</Button>
         <Button @click="() => (uiStore.setUpDialogVisible = true)">Open</Button>
         <Button @click="openLevel.open">Faster Open</Button>
@@ -48,13 +52,16 @@ import { useOpenLevel } from '@/composites'
 import StartUpDialog from './StartUpDialog.vue'
 import { useLevelStore } from '@/stores/level'
 import { useUiStore } from '@/stores/ui'
-import { Button } from 'primevue'
+import { Button, ColorPicker } from 'primevue'
 import MainMenuBar from './MainMenuBar.vue'
 import InfoCard from './InfoCard.vue'
 import BrushBar from './BrushBar.vue'
 import BlockListCard from './BlockListCard.vue'
+import { ref } from 'vue'
 
 const levelStore = useLevelStore()
 const uiStore = useUiStore()
 const openLevel = useOpenLevel()
+
+const c = ref({ h: 20, s: 100, b: 100 })
 </script>

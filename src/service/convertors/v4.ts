@@ -1,15 +1,14 @@
-import {
-  type RawBlockChild as RawBlockChildV4,
-  type RawBlock as RawBlockV4,
-  type RawFloor,
-  type RawLevelHeader as RawLevelHeaderV4,
-  type RawRef as RawRefV4,
-  type RawWall,
+import type {
+  RawBlockChild,
+  RawBlock,
+  RawFloor,
+  RawLevelHeader,
+  RawRef,
+  RawWall,
 } from '@/service/game-level/v4'
 import type {
   LevelHeader,
   LevelBlock,
-  Hsv,
   InfSetting,
   PlayerSetting,
   LevelBrick,
@@ -19,9 +18,10 @@ import type {
   LevelWall,
 } from '@/models/level'
 import { NO_INF, NOT_PLAYER, POSSESSABLE, createDefaultLevelHeader, newObjId } from '@/models/level'
+import { color } from './color'
 
 const v4 = {
-  toLevelHeader(rawHeader: RawLevelHeaderV4): LevelHeader {
+  toLevelHeader(rawHeader: RawLevelHeader): LevelHeader {
     return {
       ...createDefaultLevelHeader(),
       ...rawHeader,
@@ -29,20 +29,20 @@ const v4 = {
     }
   },
 
-  bodyToLevelBlocks(body: RawBlockV4[]): LevelBlock[] {
+  bodyToLevelBlocks(body: RawBlock[]): LevelBlock[] {
     return v4.flattenBlocks(body).map(v4.toLevelBlock)
   },
 
-  isBrick(block: RawBlockV4) {
+  isBrick(block: RawBlock) {
     return block.fillWithWalls
   },
 
-  isComplexBlock(block: RawBlockV4) {
+  isComplexBlock(block: RawBlock) {
     return !block.fillWithWalls
   },
 
-  flattenBlocks(objects: RawBlockChildV4[]): RawBlockV4[] {
-    const result: RawBlockV4[] = []
+  flattenBlocks(objects: RawBlockChild[]): RawBlock[] {
+    const result: RawBlock[] = []
 
     for (const child of objects) {
       if (child.type !== 'Block' || !v4.isComplexBlock(child)) {
@@ -55,7 +55,7 @@ const v4 = {
     return result
   },
 
-  toInfSetting(props: RawRefV4): InfSetting {
+  toInfSetting(props: RawRef): InfSetting {
     if (props.infEnter) {
       return { type: 'infEnter', level: props.infEnterNum, enterFromBlockId: props.infEnterId }
     }
@@ -65,10 +65,6 @@ const v4 = {
     }
 
     return NO_INF
-  },
-
-  toHsv(props: { hue: number; sat: number; val: number }): Hsv {
-    return [props.hue, props.sat, props.val]
   },
 
   toPlayerSetting(props: {
@@ -85,19 +81,19 @@ const v4 = {
     return NOT_PLAYER
   },
 
-  toLevelBlock(block: RawBlockV4): LevelBlock {
+  toLevelBlock(block: RawBlock): LevelBlock {
     return {
       blockId: block.id,
       name: `Block ${block.id}`,
       width: block.width,
       height: block.height,
-      color: [block.hue, block.sat, block.val],
+      color: color.rawToBlock(block),
       zoomFactor: block.zoomFactor,
       children: block.children.map((child) => v4.toLevelObject(block.id, child)),
     }
   },
 
-  toLevelObject(parentBlockId: number, child: RawBlockChildV4): LevelObject {
+  toLevelObject(parentBlockId: number, child: RawBlockChild): LevelObject {
     switch (child.type) {
       case 'Ref':
         return v4.toLevelRef(parentBlockId, child)
@@ -111,7 +107,7 @@ const v4 = {
     }
   },
 
-  toLevelRef(parentBlockId: number, child: RawRefV4): LevelRef {
+  toLevelRef(parentBlockId: number, child: RawRef): LevelRef {
     return {
       type: 'Ref',
       parentBlockId,
@@ -149,7 +145,7 @@ const v4 = {
     }
   },
 
-  toLevelBrick(parentBlockId: number, child: RawBlockV4): LevelBrick {
+  toLevelBrick(parentBlockId: number, child: RawBlock): LevelBrick {
     return {
       type: 'Brick',
       objId: newObjId(),
@@ -157,11 +153,11 @@ const v4 = {
       x: child.x,
       y: child.y,
       playerSetting: v4.toPlayerSetting(child),
-      color: v4.toHsv(child),
+      color: color.rawToBlock(child),
     }
   },
 
-  toExitLevelRef(parentBlockId: number, child: RawBlockV4): LevelRef {
+  toExitLevelRef(parentBlockId: number, child: RawBlock): LevelRef {
     return {
       type: 'Ref',
       objId: newObjId(),

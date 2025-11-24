@@ -1,4 +1,4 @@
-import type { FloorType, Hsv, InfSetting, PlayerSetting } from './property-type'
+import type { BlockColor, FloorType, InfSetting, PlayerSetting } from './property-type'
 
 export type LevelObject = LevelRef | LevelBrick | LevelWall | LevelFloor
 
@@ -22,7 +22,7 @@ export type LevelRef = CommonProps & {
 export type LevelBrick = CommonProps & {
   type: 'Brick'
   playerSetting: PlayerSetting
-  color: Hsv
+  color: BlockColor
 }
 
 export type LevelWall = CommonProps & {
