@@ -6,12 +6,19 @@ import {
   type RawRef as RawRefV4,
   type RawWall,
 } from '@/service/game-level/v4'
-import type { LevelHeader } from './level-header'
-import type { LevelBlock } from './level-block'
-import type { LevelBrick, LevelFloor, LevelObject, LevelRef, LevelWall } from './level-object'
-import { createDefaultLevelHeader, newObjId } from './factory'
-import type { Hsv, InfSetting, PlayerSetting } from './property-type'
-import { NO_INF, NOT_PLAYER, POSSESSABLE } from './consts'
+import type {
+  LevelHeader,
+  LevelBlock,
+  Hsv,
+  InfSetting,
+  PlayerSetting,
+  LevelBrick,
+  LevelFloor,
+  LevelObject,
+  LevelRef,
+  LevelWall,
+} from '@/models/level'
+import { NO_INF, NOT_PLAYER, POSSESSABLE, createDefaultLevelHeader, newObjId } from '@/models/level'
 
 const v4 = {
   toLevelHeader(rawHeader: RawLevelHeaderV4): LevelHeader {

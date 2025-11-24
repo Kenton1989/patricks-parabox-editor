@@ -2,7 +2,7 @@ import { defineStore } from 'pinia'
 import { createDefaultLevelHeader } from '@/models/level'
 import type { LevelBlock } from '@/models/level/level-block'
 import type { RawLevelRoot } from '@/service/game-level/v4'
-import { v4 } from '@/models/level/convertor'
+import { v4 } from '@/service/convertors'
 import { useStorage } from '@vueuse/core'
 import { watch } from 'vue'
 /*
