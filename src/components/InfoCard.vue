@@ -1,15 +1,16 @@
 <template>
   <div class="page-section">
     <div class="page-section-header">
-      {{ props.sectionTitle }}
+      {{ props.title }}
     </div>
-    <div class="page-section-body">
+    <div :class="{ 'page-section-body': true, 'no-padding': bodyNoPadding }">
       <slot></slot>
     </div>
   </div>
 </template>
 <script lang="ts" setup>
 const props = defineProps<{
-  sectionTitle: string
+  title?: string
+  bodyNoPadding?: boolean
 }>()
 </script>

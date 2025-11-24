@@ -2,6 +2,11 @@
 @import 'tailwindcss-primeui';
 @import 'primeicons/primeicons.css';
 
+* {
+  --main-header-height: 60px;
+  --main-body-height: calc(100vh - var(--main-header-height));
+}
+
 .main-header {
   height: var(--main-header-height);
 }
@@ -39,7 +44,8 @@
   padding: 0px;
 }
 
-* {
-  --main-header-height: 60px;
-  --main-body-height: calc(100vh - var(--main-header-height));
+.brush-bar {
+  background-color: var(--p-content-background);
+  border: 1px solid var(--p-content-border-color);
+  border-radius: 4px;
 }

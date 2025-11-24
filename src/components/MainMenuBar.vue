@@ -1,7 +1,7 @@
 <template>
   <Menubar :model="items">
     <template #start>
-      <img :src="logoUrl" class="size-10" alt="pp logo" />
+      <LogoSvg class="size-10" />
     </template>
     <template #end>
       <div class="flex h-full flex-row content-center items-start gap-4">
@@ -19,8 +19,8 @@
   </Menubar>
 </template>
 <script setup lang="ts">
-import logoUrl from '@/assets/logo192.png'
 import { Menubar } from 'primevue'
+import LogoSvg from '@/assets/logo.svg'
 
 import { ref } from 'vue'
 
