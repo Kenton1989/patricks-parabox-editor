@@ -1,23 +1,16 @@
 <script setup lang="ts">
 import { Avatar, Button, ConfirmDialog, Dialog, Splitter, SplitterPanel } from 'primevue'
 import { useConfirm } from 'primevue/useconfirm'
-import { computed, ref, watch } from 'vue'
 import logoUrl from '@/assets/logo192.png'
-import { useOpenLevelDialog } from '@/composites'
-import { LevelParser as LevelParserV4 } from '@/service/game-level/v4'
-import { readFileAsText } from '@/service/file'
+import { useOpenLevel } from '@/composites'
 import { useLevelStore } from '@/stores/level'
-
-const confirm = useConfirm()
+import { useUiStore } from '@/stores/ui'
 
 const levelStore = useLevelStore()
+const uiStore = useUiStore()
 
-const visible = ref(!levelStore.isInitialized)
-watch([visible, levelStore], ([newVisible, { isInitialized }]) => {
-  if (!isInitialized && !newVisible) visible.value = true
-})
-
-const isClosable = computed(() => levelStore.isInitialized)
+const confirm = useConfirm()
+const openLevel = useOpenLevel()
 
 const notifyUploadError = (message: string) => {
   confirm.require({
@@ -33,49 +26,43 @@ const notifyUploadError = (message: string) => {
   })
 }
 
-const openLevelDialog = useOpenLevelDialog()
-
-const onUploadClick = () => {
-  openLevelDialog.open()
+const onCreateClick = () => {
+  levelStore.initEmptyLevel()
+  levelStore.resetStack()
+  uiStore.setUpDialogVisible = false
 }
 
-openLevelDialog.onChange(async (file) => {
-  if (!file) return
+const onUploadClick = () => {
+  openLevel.open()
+}
 
-  try {
-    const levelData = await readFileAsText(file)
-    const rawLevel = LevelParserV4.parse(levelData)
-    levelStore.initLevelV4(rawLevel)
-    levelStore.resetStack()
-    visible.value = false
-  } catch (e: unknown) {
-    notifyUploadError(`${e}`)
-  }
+openLevel.onSuccess(() => {
+  uiStore.setUpDialogVisible = false
 })
 
-watch(levelStore, (newVal) => {
-  console.log(newVal)
+openLevel.onError((e) => {
+  notifyUploadError(`${e}`)
 })
 </script>
 <template>
   <Dialog
-    v-model:visible="visible"
+    v-model:visible="uiStore.setUpDialogVisible"
     modal
     header="Start with ..."
-    class="w-1/2"
-    :closable="isClosable"
+    class="w-1/2 min-w-200"
+    :closable="levelStore.isInitialized"
   >
     <template #header>
       <div class="inline-flex items-center justify-center gap-2">
         <Avatar :image="logoUrl" shape="square" />
-        <span class="text-3xl font-bold"> Starts Patrick's Parabox level editor with... </span>
+        <span class="text-2xl font-bold"> Starts Patrick's Parabox level editor with... </span>
       </div>
     </template>
     <ConfirmDialog></ConfirmDialog>
     <Splitter>
       <SplitterPanel class="flex flex-col gap-4 p-8">
         <p class="text-xl">Creating a new level</p>
-        <Button label="Create" icon="pi pi-file-plus" />
+        <Button label="Create" icon="pi pi-file-plus" @click="onCreateClick" />
       </SplitterPanel>
       <SplitterPanel class="flex flex-col gap-4 p-8">
         <p class="text-xl">Uploading a existing level</p>

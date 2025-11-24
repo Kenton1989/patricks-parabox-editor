@@ -1,3 +1,3 @@
-import useOpenLevelDialog from './useOpenLevelDialog'
+import useOpenLevel from './useOpenLevel'
 
-export { useOpenLevelDialog }
+export { useOpenLevel }

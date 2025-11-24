@@ -4,6 +4,7 @@ import type { LevelBlock } from '@/models/level/level-block'
 import type { RawLevelRoot } from '@/service/game-level/v4'
 import { v4 } from '@/models/level/convertor'
 import { useStorage } from '@vueuse/core'
+import { watch } from 'vue'
 /*
 useLevelStore: directly convert from / to raw level, support undo & redo
 - header
@@ -38,6 +39,15 @@ export const useLevelStore = defineStore('level', () => {
   const levelHeader = useStorage('level.levelHeader', createDefaultLevelHeader())
 
   const levelBlocks = useStorage<LevelBlock[]>('level.levelBlocks', [])
+  watch(
+    levelBlocks,
+    (newValue) => {
+      if (isSorted(newValue.map((b) => b.blockId))) return
+      const copy = [...newValue]
+      levelBlocks.value = copy.sort((b1, b2) => b1.blockId - b2.blockId)
+    },
+    { immediate: true },
+  )
 
   const initLevelV4 = (rawLevel: RawLevelRoot) => {
     levelHeader.value = v4.toLevelHeader(rawLevel.header)
@@ -51,6 +61,12 @@ export const useLevelStore = defineStore('level', () => {
     isInitialized.value = true
   }
 
+  const clearLevel = () => {
+    levelHeader.value = createDefaultLevelHeader()
+    levelBlocks.value = []
+    isInitialized.value = false
+  }
+
   return {
     isInitialized,
     levelHeader,
@@ -58,6 +74,7 @@ export const useLevelStore = defineStore('level', () => {
 
     initLevelV4,
     initEmptyLevel,
+    clearLevel,
     /*
     - resetUndoStack
 
@@ -81,3 +98,9 @@ export const useLevelStore = defineStore('level', () => {
     */
   }
 })
+function isSorted(list: number[]): boolean {
+  for (let i = 1; i < list.length; ++i) {
+    if (list[i - 1]! > list[i]!) return false
+  }
+  return true
+}

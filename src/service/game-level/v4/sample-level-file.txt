@@ -2,7 +2,7 @@ version 4
 attempt_order enter,possess,push,eat
 draw_style oldstyle
 #
-Block -1 -1 0 9 9 0.6 0.8 1 1 0 0 0 0 0 0 0
+Block -1 -1 2 9 9 0.6 0.8 1 1 0 0 0 0 0 0 0
 	Ref 3 3 0 1 0 0 0 0 -1 0 0 0 0 0 0
 	Ref 3 5 0 0 0 0 0 0 -1 0 0 0 0 0 0
 	Wall 3 7 0 0 0
