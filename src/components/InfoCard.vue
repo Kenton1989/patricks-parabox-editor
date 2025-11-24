@@ -1,9 +1,9 @@
 <template>
-  <div class="page-section">
-    <div class="page-section-header">
+  <div class="info-card">
+    <div class="info-card-header">
       {{ props.title }}
     </div>
-    <div :class="{ 'page-section-body': true, 'no-padding': bodyNoPadding }">
+    <div :class="{ 'info-card-body': true, 'no-padding': bodyNoPadding }">
       <slot></slot>
     </div>
   </div>

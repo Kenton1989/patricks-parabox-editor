@@ -15,8 +15,8 @@
   height: var(--main-body-height);
 }
 
-.page-section {
-  --page-section-padding: 0.5rem;
+.info-card {
+  --info-card-padding: 0.5rem;
   background-color: var(--p-content-background);
   border: 1px solid var(--p-content-border-color);
   border-radius: 4px;
@@ -25,22 +25,22 @@
   flex-direction: column;
 }
 
-.page-section-header {
-  padding: var(--page-section-padding);
+.info-card-header {
+  padding: var(--info-card-padding);
   border-bottom: 1px solid var(--p-content-border-color);
   font-weight: bold;
 
   flex-grow: 0;
 }
 
-.page-section-body {
-  padding: var(--page-section-padding);
+.info-card-body {
+  padding: var(--info-card-padding);
   overflow: auto;
 
   flex-grow: 1;
 }
 
-.page-section-body.no-padding {
+.info-card-body.no-padding {
   padding: 0px;
 }
 
@@ -48,4 +48,8 @@
   background-color: var(--p-content-background);
   border: 1px solid var(--p-content-border-color);
   border-radius: 4px;
+}
+
+.block-list-item {
+  padding: var(--info-card-padding);
 }
