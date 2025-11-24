@@ -1,3 +1,4 @@
+import { bindEverythingToThis } from '@/service/utils'
 import { isRawAttemptOrder } from './enum-check'
 import { LevelParserError } from './exception'
 import { createDefaultRawHeader } from './factory'
@@ -28,6 +29,10 @@ export default class LevelParser {
   public static parse(rawLevel: string): RawLevelRoot {
     const parser = new LevelParser()
     return parser.parse(rawLevel)
+  }
+
+  constructor() {
+    bindEverythingToThis(this)
   }
 
   public parse(rawLevel: string): RawLevelRoot {
