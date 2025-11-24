@@ -6,13 +6,7 @@
     </header>
     <div class="main-body flex w-full flex-row gap-1">
       <aside class="flex max-h-full max-w-80 min-w-40 flex-none flex-col gap-1">
-        <InfoCard class="w-full flex-1" title="Block List">
-          <p class="m-0">
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Inventore sed consequuntur
-            error repudiandae numquam deserunt quisquam repellat libero asperiores earum nam nobis,
-            culpa ratione quam perferendis esse, cupiditate neque quas!
-          </p>
-        </InfoCard>
+        <BlockListCard class="w-full flex-1" />
         <InfoCard class="w-full flex-1" title="Block Info">
           <p class="m-0">
             Lorem ipsum dolor sit amet, consectetur adipisicing elit. Inventore sed consequuntur
@@ -58,6 +52,7 @@ import { Button } from 'primevue'
 import MainMenuBar from './MainMenuBar.vue'
 import InfoCard from './InfoCard.vue'
 import BrushBar from './BrushBar.vue'
+import BlockListCard from './BlockListCard.vue'
 
 const levelStore = useLevelStore()
 const uiStore = useUiStore()
