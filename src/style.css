@@ -1,3 +1,45 @@
 @import 'tailwindcss';
 @import 'tailwindcss-primeui';
 @import 'primeicons/primeicons.css';
+
+.main-header {
+  height: var(--main-header-height);
+}
+
+.main-body {
+  height: var(--main-body-height);
+}
+
+.page-section {
+  --page-section-padding: 0.5rem;
+  background-color: var(--p-content-background);
+  border: 1px solid var(--p-content-border-color);
+  border-radius: 4px;
+
+  display: flex;
+  flex-direction: column;
+}
+
+.page-section-header {
+  padding: var(--page-section-padding);
+  border-bottom: 1px solid var(--p-content-border-color);
+  font-weight: bold;
+
+  flex-grow: 0;
+}
+
+.page-section-body {
+  padding: var(--page-section-padding);
+  overflow: auto;
+
+  flex-grow: 1;
+}
+
+.page-section-body.no-padding {
+  padding: 0px;
+}
+
+* {
+  --main-header-height: 60px;
+  --main-body-height: calc(100vh - var(--main-header-height));
+}
