@@ -1,5 +1,7 @@
 import type { HsbColor, HsvColor, RawColor } from '@/models/color'
 import type { BlockColor, DefaultColor } from '@/models/level'
+import type { ColorInstance } from 'color'
+import Color from 'color'
 
 const HUE_TO_DEFAULT_COLOR: { [k: number]: DefaultColor } = {
   0.6: 'color1',
@@ -40,6 +42,11 @@ function blockToHsv(block: BlockColor): HsvColor {
   return hsvObj(block.h, block.s, block.v)
 }
 
+function blockToColor(block: BlockColor): ColorInstance {
+  console.log(block, blockToHsv(block), Color.hsv(blockToHsv(block)))
+  return Color.hsv(blockToHsv(block))
+}
+
 function blockToHsb(block: BlockColor): HsbColor {
   const { h, s, v } = blockToHsv(block)
   return hsbObj(h, s, v)
@@ -77,6 +84,7 @@ const color = {
   blockToRaw,
   rawToBlock,
   hsbToBlock,
+  blockToColor,
 }
 
 export { color }

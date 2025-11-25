@@ -39,6 +39,7 @@ export const useLevelStore = defineStore('level', () => {
   const levelHeader = useStorage('level.levelHeader', createDefaultLevelHeader())
 
   const levelBlocks = useStorage<LevelBlock[]>('level.levelBlocks', [])
+
   watch(
     levelBlocks,
     (newValue) => {
@@ -98,6 +99,7 @@ export const useLevelStore = defineStore('level', () => {
     */
   }
 })
+
 function isSorted(list: number[]): boolean {
   for (let i = 1; i < list.length; ++i) {
     if (list[i - 1]! > list[i]!) return false
