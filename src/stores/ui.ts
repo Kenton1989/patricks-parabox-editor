@@ -16,8 +16,11 @@ export const useUiStore = defineStore(
       { immediate: true },
     )
 
+    const focusedBlockId = ref<number>()
+
     return {
       setUpDialogVisible,
+      focusedBlockId,
     }
   },
   {

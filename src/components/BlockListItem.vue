@@ -1,20 +1,31 @@
 <template>
-  <div class="block-list-item flex min-h-20 items-center justify-start gap-4 overflow-auto">
-    <canvas ref="preview-ref" class="size-15 rounded-sm"></canvas>
+  <div
+    class="block-list-item flex min-h-20 items-center justify-start gap-4 overflow-auto transition"
+    :class="{
+      'bg-highlight': uiStore.focusedBlockId === block.blockId,
+      'hover:bg-emphasis': uiStore.focusedBlockId !== block.blockId,
+    }"
+    @click="setFocusedBlock"
+  >
+    <BlockCanvas :blockId="block.blockId" class="size-15 rounded-sm" />
     <p class="grow">{{ props.block.name }}</p>
     <Button icon="pi pi-trash" size="small" />
   </div>
 </template>
 <script setup lang="ts">
-import { useBlockPreview } from '@/composites'
 import type { LevelBlock } from '@/models/level'
+import { useUiStore } from '@/stores/ui'
 import { Button } from 'primevue'
-import { useTemplateRef } from 'vue'
+import BlockCanvas from './BlockCanvas.vue'
 
 const props = defineProps<{
   block: LevelBlock
 }>()
 
-const previewRef = useTemplateRef<HTMLCanvasElement>('preview-ref')
-useBlockPreview(previewRef, props.block.blockId)
+const uiStore = useUiStore()
+
+const setFocusedBlock = () => {
+  console.log('set focus to', props.block.blockId)
+  uiStore.focusedBlockId = props.block.blockId
+}
 </script>

@@ -1,5 +1,5 @@
 <template>
-  <InfoCard title="Block List" bodyNoPadding>
+  <InfoCard title="Blocks" bodyNoPadding>
     <BlockListItem v-for="block in levelStore.levelBlocks" :key="block.blockId" :block="block" />
   </InfoCard>
 </template>

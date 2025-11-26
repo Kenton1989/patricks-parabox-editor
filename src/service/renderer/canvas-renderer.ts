@@ -8,7 +8,7 @@ import { draw } from './ctx-drawer'
 const render = {
   blockPreviews(
     blocks: LevelBlock[],
-    levelOfDetails = 2,
+    levelOfDetails = 3,
     width = CANVAS_WIDTH,
     height = CANVAS_HEIGHT,
   ): BlockPreviewsMap {
@@ -25,6 +25,14 @@ const render = {
     const ctx = targetCanvas.getContext('2d') as CanvasRenderingContext2D
 
     draw.canvasCopy(ctx, 0, 0, targetCanvas.width, targetCanvas.height, sourceCanvas)
+  },
+
+  unknown(targetCanvas: HTMLCanvasElement, width = CANVAS_WIDTH, height = CANVAS_HEIGHT) {
+    targetCanvas.width = width
+    targetCanvas.height = height
+
+    const ctx = targetCanvas.getContext('2d') as CanvasRenderingContext2D
+    draw.unknown(ctx, 0, 0, width, height)
   },
 }
 
