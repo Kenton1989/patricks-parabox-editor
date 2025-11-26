@@ -249,7 +249,7 @@ const draw = {
     const [x2, y2] = [x + (1 - 0.5 * BORDER_WIDTH) * w, y + (1 - 0.5 * BORDER_WIDTH) * h]
     const [vLineWidth, hLineWidth] = [BORDER_WIDTH * w, BORDER_WIDTH * h]
 
-    ctx.fillStyle = color.toString()
+    ctx.strokeStyle = color.toString()
     ctx.lineCap = 'square'
 
     ctx.lineWidth = hLineWidth

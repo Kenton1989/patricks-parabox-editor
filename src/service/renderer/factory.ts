@@ -2,14 +2,14 @@ import type { LevelBlock } from '@/models/level'
 import { type ColorInstance } from 'color'
 import { color } from '../convertors'
 
-export const eyeColor = (color: ColorInstance) => color.darken(0.7).string()
+export const eyeColor = (colorBase: ColorInstance) => colorBase.darken(0.7).toString()
 
-export const wallColor = (colorBase: ColorInstance) => colorBase.string()
+export const wallColor = (colorBase: ColorInstance) => colorBase.toString()
 
-export const borderColor = (colorBase: ColorInstance) => colorBase.darken(0.7).string()
+export const borderColor = (colorBase: ColorInstance) => colorBase.darken(0.7).toString()
 
 export const floorColor = (colorBase: ColorInstance) =>
-  colorBase.darken(0.5).desaturate(0.33).string()
+  colorBase.darken(0.5).desaturate(0.33).toString()
 
 export function estimateRefColor(block: LevelBlock) {
   const cellCount = block.width * block.height

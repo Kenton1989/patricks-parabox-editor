@@ -43,7 +43,6 @@ function blockToHsv(block: BlockColor): HsvColor {
 }
 
 function blockToColor(block: BlockColor): ColorInstance {
-  console.log(block, blockToHsv(block), Color.hsv(blockToHsv(block)))
   return Color.hsv(blockToHsv(block))
 }
 
