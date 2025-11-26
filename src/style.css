@@ -5,6 +5,8 @@
 * {
   --main-header-height: 60px;
   --main-body-height: calc(100vh - var(--main-header-height));
+
+  font-family: 'Open Sans', sans-serif;
 }
 
 .main-header {

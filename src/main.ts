@@ -1,13 +1,13 @@
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 import PrimeVue from 'primevue/config'
-import Theme from '@primeuix/themes/material'
 import ConfirmationService from 'primevue/confirmationservice'
 import Tooltip from 'primevue/tooltip'
+import { PiniaUndo } from 'pinia-undo'
 
 import App from './App.vue'
 import router from './router'
-import { PiniaUndo } from 'pinia-undo'
+import MyPreset from './theme'
 
 const app = createApp(App)
 
@@ -18,7 +18,7 @@ app.use(router)
 
 app.use(PrimeVue, {
   theme: {
-    preset: Theme,
+    preset: MyPreset,
   },
 })
 app.use(ConfirmationService)
