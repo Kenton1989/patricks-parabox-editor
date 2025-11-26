@@ -107,7 +107,7 @@ export default class BlockPreviewRenderer {
     children.forEach((child) => {
       const x = child.x * cellW
       // reverse y because the y-axis directions in level and canvas are opposite
-      const y = (block.height - 1 - child.y) * cellW
+      const y = (block.height - 1 - child.y) * cellH
 
       action(child, x, y, cellW, cellH)
     })

@@ -1,5 +1,5 @@
 export const MAX_RECURSIVE_RENDER_LEVEL = 2
-export const [CANVAS_WIDTH, CANVAS_HEIGHT] = [300, 300]
+export const [CANVAS_WIDTH, CANVAS_HEIGHT] = [700, 700]
 
 export const [L_EYE_X_OFFSET, R_EYE_X_OFFSET, EYE_Y_OFFSET] = [0.3, 0.7, 0.45]
 export const [EYE_RADIUS, PUPIL_RADIUS] = [0.08, 0.05]

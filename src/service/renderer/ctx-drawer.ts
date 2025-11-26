@@ -245,27 +245,31 @@ const draw = {
     h: number,
     color: string | ColorInstance,
   ) {
-    const [x1, y1] = [x + 0.5 * BORDER_WIDTH * w, y + 0.5 * BORDER_WIDTH * h]
-    const [x2, y2] = [x + (1 - 0.5 * BORDER_WIDTH) * w, y + (1 - 0.5 * BORDER_WIDTH) * h]
     const [vLineWidth, hLineWidth] = [BORDER_WIDTH * w, BORDER_WIDTH * h]
+    const [xLeft, yUpper] = [x + 0.5 * vLineWidth, y + 0.5 * hLineWidth]
+    const [xRight, yLower] = [x + w - 0.5 * vLineWidth, y + h - hLineWidth * 0.5]
 
     ctx.strokeStyle = color.toString()
-    ctx.lineCap = 'square'
+    ctx.lineCap = 'butt'
 
     ctx.lineWidth = hLineWidth
     ctx.beginPath()
-    ctx.moveTo(x1, y1)
-    ctx.lineTo(x2, y1)
-    ctx.moveTo(x1, y2)
-    ctx.lineTo(x2, y2)
+    ctx.moveTo(x, yUpper)
+    ctx.lineTo(x + w, yUpper)
+    ctx.stroke()
+    ctx.beginPath()
+    ctx.moveTo(x, yLower)
+    ctx.lineTo(x + w, yLower)
     ctx.stroke()
 
     ctx.lineWidth = vLineWidth
     ctx.beginPath()
-    ctx.moveTo(x1, y1)
-    ctx.lineTo(x1, y2)
-    ctx.moveTo(x2, y1)
-    ctx.lineTo(x2, y2)
+    ctx.moveTo(xLeft, y)
+    ctx.lineTo(xLeft, y + h)
+    ctx.stroke()
+    ctx.beginPath()
+    ctx.moveTo(xRight, y)
+    ctx.lineTo(xRight, y + h)
     ctx.stroke()
   },
 
