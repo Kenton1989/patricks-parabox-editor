@@ -9,7 +9,7 @@
   >
     <BlockCanvas :blockId="block.blockId" class="size-15 rounded-sm" />
     <p class="grow">{{ props.block.name }}</p>
-    <Button icon="pi pi-trash" size="small" />
+    <Button icon="pi pi-trash" size="small" severity="danger" />
   </div>
 </template>
 <script setup lang="ts">

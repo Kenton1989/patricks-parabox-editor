@@ -1,9 +1,9 @@
 <template>
-  <div class="info-card">
-    <div class="info-card-header">
+  <div class="info-card flex flex-col rounded-sm">
+    <div class="info-card-header grow-0 font-bold">
       {{ props.title }}
     </div>
-    <div :class="{ 'info-card-body': true, 'no-padding': bodyNoPadding }">
+    <div class="info-card-body" :class="{ 'no-padding': bodyNoPadding }">
       <slot></slot>
     </div>
   </div>

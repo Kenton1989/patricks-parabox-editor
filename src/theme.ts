@@ -16,6 +16,13 @@ const MyPreset = definePreset(Material, {
       900: '{sky.900}',
       950: '{sky.950}',
     },
+    formField: {
+      sm: {
+        fontSize: '0.875rem',
+        paddingX: '0.25rem',
+        paddingY: '0.25rem',
+      },
+    },
   },
 })
 
