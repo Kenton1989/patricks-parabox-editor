@@ -10,7 +10,13 @@
           :key="ext.url"
           :href="ext.url"
           target="_blank"
-          class="block size-5"
+          :class="{
+            block: true,
+            'size-5': true,
+            'overflow-hidden': true,
+            'rounded-full': ext.circleIcon,
+            'rounded-xs': !ext.circleIcon,
+          }"
         >
           <img :src="ext.iconUrl" alt="external logo" />
         </a>
@@ -67,10 +73,17 @@ const externalLinks = [
   {
     url: 'https://www.patricksparabox.com/',
     iconUrl: 'https://www.patricksparabox.com/images/favicon.ico',
+    circleIcon: false,
+  },
+  {
+    url: 'https://store.steampowered.com/app/1260520/Patricks_Parabox/',
+    iconUrl: 'https://store.steampowered.com/favicon.ico',
+    circle: true,
   },
   {
     url: 'https://github.com/Kenton1989/patricks-parabox-editor',
     iconUrl: 'https://github.com/fluidicon.png',
+    circle: true,
   },
 ]
 </script>
