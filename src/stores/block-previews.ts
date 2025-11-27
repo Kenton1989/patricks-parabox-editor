@@ -3,12 +3,18 @@ import { useLevelStore } from './level'
 import { render } from '@/service/renderer'
 import { defineStore } from 'pinia'
 
-export const useBlockPreviewsStore = defineStore('block-preview', () => {
-  const levelScore = useLevelStore()
+export const useBlockPreviewsStore = defineStore(
+  'block-preview',
+  () => {
+    const levelScore = useLevelStore()
 
-  const map = computed(() => render.blockPreviews(levelScore.levelBlocks))
+    const map = computed(() => render.blockPreviews(levelScore.levelBlocks))
 
-  return {
-    map,
-  }
-})
+    return {
+      map,
+    }
+  },
+  {
+    undo: { disable: true },
+  },
+)
