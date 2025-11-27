@@ -26,9 +26,13 @@
 import { Menubar } from 'primevue'
 import LogoSvg from '@/assets/logo.svg'
 
-import { ref } from 'vue'
+import { computed } from 'vue'
+import type { MenuItem } from 'primevue/menuitem'
+import { useLevelStore } from '@/stores/level'
 
-const items = ref([
+const levelStore = useLevelStore()
+
+const items = computed<MenuItem[]>(() => [
   {
     label: 'File',
     icon: 'pi pi-file',
@@ -58,10 +62,12 @@ const items = ref([
       {
         label: 'Undo',
         icon: 'pi pi-undo',
+        command: levelStore.undo,
       },
       {
         label: 'Redo',
         icon: 'pi pi-refresh',
+        command: levelStore.redo,
       },
     ],
   },
