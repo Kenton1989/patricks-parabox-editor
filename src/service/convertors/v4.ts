@@ -11,7 +11,7 @@ import type {
   LevelBlock,
   InfSetting,
   PlayerSetting,
-  LevelBrick,
+  LevelBox,
   LevelFloor,
   LevelObject,
   LevelRef,
@@ -33,7 +33,7 @@ const v4 = {
     return v4.flattenBlocks(body).map(v4.toLevelBlock)
   },
 
-  isBrick(block: RawBlock) {
+  isBox(block: RawBlock) {
     return block.fillWithWalls
   },
 
@@ -102,7 +102,7 @@ const v4 = {
       case 'Wall':
         return v4.toLevelWall(parentBlockId, child)
       case 'Block':
-        if (v4.isBrick(child)) return v4.toLevelBrick(parentBlockId, child)
+        if (v4.isBox(child)) return v4.toLevelBox(parentBlockId, child)
         else return v4.toExitLevelRef(parentBlockId, child)
     }
   },
@@ -145,9 +145,9 @@ const v4 = {
     }
   },
 
-  toLevelBrick(parentBlockId: number, child: RawBlock): LevelBrick {
+  toLevelBox(parentBlockId: number, child: RawBlock): LevelBox {
     return {
-      type: 'Brick',
+      type: 'Box',
       objId: newObjId(),
       parentBlockId,
       x: child.x,

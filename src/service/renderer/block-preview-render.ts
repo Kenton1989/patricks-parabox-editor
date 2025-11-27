@@ -62,7 +62,7 @@ export default class BlockPreviewRenderer {
 
       const referBlock = this.blockMap.get(child.referToBlockId)
       if (referBlock) {
-        draw.brick(ctx, x, y, w, h, estimateRefColor(referBlock), child.playerSetting)
+        draw.box(ctx, x, y, w, h, estimateRefColor(referBlock), child.playerSetting)
       } else {
         draw.unknown(ctx, x, y, w, h)
       }

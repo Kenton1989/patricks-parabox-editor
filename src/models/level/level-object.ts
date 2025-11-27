@@ -1,6 +1,6 @@
 import type { BlockColor, FloorType, InfSetting, PlayerSetting } from './property-type'
 
-export type LevelObject = LevelRef | LevelBrick | LevelWall | LevelFloor
+export type LevelObject = LevelRef | LevelBox | LevelWall | LevelFloor
 
 type CommonProps = {
   objId: number
@@ -19,8 +19,8 @@ export type LevelRef = CommonProps & {
   floatInSpace: boolean
 }
 
-export type LevelBrick = CommonProps & {
-  type: 'Brick'
+export type LevelBox = CommonProps & {
+  type: 'Box'
   playerSetting: PlayerSetting
   color: BlockColor
 }

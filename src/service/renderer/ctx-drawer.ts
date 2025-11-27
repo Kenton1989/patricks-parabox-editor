@@ -41,8 +41,8 @@ const draw = {
     switch (obj.type) {
       case 'Ref':
         throw Error('ref is not supported')
-      case 'Brick':
-        draw.brick(ctx, x, y, w, h, color.blockToColor(obj.color), obj.playerSetting)
+      case 'Box':
+        draw.box(ctx, x, y, w, h, color.blockToColor(obj.color), obj.playerSetting)
         return
       case 'Wall':
         draw.wall(ctx, x, y, w, h, parentColor)
@@ -137,19 +137,19 @@ const draw = {
     draw.face(ctx, x, y, w, h, colorBase, ref.playerSetting)
   },
 
-  brick(
+  box(
     ctx: CanvasRenderingContext2D,
     x: number,
     y: number,
     w: number,
     h: number,
-    brickColor: ColorInstance,
+    boxColor: ColorInstance,
     playerSetting: PlayerSetting,
   ) {
-    ctx.fillStyle = brickColor.toString()
+    ctx.fillStyle = boxColor.toString()
     ctx.fillRect(x, y, w, h)
-    draw.border(ctx, x, y, w, h, borderColor(brickColor))
-    draw.face(ctx, x, y, w, h, brickColor, playerSetting)
+    draw.border(ctx, x, y, w, h, borderColor(boxColor))
+    draw.face(ctx, x, y, w, h, boxColor, playerSetting)
   },
 
   floor(
