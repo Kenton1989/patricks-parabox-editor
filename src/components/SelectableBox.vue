@@ -1,7 +1,7 @@
 <template>
   <span
     v-tooltip.top="hint"
-    class="aspect-square h-full hover:cursor-pointer"
+    class="aspect-square h-full transition hover:cursor-pointer"
     :class="{ 'bg-highlight': selected, 'hover:bg-emphasis': !selected }"
   >
     <div class="size-full rounded-xs">

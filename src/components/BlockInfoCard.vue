@@ -20,7 +20,7 @@
         <InputNumber :modelValue="focusedBlock.zoomFactor" size="small" fluid />
       </InfoLine>
       <InfoLine label="Color">
-        <ColorPicker size="small" fluid />
+        <BlockColorPicker v-model="focusedBlock.color" />
       </InfoLine>
     </div>
   </InfoCard>
@@ -29,8 +29,9 @@
 import useFocusedBlock from '@/composites/useFocusedBlock'
 import InfoCard from './InfoCard.vue'
 import InfoLine from './InfoLine.vue'
-import { ColorPicker, InputNumber, InputText, ToggleSwitch } from 'primevue'
+import { InputNumber, InputText, ToggleSwitch } from 'primevue'
 import { nextTick, ref, watch } from 'vue'
+import BlockColorPicker from './BlockColorPicker.vue'
 
 const focusedBlock = useFocusedBlock()
 

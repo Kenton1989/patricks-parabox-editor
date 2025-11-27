@@ -1,6 +1,5 @@
 <template>
   <div class="flex h-full flex-row items-center justify-end py-1">
-    <p class="px-2">Color</p>
     <div
       class="aspect-square size-6 rounded-sm"
       :style="{ 'background-color': colorConvert.hsbToCss(hsbColorBuffer) }"
@@ -19,23 +18,37 @@
       </SelectableBox>
     </div>
 
-    <SelectableBox class="p-0" hint="other colors" ref="other-color-ref">
+    <SelectableBox
+      class="p-0"
+      hint="other colors"
+      @click="(e: Event) => colorPickerPopoverRef?.toggle(e)"
+    >
       <div class="m-auto flex h-full items-center justify-center">
         <i class="pi pi-palette"></i>
       </div>
     </SelectableBox>
+
+    <Popover ref="color-picker-popover" @hide="confirmColor">
+      <div class="fixed top-0 right-0 bottom-0 left-0" @click="colorPickerPopoverRef?.hide"></div>
+      <ColorPicker v-model="hsbColorBuffer" inline format="hsb" />
+    </Popover>
   </div>
 </template>
 <script setup lang="ts">
 import { DEFAULT_COLORS, type BlockColor } from '@/models/level'
 import SelectableBox from './SelectableBox.vue'
 import { color as colorConvert } from '@/service/convertors'
-import { ref, watch } from 'vue'
+import { ref, useTemplateRef, watch } from 'vue'
 import type { HsbColor } from '@/models/color'
+import { ColorPicker, Popover, type PopoverMethods } from 'primevue'
 
 const blockColorModel = defineModel<BlockColor>({ default: 'root' })
 
 const hsbColorBuffer = ref<HsbColor>(colorConvert.blockToHsb(blockColorModel.value))
+
+const confirmColor = () => {
+  blockColorModel.value = colorConvert.hsbToBlock(hsbColorBuffer.value)
+}
 
 watch(
   blockColorModel,
@@ -44,4 +57,6 @@ watch(
   },
   { immediate: true },
 )
+
+const colorPickerPopoverRef = useTemplateRef<PopoverMethods>('color-picker-popover')
 </script>
