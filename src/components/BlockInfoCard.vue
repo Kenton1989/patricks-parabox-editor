@@ -1,10 +1,5 @@
 <template>
-  <InfoCard
-    v-if="focusedBlock"
-    class="w-full"
-    title="Block Info"
-    :class="{ 'no-transition': noTransition }"
-  >
+  <InfoCard v-if="focusedBlock" class="w-full" title="Block Info">
     <div class="flex flex-col gap-2">
       <InfoLine label="ID">
         <p>{{ focusedBlock.blockId }}</p>
@@ -40,13 +35,14 @@ import { nextTick, ref, watch } from 'vue'
 const focusedBlock = useFocusedBlock()
 
 const enforceSquare = ref(true)
-const noTransition = ref(true)
-watch(focusedBlock, async (newVal, oldVal) => {
-  if (oldVal?.blockId !== newVal?.blockId && newVal) {
-    noTransition.value = true
-    enforceSquare.value = newVal.width === newVal.height
-  }
-  await nextTick()
-  noTransition.value = false
-})
+watch(
+  focusedBlock,
+  async (newVal, oldVal) => {
+    if (oldVal?.blockId !== newVal?.blockId && newVal) {
+      enforceSquare.value = newVal.width === newVal.height
+    }
+    await nextTick()
+  },
+  { immediate: true },
+)
 </script>
