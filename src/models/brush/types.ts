@@ -2,14 +2,17 @@ import type { BlockColor } from '../level'
 
 export type SelectBrush = {
   type: 'select'
+  color?: undefined
 }
 
 export type EraseBrush = {
   type: 'erase'
+  color?: undefined
 }
 
 export type WallBrush = {
   type: 'wall'
+  color?: undefined
 }
 
 export type BoxBrush = {
@@ -20,11 +23,13 @@ export type BoxBrush = {
 
 export type FloorBrush = {
   type: 'floor'
+  color?: undefined
   playerFloor: boolean
 }
 
 export type RefBrush = {
   type: 'ref'
+  color?: undefined
   blockId: number
 }
 
