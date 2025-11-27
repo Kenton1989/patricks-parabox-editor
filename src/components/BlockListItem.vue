@@ -25,7 +25,6 @@ const props = defineProps<{
 const uiStore = useUiStore()
 
 const setFocusedBlock = () => {
-  console.log('set focus to', props.block.blockId)
   uiStore.focusedBlockId = props.block.blockId
 }
 </script>
