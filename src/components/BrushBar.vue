@@ -1,27 +1,35 @@
 <template>
-  <div class="brush-bar flex h-12 w-full items-center justify-start px-2 py-1">
+  <div class="brush-bar flex h-12 w-full max-w-full items-center justify-start px-2 py-1">
     <p class="px-2">Brush</p>
-    <BrushBox
+    <SelectableBox
       v-for="brush in defaultBrushes"
       :key="brush.name"
-      :brushName="brush.name"
+      :hint="brush.name"
       :selected="brush.isSelected"
-      @click="() => (uiStore.currentBrush = { ...brush.baseBrush })"
+      @click="() => brush.isSelected || (uiStore.currentBrush = { ...brush.baseBrush })"
+      class="p-2"
     >
       <component :is="brush.logoComponent" class="h-full w-full transition" />
-    </BrushBox>
+    </SelectableBox>
 
     <Divider layout="vertical" style="margin: 0.5rem" />
 
-    <BrushBox
-      v-for="block in levelStore.levelBlocks"
-      :key="block.blockId"
-      :brushName="`Ref to ${block.name}`"
-      :selected="isRefBrushSelected(block.blockId)"
-      @click="() => selectRefBrush(block.blockId)"
-    >
-      <BlockCanvas :blockId="block.blockId" class="h-full w-full rounded-xs border" />
-    </BrushBox>
+    <div class="flex h-full grow items-center justify-start wrap-normal">
+      <SelectableBox
+        v-for="block in levelStore.levelBlocks"
+        :key="block.blockId"
+        :hint="`Ref to ${block.name}`"
+        :selected="isRefBrushSelected(block.blockId)"
+        @click="() => selectRefBrush(block.blockId)"
+        class="p-2"
+      >
+        <BlockCanvas :blockId="block.blockId" class="h-full w-full rounded-xs border" />
+      </SelectableBox>
+    </div>
+
+    <Divider layout="vertical" style="margin: 0.5rem" v-if="brushHasColor" />
+
+    <BlockColorPicker v-if="brushHasColor" v-model="brushColor" />
   </div>
 </template>
 <script setup lang="ts">
@@ -35,10 +43,11 @@ import WallBrushLogo from './WallBrushLogo.vue'
 import { useLevelStore } from '@/stores/level'
 import { Divider } from 'primevue'
 import BlockCanvas from './BlockCanvas.vue'
-import BrushBox from './BrushBox.vue'
+import SelectableBox from './SelectableBox.vue'
 import { computed } from 'vue'
 import { useUiStore } from '@/stores/ui'
 import { BASE_BRUSH } from '@/models/brush'
+import BlockColorPicker from './BlockColorPicker.vue'
 
 const levelStore = useLevelStore()
 const uiStore = useUiStore()
@@ -49,6 +58,18 @@ const isRefBrushSelected = (refBrushBlockId: number) =>
 const selectRefBrush = (refBrushBlockId: number) => {
   uiStore.currentBrush = { type: 'ref', blockId: refBrushBlockId }
 }
+
+const brushHasColor = computed(() => !!uiStore.currentBrush.color)
+
+const brushColor = computed({
+  get() {
+    return uiStore.currentBrush.color ?? 'root'
+  },
+  set(value) {
+    if (!value || !uiStore.currentBrush.color) return
+    uiStore.currentBrush.color = value
+  },
+})
 
 const defaultBrushes = computed(() => {
   const brush = uiStore.currentBrush

@@ -1,17 +1,17 @@
 <template>
   <span
-    v-tooltip.top="brushName"
-    class="aspect-square h-full p-2"
+    v-tooltip.top="hint"
+    class="aspect-square h-full hover:cursor-pointer"
     :class="{ 'bg-highlight': selected, 'hover:bg-emphasis': !selected }"
   >
-    <span class="max-h-full max-w-full overflow-hidden rounded-xs">
+    <div class="size-full rounded-xs">
       <slot></slot>
-    </span>
+    </div>
   </span>
 </template>
 <script setup lang="ts">
 defineProps<{
-  brushName?: string
+  hint?: string
   selected?: boolean
 }>()
 </script>

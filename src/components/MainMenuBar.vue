@@ -10,10 +10,8 @@
           :key="ext.url"
           :href="ext.url"
           target="_blank"
+          class="block size-5 overflow-hidden"
           :class="{
-            block: true,
-            'size-5': true,
-            'overflow-hidden': true,
             'rounded-full': ext.circleIcon,
             'rounded-xs': !ext.circleIcon,
           }"
