@@ -1,8 +1,14 @@
 <template>
   <div class="brush-bar flex h-12 w-full items-center justify-start px-2 py-1">
     <p class="px-2">Brush</p>
-    <BrushBox v-for="brush in defaultBrushes" :key="brush.name" :brushName="brush.name">
-      <component :is="brush.logoSvg" class="h-full w-full transition" :style="brush.style" />
+    <BrushBox
+      v-for="brush in defaultBrushes"
+      :key="brush.name"
+      :brushName="brush.name"
+      :selected="brush.isSelected"
+      @click="() => (uiStore.currentBrush = { ...brush.baseBrush })"
+    >
+      <component :is="brush.logoComponent" class="h-full w-full transition" />
     </BrushBox>
 
     <Divider layout="vertical" style="margin: 0.5rem" />
@@ -11,6 +17,8 @@
       v-for="block in levelStore.levelBlocks"
       :key="block.blockId"
       :brushName="`Ref to ${block.name}`"
+      :selected="isRefBrushSelected(block.blockId)"
+      @click="() => selectRefBrush(block.blockId)"
     >
       <BlockCanvas :blockId="block.blockId" class="h-full w-full rounded-xs border" />
     </BrushBox>
@@ -23,52 +31,70 @@ import FloorSvg from '@/assets/floor.svg'
 import PlayerFloorSvg from '@/assets/player-floor.svg'
 import PlayerSvg from '@/assets/player.svg'
 import SelectSvg from '@/assets/select.svg'
-import WallSvg from '@/assets/wall.svg'
+import WallBrushLogo from './WallBrushLogo.vue'
 import { useLevelStore } from '@/stores/level'
 import { Divider } from 'primevue'
-import { computed } from 'vue'
 import BlockCanvas from './BlockCanvas.vue'
-import useFocusedBlock from '@/composites/useFocusedBlock'
-import { color } from '@/service/convertors'
 import BrushBox from './BrushBox.vue'
+import { computed } from 'vue'
+import { useUiStore } from '@/stores/ui'
+import { BASE_BRUSH } from '@/models/brush'
 
 const levelStore = useLevelStore()
-const focusedBlock = useFocusedBlock()
+const uiStore = useUiStore()
+
+const isRefBrushSelected = (refBrushBlockId: number) =>
+  uiStore.currentBrush.type === 'ref' && uiStore.currentBrush.blockId === refBrushBlockId
+
+const selectRefBrush = (refBrushBlockId: number) => {
+  uiStore.currentBrush = { type: 'ref', blockId: refBrushBlockId }
+}
 
 const defaultBrushes = computed(() => {
-  const block = focusedBlock.value
-
-  const focusedBlockColor = block ? color.blockToColor(block.color).toString() : 'white'
+  const brush = uiStore.currentBrush
 
   return [
     {
-      logoSvg: SelectSvg,
+      logoComponent: SelectSvg,
       name: 'Select',
+      isSelected: brush.type === 'select',
+      baseBrush: BASE_BRUSH.select,
     },
     {
-      logoSvg: EraserSvg,
+      logoComponent: EraserSvg,
       name: 'Erase',
+      isSelected: brush.type === 'erase',
+      baseBrush: BASE_BRUSH.erase,
     },
     {
-      logoSvg: WallSvg,
+      logoComponent: WallBrushLogo,
       name: 'Wall',
-      style: `background-color: ${focusedBlockColor}`,
+      isSelected: brush.type === 'wall',
+      baseBrush: BASE_BRUSH.wall,
     },
     {
-      logoSvg: BoxSvg,
+      logoComponent: BoxSvg,
       name: 'Box',
+      isSelected: brush.type === 'box' && !brush.player,
+      baseBrush: BASE_BRUSH.box,
     },
     {
-      logoSvg: PlayerSvg,
+      logoComponent: PlayerSvg,
       name: 'Player',
+      isSelected: brush.type === 'box' && brush.player,
+      baseBrush: BASE_BRUSH.player,
     },
     {
-      logoSvg: FloorSvg,
+      logoComponent: FloorSvg,
       name: 'Floor',
+      isSelected: brush.type === 'floor' && !brush.playerFloor,
+      baseBrush: BASE_BRUSH.floor,
     },
     {
-      logoSvg: PlayerFloorSvg,
+      logoComponent: PlayerFloorSvg,
       name: 'Player Floor',
+      isSelected: brush.type === 'floor' && brush.playerFloor,
+      baseBrush: BASE_BRUSH.playerFloor,
     },
   ]
 })

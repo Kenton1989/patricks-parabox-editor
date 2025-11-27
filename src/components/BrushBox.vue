@@ -1,8 +1,8 @@
 <template>
   <span
     v-tooltip.top="brushName"
-    class="hover:bg-emphasis aspect-square h-full p-2"
-    :class="{ 'bg-highlight': selected }"
+    class="aspect-square h-full p-2"
+    :class="{ 'bg-highlight': selected, 'hover:bg-emphasis': !selected }"
   >
     <span class="max-h-full max-w-full overflow-hidden rounded-xs">
       <slot></slot>
