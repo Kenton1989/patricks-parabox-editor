@@ -2,6 +2,7 @@ import { defineStore } from 'pinia'
 import { ref, watch } from 'vue'
 import { useLevelStore } from './level'
 import { BASE_BRUSH, type Brush } from '@/models/brush'
+import { useStorage } from '@vueuse/core'
 
 export const useUiStore = defineStore(
   'ui',
@@ -17,7 +18,7 @@ export const useUiStore = defineStore(
       { immediate: true },
     )
 
-    const focusedBlockId = ref<number>()
+    const focusedBlockId = useStorage('ui.focusedBlockId', 0)
 
     const currentBrush = ref<Brush>(BASE_BRUSH.select)
 
