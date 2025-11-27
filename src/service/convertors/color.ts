@@ -4,9 +4,9 @@ import type { ColorInstance } from 'color'
 import Color from 'color'
 
 const HUE_TO_DEFAULT_COLOR: { [k: number]: DefaultColor } = {
-  0.6: 'color1',
-  0.4: 'color2',
-  0.55: 'color3',
+  0.6: 'color 1',
+  0.4: 'color 2',
+  0.55: 'color 3',
   0.1: 'box',
   0.9: 'player',
 }
@@ -24,16 +24,16 @@ function blockToHsv(block: BlockColor): HsvColor {
     switch (block) {
       case 'root':
         return hsvObj(0, 0, 90)
-      case 'color1':
-        return hsvObj(216, 100, 60)
-      case 'color2':
-        return hsvObj(144, 100, 60)
-      case 'color3':
-        return hsvObj(198, 100, 60)
+      case 'color 1':
+        return hsvObj(216, 80, 100)
+      case 'color 2':
+        return hsvObj(144, 80, 100)
+      case 'color 3':
+        return hsvObj(198, 80, 100)
       case 'box':
-        return hsvObj(36, 100, 60)
+        return hsvObj(36, 80, 100)
       case 'player':
-        return hsvObj(324, 100, 40)
+        return hsvObj(324, 100, 70)
       default:
         throw new RangeError('unknown color name: ' + block)
     }
@@ -44,6 +44,10 @@ function blockToHsv(block: BlockColor): HsvColor {
 
 function blockToColor(block: BlockColor): ColorInstance {
   return Color.hsv(blockToHsv(block))
+}
+
+function blockToCss(block: BlockColor): string {
+  return Color.hsv(blockToHsv(block)).toString()
 }
 
 function blockToHsb(block: BlockColor): HsbColor {
@@ -77,13 +81,24 @@ function hsbToBlock({ h, s, b }: HsbColor): BlockColor {
   return hsvObj(h, s, b)
 }
 
+function hsbToColor({ h, s, b }: HsbColor): ColorInstance {
+  return Color.hsv(h, s, b)
+}
+
+function hsbToCss(hsb: HsbColor): string {
+  return hsbToColor(hsb).toString()
+}
+
 const color = {
   blockToHsv,
   blockToHsb,
   blockToRaw,
   rawToBlock,
   hsbToBlock,
+  hsbToColor,
   blockToColor,
+  blockToCss,
+  hsbToCss,
 }
 
 export { color }

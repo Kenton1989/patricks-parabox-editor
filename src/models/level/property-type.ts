@@ -1,6 +1,6 @@
 import type { HsvColor } from '@/models/color'
 
-export type DefaultColor = 'root' | 'color1' | 'color2' | 'color3' | 'box' | 'player'
+export type DefaultColor = 'root' | 'color 1' | 'color 2' | 'color 3' | 'box' | 'player'
 
 export type BlockColor = HsvColor | DefaultColor
 
