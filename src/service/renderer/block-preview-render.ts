@@ -105,6 +105,8 @@ export default class BlockPreviewRenderer {
     const cellH = this.canvasHeight / block.height
 
     children.forEach((child) => {
+      if (child.x > block.width || child.y > block.height) return
+
       const x = child.x * cellW
       // reverse y because the y-axis directions in level and canvas are opposite
       const y = (block.height - 1 - child.y) * cellH
