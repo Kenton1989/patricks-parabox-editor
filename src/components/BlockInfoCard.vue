@@ -32,6 +32,7 @@ import InfoLine from './InfoLine.vue'
 import { InputNumber, InputText, ToggleSwitch } from 'primevue'
 import { ref, watch } from 'vue'
 import BlockColorPicker from './BlockColorPicker.vue'
+import { watchImmediate } from '@vueuse/core'
 
 const { focusedBlock } = useFocusedBlock()
 
@@ -46,23 +47,22 @@ watch(enforceSquare, (newVal) => {
   )
 })
 
-watch(
-  focusedBlock,
-  (newVal, oldVal) => {
+watchImmediate(
+  () => [focusedBlock.value?.blockId, focusedBlock.value?.width, focusedBlock.value?.height],
+  ([newBlockId, newWidth, newHeight], oldVal) => {
     // block switched
-    if (oldVal?.blockId !== newVal?.blockId && newVal) {
-      enforceSquare.value = newVal.width === newVal.height
+    if (oldVal === undefined || (oldVal[0] !== newBlockId && newBlockId !== undefined)) {
+      enforceSquare.value = newWidth === newHeight
     }
 
-    if (!newVal) {
+    if (newBlockId === undefined) {
       return
     }
 
     // block not switched but resized
-    if (newVal.width !== newVal.height && enforceSquare.value && focusedBlock.value) {
+    if (newWidth !== newHeight && enforceSquare.value && focusedBlock.value) {
       focusedBlock.value.height = focusedBlock.value.width
     }
   },
-  { immediate: true },
 )
 </script>
