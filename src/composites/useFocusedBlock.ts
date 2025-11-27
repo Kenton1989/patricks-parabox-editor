@@ -6,7 +6,9 @@ export default function useFocusedBlock() {
   const uiStore = useUiStore()
   const levelStore = useLevelStore()
 
-  return computed(() => {
-    return levelStore.levelBlocks.find((b) => b.blockId === uiStore.focusedBlockId)
-  })
+  return {
+    focusedBlock: computed(() => {
+      return levelStore.levelBlocks.find((b) => b.blockId === uiStore.focusedBlockId)
+    }),
+  }
 }

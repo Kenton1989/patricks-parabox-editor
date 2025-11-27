@@ -11,13 +11,13 @@
         <ToggleSwitch v-model="enforceSquare" />
       </InfoLine>
       <InfoLine label="Width">
-        <InputNumber :modelValue="focusedBlock.width" size="small" fluid />
+        <InputNumber v-model="focusedBlock.width" size="small" fluid showButtons :min="1" />
       </InfoLine>
       <InfoLine label="Height" v-if="!enforceSquare">
-        <InputNumber :modelValue="focusedBlock.height" size="small" fluid />
+        <InputNumber v-model="focusedBlock.height" size="small" fluid showButtons :min="1" />
       </InfoLine>
       <InfoLine label="Zoom">
-        <InputNumber :modelValue="focusedBlock.zoomFactor" size="small" fluid />
+        <InputNumber v-model="focusedBlock.zoomFactor" size="small" fluid />
       </InfoLine>
       <InfoLine label="Color">
         <BlockColorPicker v-model="focusedBlock.color" />
@@ -30,19 +30,38 @@ import useFocusedBlock from '@/composites/useFocusedBlock'
 import InfoCard from './InfoCard.vue'
 import InfoLine from './InfoLine.vue'
 import { InputNumber, InputText, ToggleSwitch } from 'primevue'
-import { nextTick, ref, watch } from 'vue'
+import { ref, watch } from 'vue'
 import BlockColorPicker from './BlockColorPicker.vue'
 
-const focusedBlock = useFocusedBlock()
+const { focusedBlock } = useFocusedBlock()
 
 const enforceSquare = ref(true)
+
+watch(enforceSquare, (newVal) => {
+  if (!focusedBlock.value || !newVal) return
+
+  focusedBlock.value.width = focusedBlock.value.height = Math.max(
+    focusedBlock.value.width,
+    focusedBlock.value.height,
+  )
+})
+
 watch(
   focusedBlock,
-  async (newVal, oldVal) => {
+  (newVal, oldVal) => {
+    // block switched
     if (oldVal?.blockId !== newVal?.blockId && newVal) {
       enforceSquare.value = newVal.width === newVal.height
     }
-    await nextTick()
+
+    if (!newVal) {
+      return
+    }
+
+    // block not switched but resized
+    if (newVal.width !== newVal.height && enforceSquare.value && focusedBlock.value) {
+      focusedBlock.value.height = focusedBlock.value.width
+    }
   },
   { immediate: true },
 )
