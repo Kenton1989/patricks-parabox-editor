@@ -28,7 +28,6 @@ const notifyUploadError = (message: string) => {
 
 const onCreateClick = () => {
   levelStore.initEmptyLevel()
-  levelStore.resetStack()
   uiStore.setUpDialogVisible = false
 }
 

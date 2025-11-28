@@ -25,7 +25,6 @@ export default function useOpenLevel() {
       const levelData = await readFileAsText(file)
       const rawLevel = LevelParserV4.parse(levelData)
       levelStore.initLevelV4(rawLevel)
-      levelStore.resetStack()
 
       onSuccessCallback.value()
     } catch (e: unknown) {

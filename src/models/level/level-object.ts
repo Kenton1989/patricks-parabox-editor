@@ -4,7 +4,7 @@ export type LevelObject = LevelRef | LevelBox | LevelWall | LevelFloor
 
 type CommonProps = {
   objId: number
-  parentBlockId: number
+  parentId: number
   x: number
   y: number
 }

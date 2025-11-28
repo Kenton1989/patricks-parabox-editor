@@ -110,7 +110,7 @@ const v4 = {
   toLevelRef(parentBlockId: number, child: RawRef): LevelRef {
     return {
       type: 'Ref',
-      parentBlockId,
+      parentId: parentBlockId,
       objId: newObjId(),
       x: child.x,
       y: child.y,
@@ -126,7 +126,7 @@ const v4 = {
   toLevelFloor(parentBlockId: number, child: RawFloor): LevelFloor {
     return {
       type: 'Floor',
-      parentBlockId,
+      parentId: parentBlockId,
       objId: newObjId(),
       x: child.x,
       y: child.y,
@@ -137,7 +137,7 @@ const v4 = {
   toLevelWall(parentBlockId: number, child: RawWall): LevelWall {
     return {
       type: 'Wall',
-      parentBlockId,
+      parentId: parentBlockId,
       objId: newObjId(),
       x: child.x,
       y: child.y,
@@ -149,7 +149,7 @@ const v4 = {
     return {
       type: 'Box',
       objId: newObjId(),
-      parentBlockId,
+      parentId: parentBlockId,
       x: child.x,
       y: child.y,
       playerSetting: v4.toPlayerSetting(child),
@@ -161,7 +161,7 @@ const v4 = {
     return {
       type: 'Ref',
       objId: newObjId(),
-      parentBlockId,
+      parentId: parentBlockId,
       x: child.x,
       y: child.y,
       referToBlockId: child.id,

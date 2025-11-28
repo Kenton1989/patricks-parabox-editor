@@ -4,31 +4,25 @@ import { useLevelStore } from './level'
 import { BASE_BRUSH, type Brush } from '@/models/brush'
 import { useStorage } from '@vueuse/core'
 
-export const useUiStore = defineStore(
-  'ui',
-  () => {
-    const levelStore = useLevelStore()
+export const useUiStore = defineStore('ui', () => {
+  const levelStore = useLevelStore()
 
-    const setUpDialogVisible = ref(!levelStore.isInitialized)
-    watch(
-      () => [setUpDialogVisible.value, levelStore.isInitialized],
-      ([newVisible, isInitialized]) => {
-        if (!isInitialized && !newVisible) setUpDialogVisible.value = true
-      },
-      { immediate: true },
-    )
+  const setUpDialogVisible = ref(!levelStore.isInitialized)
+  watch(
+    () => [setUpDialogVisible.value, levelStore.isInitialized],
+    ([newVisible, isInitialized]) => {
+      if (!isInitialized && !newVisible) setUpDialogVisible.value = true
+    },
+    { immediate: true },
+  )
 
-    const focusedBlockId = useStorage('ui.focusedBlockId', 0)
+  const focusedBlockId = useStorage<number>('ui.focusedBlockId', 0)
 
-    const currentBrush = ref<Brush>(BASE_BRUSH.select)
+  const currentBrush = ref<Brush>(BASE_BRUSH.select)
 
-    return {
-      setUpDialogVisible,
-      focusedBlockId,
-      currentBrush,
-    }
-  },
-  {
-    undo: { disable: true },
-  },
-)
+  return {
+    setUpDialogVisible,
+    focusedBlockId,
+    currentBrush,
+  }
+})

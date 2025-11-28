@@ -5,7 +5,7 @@
       <MainMenuBar />
     </header>
     <div class="main-body flex w-full flex-row gap-1">
-      <aside class="flex max-h-full w-1/6 min-w-60 flex-none flex-col gap-1">
+      <aside class="flex max-h-full w-1/6 min-w-75 flex-none flex-col gap-1">
         <BlockListCard class="min-h-1/2 w-full flex-1" />
         <BlockInfoCard
           class="max-h-1/2 w-full flex-1"
@@ -16,7 +16,7 @@
         <BrushBar />
         <PaintBoard class="grow" />
       </main>
-      <aside class="flex max-h-full w-1/6 min-w-60 flex-none flex-col gap-1">
+      <aside class="flex max-h-full w-1/6 min-w-75 flex-none flex-col gap-1">
         <InfoCard class="w-full flex-1" title="Cell Info">
           <p class="m-0">
             Lorem ipsum dolor sit amet, consectetur adipisicing elit. Inventore sed consequuntur
