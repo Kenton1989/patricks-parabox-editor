@@ -4,7 +4,6 @@ export function bindEverythingToThis(thisObj: any) {
     const func = thisObj[key]
     if (typeof func === 'function') {
       thisObj[key] = func.bind(thisObj)
-      console.log('bindEverythingToThis', key)
     }
   }
 
@@ -15,7 +14,6 @@ export function bindEverythingToThis(thisObj: any) {
     const func = thisObj[key]
     if (typeof func === 'function') {
       thisObj[key] = func.bind(thisObj)
-      console.log('bindEverythingToThis', key)
     }
   }
 }

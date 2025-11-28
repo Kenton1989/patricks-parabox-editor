@@ -130,7 +130,6 @@ export const useLevelStore = defineStore('level', () => {
     if (!disableCommit) {
       commitEditHistory()
     }
-    console.log(block)
 
     return block
   }
