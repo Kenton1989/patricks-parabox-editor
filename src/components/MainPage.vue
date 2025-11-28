@@ -44,6 +44,9 @@ import BlockListCard from './BlockListCard.vue'
 import PaintBoard from './PaintBoard.vue'
 import BlockInfoCard from './BlockInfoCard.vue'
 import { useUiStore } from '@/stores/ui'
+import useGlobalHotkeys from '@/composites/useGlobalHotkeys'
 
 const uiStore = useUiStore()
+
+useGlobalHotkeys()
 </script>
