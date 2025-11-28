@@ -29,7 +29,7 @@
 
     <Divider layout="vertical" style="margin: 0.5rem" v-if="brushHasColor" />
 
-    <BlockColorPicker v-if="brushHasColor" v-model="brushColor" />
+    <BlockColorPicker v-if="brushHasColor" v-model="brushColor" class="pl-2" />
   </div>
 </template>
 <script setup lang="ts">
