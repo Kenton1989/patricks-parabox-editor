@@ -7,10 +7,7 @@
     <div class="main-body flex w-full flex-row gap-1">
       <aside class="flex max-h-full w-1/6 min-w-75 flex-none flex-col gap-1">
         <BlockListCard class="min-h-1/2 w-full flex-1" />
-        <BlockInfoCard
-          class="max-h-1/2 w-full flex-1"
-          v-if="uiStore.focusedBlockId !== undefined"
-        />
+        <BlockInfoCard class="max-h-1/2 w-full flex-1" v-if="focusedBlock" />
       </aside>
       <main class="flex h-full min-w-120 grow flex-col items-stretch overflow-auto">
         <BrushBar />
@@ -43,10 +40,10 @@ import BrushBar from './BrushBar.vue'
 import BlockListCard from './BlockListCard.vue'
 import PaintBoard from './PaintBoard.vue'
 import BlockInfoCard from './BlockInfoCard.vue'
-import { useUiStore } from '@/stores/ui'
 import useGlobalHotkeys from '@/composites/useGlobalHotkeys'
+import useFocusedBlock from '@/composites/useFocusedBlock'
 
-const uiStore = useUiStore()
+const focusedBlock = useFocusedBlock()
 
 useGlobalHotkeys()
 </script>
