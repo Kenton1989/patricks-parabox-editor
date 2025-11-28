@@ -23,6 +23,11 @@ const MyPreset = definePreset(Material, {
         paddingY: '0.25rem',
       },
     },
+    navigation: {
+      item: {
+        padding: '0.5rem 1rem',
+      },
+    },
   },
 })
 
