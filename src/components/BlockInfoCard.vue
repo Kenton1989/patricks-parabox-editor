@@ -1,9 +1,6 @@
 <template>
   <InfoCard v-if="focusedBlock" class="w-full" title="Block Info">
     <div class="flex flex-col gap-2">
-      <InfoLine label="ID">
-        <p>{{ focusedBlock.blockId }}</p>
-      </InfoLine>
       <InfoLine label="Name">
         <InputText
           :modelValue="focusedBlock.name"
@@ -19,9 +16,7 @@
       <InfoLine label="Width">
         <InputNumber
           :modelValue="focusedBlock.width"
-          @update:modelValue="
-            (width) => (enforceSquare ? update({ width, height: width }) : update({ width }))
-          "
+          @update:modelValue="(width) => resize(width, undefined)"
           size="small"
           fluid
           showButtons
@@ -30,8 +25,8 @@
       </InfoLine>
       <InfoLine label="Height" v-if="!enforceSquare">
         <InputNumber
-          :modelValue="focusedBlock.width"
-          @update:modelValue="(height) => update({ height })"
+          :modelValue="focusedBlock.height"
+          @update:modelValue="(height) => resize(undefined, height)"
           size="small"
           fluid
           showButtons
@@ -42,6 +37,7 @@
         <InputNumber
           :modelValue="focusedBlock.zoomFactor"
           @update:modelValue="(zoomFactor) => updateNoCommit({ zoomFactor })"
+          :maxFractionDigits="4"
           @blur="commit"
           size="small"
           fluid
@@ -53,6 +49,8 @@
           @update:modelValue="(color) => update({ color })"
         />
       </InfoLine>
+
+      <Badge :value="`ID: ${focusedBlock.blockId}`" class="self-end" severity="secondary" />
     </div>
   </InfoCard>
 </template>
@@ -60,8 +58,8 @@
 import useFocusedBlock from '@/composites/useFocusedBlock'
 import InfoCard from './InfoCard.vue'
 import InfoLine from './InfoLine.vue'
-import { InputNumber, InputText, ToggleSwitch } from 'primevue'
-import { ref } from 'vue'
+import { Badge, InputNumber, InputText, ToggleSwitch } from 'primevue'
+import { ref, watch } from 'vue'
 import BlockColorPicker from './BlockColorPicker.vue'
 import { watchImmediate } from '@vueuse/core'
 
@@ -69,7 +67,19 @@ const { focusedBlock, updateNoCommit, update, commit } = useFocusedBlock()
 
 const enforceSquare = ref(true)
 
-watchImmediate(enforceSquare, (newVal) => {
+const resize = (width?: number, height?: number) => {
+  console.log('resize to', width, height)
+  if (enforceSquare.value) height = width
+
+  width ??= focusedBlock.value?.width
+  height ??= focusedBlock.value?.height
+
+  update({ width, height })
+}
+
+watch(enforceSquare, (newVal) => {
+  console.log('enforce square', enforceSquare.value)
+
   if (!focusedBlock.value || !newVal) return
 
   const newSize = Math.max(focusedBlock.value.width, focusedBlock.value.height)
