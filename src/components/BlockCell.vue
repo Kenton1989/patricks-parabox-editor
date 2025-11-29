@@ -1,5 +1,10 @@
 <template>
-  <div ref="cell-ref" class="relative border-2" :style="{ borderColor: cellBorderColor }">
+  <div
+    ref="cell-ref"
+    class="relative border-2"
+    :style="{ borderColor: cellBorderColor }"
+    @click="selectCell"
+  >
     <LevelObjectCanvas
       v-if="objOnTheFloor"
       :style="{ zIndex: baseZIndex + 1, textAlign: 'right' }"
@@ -20,6 +25,7 @@ import type { BlockCell, BlockColor } from '@/models/level'
 import type { Immutable } from '@/models/utils'
 import { computed, useTemplateRef } from 'vue'
 import LevelObjectCanvas, { FloorCanvas } from './level-object/canvas'
+import { useUiStore } from '@/stores/ui'
 
 const props = defineProps<{ cell: Immutable<BlockCell>; parentColor?: BlockColor }>()
 
@@ -33,4 +39,14 @@ const floor = computed(() => props.cell.objects.find((o) => o.type === 'Floor'))
 const objOnTheFloor = computed(() => props.cell.objects.find((o) => o.type !== 'Floor'))
 
 const cellBorderColor = computed(() => (objOnTheFloor.value && floor.value ? 'white' : 'black'))
+
+const uiStore = useUiStore()
+
+const selectCell = () => {
+  uiStore.focusedCellInfo = {
+    x: props.cell.x,
+    y: props.cell.y,
+    objects: [objOnTheFloor.value, floor.value].filter((o) => o !== undefined),
+  }
+}
 </script>

@@ -14,20 +14,7 @@
         <PaintBoard class="grow" />
       </main>
       <aside class="flex max-h-full w-1/6 min-w-75 flex-none flex-col gap-1">
-        <InfoCard class="w-full flex-1" title="Cell Info">
-          <p class="m-0">
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Inventore sed consequuntur
-            error repudiandae numquam deserunt quisquam repellat libero asperiores earum nam nobis,
-            culpa ratione quam perferendis esse, cupiditate neque quas!
-          </p>
-        </InfoCard>
-        <InfoCard class="w-full flex-1" title="Floor Info">
-          <p class="m-0">
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Inventore sed consequuntur
-            error repudiandae numquam deserunt quisquam repellat libero asperiores earum nam nobis,
-            culpa ratione quam perferendis esse, cupiditate neque quas!
-          </p>
-        </InfoCard>
+        <FocusedCellInfoSideBar class="h-full w-full" />
       </aside>
     </div>
   </div>
@@ -35,12 +22,12 @@
 <script setup lang="ts">
 import StartUpDialog from './StartUpDialog.vue'
 import MainMenuBar from './MainMenuBar.vue'
-import InfoCard from './InfoCard.vue'
 import BrushBar from './BrushBar.vue'
 import BlockListCard from './BlockListCard.vue'
 import PaintBoard from './PaintBoard.vue'
 import FocusedBlockInfoCard from './FocusedBlockInfoCard.vue'
 import { useGlobalHotkeys, useFocusedBlock } from '@/composites'
+import FocusedCellInfoSideBar from './FocusedCellInfoSideBar.vue'
 
 const focusedBlock = useFocusedBlock()
 
