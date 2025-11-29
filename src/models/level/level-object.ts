@@ -1,6 +1,16 @@
-import type { BlockColor, FloorType, InfSetting, PlayerSetting } from './property-type'
+import type {
+  ActivePlayerSetting,
+  BlockColor,
+  FloorType,
+  InfSetting,
+  PlayerSetting,
+} from './property-type'
 
 export type LevelObject = LevelRef | LevelBox | LevelWall | LevelFloor
+
+export type MovableLevelObject = LevelRef | LevelBox | LevelWall
+
+export type PlayerLevelObject = MovableLevelObject & { playerSetting: ActivePlayerSetting }
 
 type CommonProps = {
   objId: number

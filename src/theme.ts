@@ -29,6 +29,15 @@ const MyPreset = definePreset(Material, {
       },
     },
   },
+  components: {
+    button: {
+      root: {
+        sm: {
+          iconOnlyWidth: '2rem',
+        },
+      },
+    },
+  },
 })
 
 export default MyPreset

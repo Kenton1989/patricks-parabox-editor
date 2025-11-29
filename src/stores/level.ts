@@ -6,6 +6,7 @@ import {
   type BlockColor,
   type LevelHeader,
   type LevelObject,
+  type PlayerLevelObject,
 } from '@/models/level'
 import type { LevelBlock } from '@/models/level/level-block'
 import type { RawLevelRoot } from '@/service/game-level/v4'
@@ -289,12 +290,31 @@ export const useLevelStore = defineStore('level', () => {
     const objId = newObjId()
     const newObj: LevelObject = { objId, ...objProps }
 
+    if (newObj.type !== 'Floor' && newObj.playerSetting.type === 'player') {
+      const playerSetting = newObj.playerSetting
+      const maxPlayerOrder = Math.max(...players.value.map((p) => p.playerSetting.playerOrder))
+      playerSetting.playerOrder = maxPlayerOrder + 1
+    }
+
     parentBlock.children.push(newObj)
 
     commit()
 
     return newObj
   }
+
+  const players = computed(() => {
+    const result = [...levelObjects.value.values()].filter(
+      (o) => o.type !== 'Floor' && o.playerSetting.type === 'player',
+    ) as PlayerLevelObject[]
+
+    result.sort(
+      (p1: PlayerLevelObject, p2: PlayerLevelObject) =>
+        p1.playerSetting.playerOrder - p2.playerSetting.playerOrder,
+    )
+
+    return result
+  })
 
   return {
     _level,

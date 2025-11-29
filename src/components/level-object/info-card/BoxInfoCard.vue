@@ -7,6 +7,13 @@
           @update:modelValue="(color) => update({ color })"
         />
       </InfoLine>
+      <InfoLine label="Type">
+        <PlayerSettingInput
+          class="w-full"
+          :modelValue="object.playerSetting"
+          @update:modelValue="(playerSetting) => update({ playerSetting })"
+        />
+      </InfoLine>
 
       <Badge :value="`ID: ${props.object.objId}`" class="self-end" severity="secondary" />
     </div>
@@ -16,7 +23,7 @@
 import type { LevelBox } from '@/models/level'
 import { InfoCard, InfoLine } from '@/components/templates'
 import { Badge } from 'primevue'
-import { BlockColorPicker } from '@/components/inputs'
+import { BlockColorPicker, PlayerSettingInput } from '@/components/inputs'
 import useEditLevelObject from '@/composites/useEditLevelObject'
 
 const props = defineProps<{ object: LevelBox }>()

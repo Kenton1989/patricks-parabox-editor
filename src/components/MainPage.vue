@@ -5,7 +5,7 @@
       <MainMenuBar />
     </header>
     <div class="main-body flex w-full flex-row gap-1">
-      <aside class="flex max-h-full w-1/6 min-w-75 flex-none flex-col gap-1">
+      <aside class="flex max-h-full w-1/6 min-w-78 flex-none flex-col gap-1">
         <BlockListCard class="min-h-1/2 w-full flex-1" />
         <FocusedBlockInfoCard class="max-h-1/2 w-full flex-1" v-if="focusedBlock" />
       </aside>
@@ -13,7 +13,7 @@
         <BrushBar />
         <PaintBoard class="grow" />
       </main>
-      <aside class="flex max-h-full w-1/6 min-w-75 flex-none flex-col gap-1">
+      <aside class="flex max-h-full w-1/6 min-w-78 flex-none flex-col gap-1">
         <FocusedCellInfoSideBar class="h-full w-full" />
       </aside>
     </div>
