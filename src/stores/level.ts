@@ -7,6 +7,7 @@ import {
   type BlockColor,
   type LevelHeader,
   type LevelObject,
+  type LevelRef,
   type PlayerLevelObject,
   type PlayerSetting,
 } from '@/models/level'
@@ -44,6 +45,17 @@ function tryGetPlayerSettings(obj: Partial<LevelObject>): ActivePlayerSetting | 
   const setting = (obj as { playerSetting?: PlayerSetting }).playerSetting
   if (!setting || setting.type !== 'player') return
   return setting
+}
+
+function infLevel(obj: LevelRef) {
+  switch (obj.infSetting.type) {
+    case 'infExit': // infinity
+      return obj.infSetting.level
+    case 'infEnter': // epsilon
+      return -obj.infSetting.level
+    default:
+      return 0
+  }
 }
 
 export const useLevelStore = defineStore('level', () => {
@@ -339,6 +351,39 @@ export const useLevelStore = defineStore('level', () => {
     return result
   })
 
+  // set ref object to the only exit of the block
+  // all the other ref to the same block will become clone
+  const setExitRef = (refObjId: number) => {
+    const inputObj = getObject(refObjId)
+    if (!inputObj) return
+
+    if (inputObj.type !== 'Ref') {
+      console.error('setExitRef received non-ref ID:', refObjId)
+      return
+    }
+
+    const refObj = inputObj as LevelRef
+
+    let changed = false
+
+    if (!refObj.exitBlock) {
+      refObj.exitBlock = true
+      changed = true
+    }
+
+    for (const obj of levelObjects.value.values()) {
+      if (obj.objId === refObj.objId) continue
+      if (obj.type !== 'Ref') continue
+      if (obj.referToBlockId !== refObj.referToBlockId) continue
+      if (infLevel(refObj) !== infLevel(obj)) continue
+      if (!obj.exitBlock) continue
+      ;(obj as LevelRef).exitBlock = false
+      changed = true
+    }
+
+    if (changed) commit()
+  }
+
   return {
     _level,
 
@@ -371,8 +416,10 @@ export const useLevelStore = defineStore('level', () => {
     updateObject,
     deleteObject,
     createObject,
+    setExitRef,
 
     players,
+
     /*
     setOutgoingRef(blockId, refObjectId)
 

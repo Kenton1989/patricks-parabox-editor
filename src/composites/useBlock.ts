@@ -36,12 +36,10 @@ function generateGrid(block: Immutable<LevelBlock>): BlockGrid {
   }
 }
 
-function useBlock(blockId: Ref<number>) {
+function useBlock(blockId: Ref<number>, withoutGrid?: boolean) {
   const levelStore = useLevelStore()
 
-  const block = computed(() => {
-    return levelStore.levelBlocks.find((b) => b.blockId === blockId.value)
-  })
+  const block = levelStore.getBlockRef(blockId)
 
   const update = (values: UpdateBlockProps) => {
     levelStore.updateBlock(blockId.value, values)
@@ -52,7 +50,9 @@ function useBlock(blockId: Ref<number>) {
   }
 
   const grid: ComputedRef<Immutable<BlockGrid>> = computed(() =>
-    block.value ? generateGrid(block.value) : { blockId: blockId.value, cells: [], outliers: [] },
+    block.value && !withoutGrid
+      ? generateGrid(block.value)
+      : { blockId: blockId.value, cells: [], outliers: [] },
   )
 
   return { block, update, commit: levelStore.commitEditHistory, updateNoCommit, grid }

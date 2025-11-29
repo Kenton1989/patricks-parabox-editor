@@ -1,12 +1,6 @@
 <template>
   <InfoCard title="Box Info">
     <div class="flex flex-col gap-2">
-      <InfoLine label="Color">
-        <BlockColorPicker
-          :modelValue="object.color"
-          @update:modelValue="(color) => update({ color })"
-        />
-      </InfoLine>
       <InfoLine label="Type">
         <PlayerSettingInput
           class="w-full"
@@ -14,17 +8,23 @@
           @update:modelValue="(playerSetting) => update({ playerSetting })"
         />
       </InfoLine>
+      <InfoLine label="Color">
+        <BlockColorPicker
+          :modelValue="object.color"
+          @update:modelValue="(color) => update({ color })"
+        />
+      </InfoLine>
 
-      <Badge :value="`ID: ${props.object.objId}`" class="self-end" severity="secondary" />
+      <SecondaryTags :object="object" />
     </div>
   </InfoCard>
 </template>
 <script setup lang="ts">
 import type { LevelBox } from '@/models/level'
 import { InfoCard, InfoLine } from '@/components/templates'
-import { Badge } from 'primevue'
 import { BlockColorPicker, PlayerSettingInput } from '@/components/inputs'
 import useEditLevelObject from '@/composites/useEditLevelObject'
+import SecondaryTags from './SecondaryTags.vue'
 
 const props = defineProps<{ object: LevelBox }>()
 
