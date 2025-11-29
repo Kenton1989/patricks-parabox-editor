@@ -18,14 +18,10 @@ import type {
   CreateObjectProps,
   UpdateBlockProps,
   UpdateHeaderProps,
-  UpdateObjectProps,
+  UpdateObjectPropsOfType,
 } from '@/models/edit'
 
-type DataObject = {
-  [key: string]: string | number | object | boolean
-}
-
-function patchData(data: DataObject, patch: Partial<DataObject>) {
+function patchData<DataT extends object>(data: DataT, patch: Partial<DataT>) {
   let changed = false
   for (const key in patch) {
     if (patch[key] === undefined) continue
@@ -241,9 +237,12 @@ export const useLevelStore = defineStore('level', () => {
       : computed(() => getObject(objId.value))
   }
 
-  const updateObject = (objectUpdate: UpdateObjectProps, disableCommit?: boolean) => {
-    const { objId, type, ...objUpdate } = objectUpdate
-
+  function updateObject<TypeT extends LevelObject['type']>(
+    type: TypeT,
+    objId: number,
+    objUpdate: UpdateObjectPropsOfType<TypeT>,
+    disableCommit?: boolean,
+  ) {
     const objInMap = getObject(objId)
     if (!objInMap) return
 

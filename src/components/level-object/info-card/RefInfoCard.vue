@@ -7,5 +7,5 @@
 import type { LevelRef } from '@/models/level'
 import InfoCard from '@/components/InfoCard.vue'
 
-const props = defineProps<{ object?: LevelRef }>()
+const props = defineProps<{ object: LevelRef }>()
 </script>

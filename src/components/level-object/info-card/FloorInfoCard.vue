@@ -7,5 +7,5 @@
 import type { LevelFloor } from '@/models/level'
 import InfoCard from '@/components/InfoCard.vue'
 
-const props = defineProps<{ object?: LevelFloor }>()
+const props = defineProps<{ object: LevelFloor }>()
 </script>

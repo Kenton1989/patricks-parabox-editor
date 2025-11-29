@@ -34,3 +34,13 @@ export type LevelFloor = CommonProps & {
   type: 'Floor'
   floorType: FloorType
 }
+
+export type LevelObjectOfType<TypeT extends LevelObject['type']> = TypeT extends 'Ref'
+  ? LevelRef
+  : TypeT extends 'Box'
+    ? LevelBox
+    : TypeT extends 'Wall'
+      ? LevelWall
+      : TypeT extends 'Floor'
+        ? LevelFloor
+        : never
