@@ -62,7 +62,7 @@ export const useLevelStore = defineStore('level', () => {
     redo,
     canRedo,
     canUndo,
-    clear,
+    clear: _clear,
     commit: _commit,
   } = useManualRefHistory(_level, { clone: true })
 
@@ -71,6 +71,11 @@ export const useLevelStore = defineStore('level', () => {
 
   const levelBlocks = computed<Immutable<LevelBlock[]>>(() => _level.value.blocks)
   let blocksChangedSinceCommit = false
+
+  const clearEditHistory = () => {
+    _clear()
+    _commit()
+  }
 
   const commitEditHistory = () => {
     if (headerChangedSinceCommit || blocksChangedSinceCommit) {
@@ -92,8 +97,7 @@ export const useLevelStore = defineStore('level', () => {
   const initLevelV4 = (rawLevel: RawLevelRoot) => {
     _level.value.header = v4.toLevelHeader(rawLevel.header)
     _level.value.blocks = v4.bodyToLevelBlocks(rawLevel.body)
-    clear()
-    commitEditHistory()
+    clearEditHistory()
 
     isInitialized.value = true
   }
@@ -101,8 +105,7 @@ export const useLevelStore = defineStore('level', () => {
   const initEmptyLevel = () => {
     _level.value.header = createDefaultLevelHeader()
     _level.value.blocks = []
-    clear()
-    commitEditHistory()
+    clearEditHistory()
 
     isInitialized.value = true
   }
@@ -110,8 +113,7 @@ export const useLevelStore = defineStore('level', () => {
   const clearLevel = () => {
     _level.value.header = createDefaultLevelHeader()
     _level.value.blocks = []
-    clear()
-    commitEditHistory()
+    clearEditHistory()
 
     isInitialized.value = false
   }
@@ -218,7 +220,7 @@ export const useLevelStore = defineStore('level', () => {
     undo,
     redo,
     commitEditHistory,
-    clearEditHistory: clear,
+    clearEditHistory,
     canUndo,
     canRedo,
 
