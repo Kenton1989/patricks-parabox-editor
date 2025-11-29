@@ -40,8 +40,7 @@ import type { PlayerSetting, PlayerSettingType } from '@/models/level'
 import HollowBox from '@/assets/hollow-box.svg'
 import HollowPlayer from '@/assets/hollow-player.svg'
 import HollowPossessable from '@/assets/hollow-possessable.svg'
-import { OptionButton } from '@/components/templates'
-import OptionButtonList from '../templates/OptionButtonList.vue'
+import { OptionButton, OptionButtonList } from '@/components/templates'
 import { InputNumber } from 'primevue'
 
 const model = defineModel<PlayerSetting>({ default: { type: 'notPlayer' } })

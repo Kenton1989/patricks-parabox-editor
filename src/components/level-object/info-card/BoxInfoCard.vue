@@ -1,7 +1,7 @@
 <template>
   <InfoCard title="Box Info">
     <div class="flex flex-col gap-2">
-      <InfoLine label="Type">
+      <InfoLine label="Player?">
         <PlayerSettingInput
           class="w-full"
           :modelValue="object.playerSetting"

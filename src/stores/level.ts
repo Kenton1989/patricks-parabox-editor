@@ -5,6 +5,9 @@ import {
   resetObjId,
   type ActivePlayerSetting,
   type BlockColor,
+  type InfEnterSetting,
+  type InfExitSetting,
+  type InfSetting,
   type LevelHeader,
   type LevelObject,
   type LevelRef,
@@ -44,6 +47,14 @@ function patchData<DataT extends object>(data: DataT, patch: Partial<DataT>) {
 function tryGetPlayerSettings(obj: Partial<LevelObject>): ActivePlayerSetting | undefined {
   const setting = (obj as { playerSetting?: PlayerSetting }).playerSetting
   if (!setting || setting.type !== 'player') return
+  return setting
+}
+
+function tryGetInfSettings(
+  obj: Partial<LevelObject>,
+): InfEnterSetting | InfExitSetting | undefined {
+  const setting = (obj as { infSettings?: InfSetting }).infSettings
+  if (!setting || setting.type === 'noInf') return
   return setting
 }
 
@@ -273,7 +284,8 @@ export const useLevelStore = defineStore('level', () => {
       return
     }
 
-    _ensureCorrectPlayerOrder(objId, objUpdate)
+    _ensureValidPlayerOrder(objId, objUpdate)
+    _ensureValidInfEnterId(objId, objUpdate)
 
     _dataChangedSinceCommit = patchData(existingObj, objUpdate)
     if (!disableCommit) {
@@ -310,13 +322,44 @@ export const useLevelStore = defineStore('level', () => {
     return Math.max(...players.value.map((p) => p.playerSetting.playerOrder)) + 1
   }
 
-  const _ensureCorrectPlayerOrder = (objId: number, obj: Partial<LevelObject>) => {
+  const _ensureValidPlayerOrder = (objId: number, obj: Partial<LevelObject>) => {
     const playerSetting = tryGetPlayerSettings(obj)
     if (playerSetting && !_isValidPlayerOrder(playerSetting.playerOrder)) {
       const newOrder = _newPlayerOrder()
       console.log('fix player order of', objId, 'from', playerSetting.playerOrder, 'to', newOrder)
       playerSetting.playerOrder = newOrder
     }
+  }
+
+  const _ensureValidInfEnterId = (objId: number, obj: Partial<LevelObject>) => {
+    const refSetting = tryGetInfSettings(obj)
+    if (!refSetting) return
+
+    if (refSetting.level <= 0) refSetting.level = 1
+
+    if (refSetting.type !== 'infEnter') return
+
+    const infEnterFromBlk = getBlock(refSetting.enterFromBlockId)
+
+    if (infEnterFromBlk) {
+      // valid
+      return
+    }
+
+    console.warn('ensureCorrectInfEnterId: invalid epsilon entrance', refSetting.enterFromBlockId)
+
+    if (levelBlocks.value.length === 0) {
+      console.error('ensureCorrectInfEnterId: no blocks exists')
+      return
+    }
+
+    console.log(
+      'adjust epsilon entrance from',
+      refSetting.enterFromBlockId,
+      'to',
+      levelBlocks.value[0]!.blockId,
+    )
+    refSetting.enterFromBlockId = levelBlocks.value[0]!.blockId
   }
 
   const createObject = (objProps: CreateObjectProps) => {
@@ -329,7 +372,8 @@ export const useLevelStore = defineStore('level', () => {
     const objId = newObjId()
     const newObj: LevelObject = { objId, ...objProps }
 
-    _ensureCorrectPlayerOrder(objId, newObj)
+    _ensureValidPlayerOrder(objId, newObj)
+    _ensureValidInfEnterId(objId, newObj)
 
     parentBlock.children.push(newObj)
 

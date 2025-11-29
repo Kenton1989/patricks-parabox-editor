@@ -15,18 +15,27 @@
         </div>
       </InfoLine>
       <InfoLine label="Clone?">
-        <OptionButtonList>
-          <OptionButton
-            :hint="object.exitBlock ? undefined : 'will set other ref to clone'"
-            :selected="object.exitBlock"
-            @click="() => levelStore.setExitRef(object.objId)"
-          >
-            No
-          </OptionButton>
-          <OptionButton :selected="!object.exitBlock" @click="() => update({ exitBlock: false })">
-            Yes
-          </OptionButton>
-        </OptionButtonList>
+        <ButtonToggle
+          :hintForNo="object.exitBlock ? undefined : 'will set other ref to clone'"
+          :modelValue="!object.exitBlock"
+          @update:modelValue="
+            (isClone) =>
+              isClone ? update({ exitBlock: !isClone }) : levelStore.setExitRef(object.objId)
+          "
+        />
+      </InfoLine>
+      <InfoLine label="Flip?">
+        <ButtonToggle
+          :modelValue="object.flipH"
+          @update:modelValue="(flipH) => update({ flipH })"
+        />
+      </InfoLine>
+      <InfoLine label="Infinity?">
+        <InfSettingInput
+          class="w-full"
+          :modelValue="object.infSetting"
+          @update:modelValue="(infSetting) => update({ infSetting })"
+        />
       </InfoLine>
       <InfoLine label="Player?">
         <PlayerSettingInput
@@ -41,7 +50,7 @@
 </template>
 <script setup lang="ts">
 import type { LevelRef } from '@/models/level'
-import { InfoCard, InfoLine, OptionButton, OptionButtonList } from '@/components/templates'
+import { InfoCard, InfoLine } from '@/components/templates'
 import { PlayerSettingInput } from '@/components/inputs'
 import useEditLevelObject from '@/composites/useEditLevelObject'
 import BlockCanvas from '@/components/BlockCanvas.vue'
@@ -50,6 +59,8 @@ import { computed } from 'vue'
 import { useUiStore } from '@/stores/ui'
 import SecondaryTags from './SecondaryTags.vue'
 import { useLevelStore } from '@/stores/level'
+import ButtonToggle from '@/components/inputs/ButtonToggle.vue'
+import InfSettingInput from '@/components/inputs/InfSettingInput.vue'
 
 const props = defineProps<{ object: LevelRef }>()
 const uiStore = useUiStore()
@@ -66,10 +77,5 @@ const { block } = useBlock(
 
 const levelStore = useLevelStore()
 
-// exitBlock: boolean
-// infSetting: InfSetting
-// playerSetting: PlayerSetting
-// flipH: boolean
-// floatInSpace: boolean
 const { update } = useEditLevelObject(props.object)
 </script>
