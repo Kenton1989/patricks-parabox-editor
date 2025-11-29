@@ -19,8 +19,7 @@
 import type { BlockCell, BlockColor } from '@/models/level'
 import type { Immutable } from '@/models/utils'
 import { computed, useTemplateRef } from 'vue'
-import LevelObjectCanvas from './LevelObjectCanvas.vue'
-import { FloorCanvas } from './level-object-canvas'
+import LevelObjectCanvas, { FloorCanvas } from './level-object/canvas'
 
 const props = defineProps<{ cell: Immutable<BlockCell>; parentColor?: BlockColor }>()
 

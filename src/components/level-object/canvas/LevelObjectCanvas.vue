@@ -11,7 +11,7 @@
 </template>
 <script setup lang="ts">
 import { cast, type BlockColor, type LevelObject } from '@/models/level'
-import { BoxCanvas, FloorCanvas, RefCanvas, UnknownCanvas, WallCanvas } from './level-object-canvas'
+import { BoxCanvas, FloorCanvas, RefCanvas, UnknownCanvas, WallCanvas } from '.'
 
 const props = defineProps<{ object?: LevelObject; parentColor?: BlockColor }>()
 </script>
