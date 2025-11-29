@@ -30,9 +30,6 @@
 
 .info-card-body {
   padding: var(--info-card-padding);
-  overflow: auto;
-
-  flex-grow: 1;
 }
 
 .info-card-body.no-padding {

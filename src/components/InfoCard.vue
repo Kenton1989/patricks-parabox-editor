@@ -3,7 +3,7 @@
     <div class="info-card-header grow-0 font-bold">
       {{ props.title }}
     </div>
-    <div class="info-card-body" :class="{ 'no-padding': bodyNoPadding }">
+    <div class="info-card-body grow overflow-auto" :class="{ 'no-padding': bodyNoPadding }">
       <slot></slot>
     </div>
   </div>

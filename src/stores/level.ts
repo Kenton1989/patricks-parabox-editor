@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { createDefaultLevelHeader, type LevelHeader } from '@/models/level'
+import { createDefaultLevelHeader, type BlockColor, type LevelHeader } from '@/models/level'
 import type { LevelBlock } from '@/models/level/level-block'
 import type { RawLevelRoot } from '@/service/game-level/v4'
 import { v4 } from '@/service/convertors'
@@ -124,8 +124,7 @@ export const useLevelStore = defineStore('level', () => {
     const block = _level.value.blocks.find((b) => b.blockId === blockId)
     if (!block) return undefined
 
-    patchData(block, blockUpdate)
-    blocksChangedSinceCommit = true
+    blocksChangedSinceCommit = patchData(block, blockUpdate)
 
     if (!disableCommit) {
       commitEditHistory()
@@ -134,11 +133,32 @@ export const useLevelStore = defineStore('level', () => {
     return block
   }
 
-  const createBlock = (newBlockProps: CreateBlockProps) => {
+  const defaultBlockColor = () => {
+    const existingColor = new Set(levelBlocks.value.map((b) => b.color))
+    for (const defaultColor of ['root', 'color 1', 'color 2', 'color 3'] as BlockColor[]) {
+      if (!existingColor.has(defaultColor)) return defaultColor
+    }
+    return 'root'
+  }
+
+  const defaultCreateBlockProps = (blockId: number): CreateBlockProps => {
+    return {
+      name: `Block ${blockId}`,
+      width: 9,
+      height: 9,
+      color: defaultBlockColor(),
+      zoomFactor: 1,
+      children: [],
+    }
+  }
+
+  const createBlock = (newBlockProps?: CreateBlockProps): number => {
     const newId =
       _level.value.blocks.length > 0
         ? Math.max(..._level.value.blocks.map((b) => b.blockId)) + 1
         : 1
+
+    newBlockProps ??= defaultCreateBlockProps(newId)
 
     const newBlock = {
       ...newBlockProps,
@@ -147,21 +167,24 @@ export const useLevelStore = defineStore('level', () => {
 
     _level.value.blocks.push(newBlock)
 
+    blocksChangedSinceCommit = true
     commitEditHistory()
+
+    return newId
   }
 
   const deleteBlock = (blockId: number) => {
     const blockIndex = _level.value.blocks.findIndex((b) => b.blockId === blockId)
     if (blockIndex === -1) return
 
-    _level.value.blocks.splice(blockIndex)
+    _level.value.blocks.splice(blockIndex, 1)
 
+    blocksChangedSinceCommit = true
     commitEditHistory()
   }
 
   const updateHeader = (headerUpdate: UpdateHeaderProps, disableCommit?: boolean) => {
-    patchData(_level.value.header, headerUpdate)
-
+    headerChangedSinceCommit = patchData(_level.value.header, headerUpdate)
     if (!disableCommit) commitEditHistory()
   }
 
