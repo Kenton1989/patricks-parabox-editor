@@ -68,7 +68,6 @@ const { focusedBlock, updateNoCommit, update, commit } = useFocusedBlock()
 const enforceSquare = ref(true)
 
 const resize = (width?: number, height?: number) => {
-  console.log('resize to', width, height)
   if (enforceSquare.value) height = width
 
   width ??= focusedBlock.value?.width
@@ -78,8 +77,6 @@ const resize = (width?: number, height?: number) => {
 }
 
 watch(enforceSquare, (newVal) => {
-  console.log('enforce square', enforceSquare.value)
-
   if (!focusedBlock.value || !newVal) return
 
   const newSize = Math.max(focusedBlock.value.width, focusedBlock.value.height)
