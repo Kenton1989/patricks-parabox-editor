@@ -1,44 +1,36 @@
 import { defineStore } from 'pinia'
-import { createDefaultLevelHeader, type BlockColor, type LevelHeader } from '@/models/level'
+import {
+  createDefaultLevelHeader,
+  newObjId,
+  resetObjId,
+  type BlockColor,
+  type LevelHeader,
+  type LevelObject,
+} from '@/models/level'
 import type { LevelBlock } from '@/models/level/level-block'
 import type { RawLevelRoot } from '@/service/game-level/v4'
 import { v4 } from '@/service/convertors'
 import { useManualRefHistory, useStorage } from '@vueuse/core'
-import { computed, watch } from 'vue'
+import { computed, watch, type MaybeRef, type Ref } from 'vue'
 import type { Immutable } from '@/models/utils'
-import type { CreateBlockProps, UpdateBlockProps, UpdateHeaderProps } from '@/models/edit'
-/*
-useLevelStore: directly convert from / to raw level, support undo & redo
-- header
-- blocks
-- objects
+import type {
+  CreateBlockProps,
+  CreateObjectProps,
+  UpdateBlockProps,
+  UpdateHeaderProps,
+  UpdateObjectProps,
+} from '@/models/edit'
 
-useBlockPreviewStore: depends on levelStore and maintain preview of blocks (need to do recursive rendering), disable undo/redo
-- blockPreviews: { blockId: canvas }
+type DataObject = {
+  [key: string]: string | number | object | boolean
+}
 
-blockRender: render a block preview
-- renderBlockPreviews(blocks: Block[], levelOfDetails)
-- renderBlockWithoutRef(blocks: Block)
-- renderAllRef(blocks: Block, blockPreviews)
-- renderObject(objectProps, blockPreviews)
-- renderXXX(canvas, x, y, w, h, props)
-
-useBlock(blockId): depends on levelScore, generate grid for blockId and convert block updates to level updates
-- block
-- grid: Cell[][]
-
-useUiStore: store UI related info.
-- focused block
-- focused cell
-- brush info
-- headerDialogVisible
-- initDialogVisible
-*/
-
-function patchData<T extends object>(data: T, patch: Partial<T>) {
+function patchData(data: DataObject, patch: Partial<DataObject>) {
   let changed = false
   for (const key in patch) {
     if (patch[key] === undefined) continue
+
+    if (!(key in data)) continue
 
     if (data[key] === patch[key]) continue
 
@@ -64,24 +56,47 @@ export const useLevelStore = defineStore('level', () => {
     canUndo,
     clear: _clear,
     commit: _commit,
+    last,
   } = useManualRefHistory(_level, { clone: true })
 
   const levelHeader = computed<Immutable<LevelHeader>>(() => _level.value.header)
-  let headerChangedSinceCommit = false
-
   const levelBlocks = computed<Immutable<LevelBlock[]>>(() => _level.value.blocks)
-  let blocksChangedSinceCommit = false
+
+  let dataChangedSinceCommit = false
+
+  const levelObjects: Ref<Map<LevelObject['objId'], Immutable<LevelObject>>> = computed(() => {
+    const result = new Map<LevelObject['objId'], Immutable<LevelObject>>()
+    for (const block of _level.value.blocks) {
+      for (const child of block.children) {
+        result.set(child.objId, child)
+      }
+    }
+    return result
+  })
 
   const clearEditHistory = () => {
     _clear()
+
+    // commit to ensure at least one record is in history
     _commit()
   }
 
-  const commitEditHistory = () => {
-    if (headerChangedSinceCommit || blocksChangedSinceCommit) {
-      _commit()
-      headerChangedSinceCommit = blocksChangedSinceCommit = false
+  const commit = () => {
+    _commit()
+    dataChangedSinceCommit = false
+  }
+
+  const commitIfChanged = () => {
+    if (!dataChangedSinceCommit) {
+      return
     }
+
+    const lastJson = JSON.stringify(last.value.snapshot)
+    const currentJson = JSON.stringify(_level.value)
+
+    if (lastJson === currentJson) return
+
+    commit()
   }
 
   watch(
@@ -94,36 +109,48 @@ export const useLevelStore = defineStore('level', () => {
     { immediate: true },
   )
 
-  const initLevelV4 = (rawLevel: RawLevelRoot) => {
-    _level.value.header = v4.toLevelHeader(rawLevel.header)
-    _level.value.blocks = v4.bodyToLevelBlocks(rawLevel.body)
+  const _initLevel = (header: LevelHeader, blocks: LevelBlock[]) => {
+    _level.value.header = header
+    _level.value.blocks = blocks
+
+    const objs = blocks.map((b) => b.children).flat()
+    const maxObjId = Math.max(...objs.map((o) => o.objId))
+    resetObjId(maxObjId + 1)
+
     clearEditHistory()
 
     isInitialized.value = true
   }
 
-  const initEmptyLevel = () => {
-    _level.value.header = createDefaultLevelHeader()
-    _level.value.blocks = []
-    clearEditHistory()
+  const initLevelV4 = (rawLevel: RawLevelRoot) => {
+    _initLevel(v4.toLevelHeader(rawLevel.header), v4.bodyToLevelBlocks(rawLevel.body))
+  }
 
-    isInitialized.value = true
+  const initEmptyLevel = () => {
+    _initLevel(createDefaultLevelHeader(), [])
   }
 
   const clearLevel = () => {
     _level.value.header = createDefaultLevelHeader()
     _level.value.blocks = []
+
     clearEditHistory()
 
     isInitialized.value = false
   }
 
   const getBlock = (blockId: number) => {
-    return levelBlocks.value.find((b) => b.blockId === blockId)
+    const result = levelBlocks.value.find((b) => b.blockId === blockId)
+
+    if (!result) console.warn('unknown block ID', blockId)
+
+    return result
   }
 
-  const getBlockRef = (blockId: number) => {
-    return computed(() => getBlock(blockId))
+  const getBlockRef = (blockId: MaybeRef<number>) => {
+    return typeof blockId === 'number'
+      ? computed(() => getBlock(blockId))
+      : computed(() => getBlock(blockId.value))
   }
 
   const updateBlock = (
@@ -131,13 +158,13 @@ export const useLevelStore = defineStore('level', () => {
     blockUpdate: UpdateBlockProps,
     disableCommit?: boolean,
   ): Immutable<LevelBlock> | undefined => {
-    const block = _level.value.blocks.find((b) => b.blockId === blockId)
+    const block = getBlock(blockId)
     if (!block) return undefined
 
-    blocksChangedSinceCommit = patchData(block, blockUpdate)
+    dataChangedSinceCommit = patchData(block, blockUpdate)
 
     if (!disableCommit) {
-      commitEditHistory()
+      commitIfChanged()
     }
 
     return block
@@ -177,25 +204,97 @@ export const useLevelStore = defineStore('level', () => {
 
     _level.value.blocks.push(newBlock)
 
-    blocksChangedSinceCommit = true
-    commitEditHistory()
+    commit()
 
     return newId
   }
 
   const deleteBlock = (blockId: number) => {
     const blockIndex = _level.value.blocks.findIndex((b) => b.blockId === blockId)
-    if (blockIndex === -1) return
+    if (blockIndex === -1) {
+      console.warn('unknown block ID:', blockId)
+      return
+    }
 
     _level.value.blocks.splice(blockIndex, 1)
 
-    blocksChangedSinceCommit = true
-    commitEditHistory()
+    commit()
   }
 
   const updateHeader = (headerUpdate: UpdateHeaderProps, disableCommit?: boolean) => {
-    headerChangedSinceCommit = patchData(_level.value.header, headerUpdate)
-    if (!disableCommit) commitEditHistory()
+    dataChangedSinceCommit = patchData(_level.value.header, headerUpdate)
+    if (!disableCommit) commitIfChanged()
+  }
+
+  const getObject = (objId: number) => {
+    const res = levelObjects.value.get(objId)
+    if (!res) {
+      console.warn('unknown object ID:', objId)
+      return
+    }
+    return res
+  }
+
+  const getObjectRef = (objId: MaybeRef<number>) => {
+    return typeof objId === 'number'
+      ? computed(() => getObject(objId))
+      : computed(() => getObject(objId.value))
+  }
+
+  const updateObject = (objectUpdate: UpdateObjectProps, disableCommit?: boolean) => {
+    const { objId, type, ...objUpdate } = objectUpdate
+
+    const objInMap = getObject(objId)
+    if (!objInMap) return
+
+    const existingObj = objInMap.type === type ? (objInMap as LevelObject) : undefined
+    if (!existingObj) {
+      console.error('object type mismatch. existing:', objInMap.type, 'patch:', type)
+      return
+    }
+
+    dataChangedSinceCommit = patchData(existingObj, objUpdate)
+    if (!disableCommit) {
+      commitIfChanged()
+    }
+
+    return existingObj as Immutable<LevelObject>
+  }
+
+  const deleteObject = (objId: number) => {
+    const objInMap = getObject(objId)
+    if (!objInMap) return
+
+    const parentBlock = getBlock(objInMap.parentId) as LevelBlock | undefined
+    if (!parentBlock) return
+
+    const childIndex = parentBlock.children.findIndex((o) => o.objId === objId)
+    if (childIndex < 0) {
+      console.error('deleteObject cannot find child object', objId, 'in', parentBlock)
+      return
+    }
+    parentBlock.children.splice(childIndex, 1)
+
+    commit()
+
+    return objInMap
+  }
+
+  const createObject = (objProps: CreateObjectProps) => {
+    const parentBlock = getBlock(objProps.parentId) as LevelBlock
+    if (!parentBlock) {
+      console.error('createObject: unknown parent', objProps.parentId)
+      return
+    }
+
+    const objId = newObjId()
+    const newObj: LevelObject = { objId, ...objProps }
+
+    parentBlock.children.push(newObj)
+
+    commit()
+
+    return newObj
   }
 
   return {
@@ -219,18 +318,18 @@ export const useLevelStore = defineStore('level', () => {
 
     undo,
     redo,
-    commitEditHistory,
+    commitEditHistory: commitIfChanged,
     clearEditHistory,
     canUndo,
     canRedo,
 
+    levelObjects,
+    getObject,
+    getObjectRef,
+    updateObject,
+    deleteObject,
+    createObject,
     /*
-    levelObjects: LevelObjectMap
-    createChild(blockId, ...childProps)
-    updateChild(objectId, ...childProps)
-    removeChild(objectId)
-    moveChild(objectId, x, y)
-
     setOutgoingRef(blockId, refObjectId)
 
     orderedPlayers
