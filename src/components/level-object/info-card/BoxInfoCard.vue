@@ -14,10 +14,9 @@
 </template>
 <script setup lang="ts">
 import type { LevelBox } from '@/models/level'
-import InfoCard from '@/components/InfoCard.vue'
+import { InfoCard, InfoLine } from '@/components/templates'
 import { Badge } from 'primevue'
-import InfoLine from '@/components/InfoLine.vue'
-import BlockColorPicker from '@/components/BlockColorPicker.vue'
+import { BlockColorPicker } from '@/components/inputs'
 import useEditLevelObject from '@/composites/useEditLevelObject'
 
 const props = defineProps<{ object: LevelBox }>()

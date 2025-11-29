@@ -56,11 +56,10 @@
 </template>
 <script setup lang="ts">
 import { useFocusedBlock } from '@/composites'
-import InfoCard from './InfoCard.vue'
-import InfoLine from './InfoLine.vue'
+import { InfoCard, InfoLine } from '@/components/templates'
 import { Badge, InputNumber, InputText, ToggleSwitch } from 'primevue'
 import { ref, watch } from 'vue'
-import BlockColorPicker from './BlockColorPicker.vue'
+import { BlockColorPicker } from '@/components/inputs'
 import { watchImmediate } from '@vueuse/core'
 
 const { focusedBlock, updateNoCommit, update, commit } = useFocusedBlock()

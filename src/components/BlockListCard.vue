@@ -18,7 +18,7 @@
 </template>
 <script lang="ts" setup>
 import { useLevelStore } from '@/stores/level'
-import InfoCard from './InfoCard.vue'
+import { InfoCard } from '@/components/templates'
 import BlockListItem from './BlockListItem.vue'
 import { Button } from 'primevue'
 import { useUiStore } from '@/stores/ui'

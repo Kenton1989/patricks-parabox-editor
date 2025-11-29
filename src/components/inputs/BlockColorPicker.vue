@@ -36,7 +36,7 @@
 </template>
 <script setup lang="ts">
 import { DEFAULT_COLORS, type BlockColor } from '@/models/level'
-import SelectableBox from './SelectableBox.vue'
+import { SelectableBox } from '@/components/templates'
 import { color as colorConvert } from '@/service/convertors'
 import { ref, useTemplateRef, watch } from 'vue'
 import type { HsbColor } from '@/models/color'

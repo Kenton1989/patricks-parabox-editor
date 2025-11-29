@@ -43,11 +43,11 @@ import WallBrushLogo from './WallBrushLogo.vue'
 import { useLevelStore } from '@/stores/level'
 import { Divider } from 'primevue'
 import BlockCanvas from './BlockCanvas.vue'
-import SelectableBox from './SelectableBox.vue'
+import { SelectableBox } from '@/components/templates'
 import { computed } from 'vue'
 import { useUiStore } from '@/stores/ui'
 import { BASE_BRUSH } from '@/models/brush'
-import BlockColorPicker from './BlockColorPicker.vue'
+import { BlockColorPicker } from '@/components/inputs'
 
 const levelStore = useLevelStore()
 const uiStore = useUiStore()
