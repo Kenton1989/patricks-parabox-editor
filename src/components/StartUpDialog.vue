@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Avatar, Button, ConfirmDialog, Dialog, Splitter, SplitterPanel } from 'primevue'
+import { Avatar, Button, Dialog, Splitter, SplitterPanel } from 'primevue'
 import { useConfirm } from 'primevue/useconfirm'
 import logoUrl from '@/assets/logo192.png'
 import { useOpenLevel } from '@/composites'
@@ -57,7 +57,6 @@ openLevel.onError((e) => {
         <span class="text-2xl font-bold"> Starts Patrick's Parabox level editor with... </span>
       </div>
     </template>
-    <ConfirmDialog></ConfirmDialog>
     <Splitter>
       <SplitterPanel class="flex flex-col gap-4 p-8">
         <p class="text-xl">Creating a new level</p>

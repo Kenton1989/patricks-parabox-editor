@@ -28,6 +28,7 @@ export default function useOpenLevel() {
 
       onSuccessCallback.value()
     } catch (e: unknown) {
+      console.error(e)
       onErrorCallback.value(e)
     }
   })
