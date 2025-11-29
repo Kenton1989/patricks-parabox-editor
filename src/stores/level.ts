@@ -3,10 +3,12 @@ import {
   createDefaultLevelHeader,
   newObjId,
   resetObjId,
+  type ActivePlayerSetting,
   type BlockColor,
   type LevelHeader,
   type LevelObject,
   type PlayerLevelObject,
+  type PlayerSetting,
 } from '@/models/level'
 import type { LevelBlock } from '@/models/level/level-block'
 import type { RawLevelRoot } from '@/service/game-level/v4'
@@ -38,6 +40,12 @@ function patchData<DataT extends object>(data: DataT, patch: Partial<DataT>) {
   return changed
 }
 
+function tryGetPlayerSettings(obj: Partial<LevelObject>): ActivePlayerSetting | undefined {
+  const setting = (obj as { playerSetting?: PlayerSetting }).playerSetting
+  if (!setting || setting.type !== 'player') return
+  return setting
+}
+
 export const useLevelStore = defineStore('level', () => {
   const isInitialized = useStorage('level.isInitialized', false)
 
@@ -59,7 +67,7 @@ export const useLevelStore = defineStore('level', () => {
   const levelHeader = computed<Immutable<LevelHeader>>(() => _level.value.header)
   const levelBlocks = computed<Immutable<LevelBlock[]>>(() => _level.value.blocks)
 
-  let dataChangedSinceCommit = false
+  let _dataChangedSinceCommit = false
 
   const levelObjects: Ref<Map<LevelObject['objId'], Immutable<LevelObject>>> = computed(() => {
     const result = new Map<LevelObject['objId'], Immutable<LevelObject>>()
@@ -80,11 +88,11 @@ export const useLevelStore = defineStore('level', () => {
 
   const commit = () => {
     _commit()
-    dataChangedSinceCommit = false
+    _dataChangedSinceCommit = false
   }
 
   const commitIfChanged = () => {
-    if (!dataChangedSinceCommit) {
+    if (!_dataChangedSinceCommit) {
       return
     }
 
@@ -158,7 +166,7 @@ export const useLevelStore = defineStore('level', () => {
     const block = getBlock(blockId)
     if (!block) return undefined
 
-    dataChangedSinceCommit = patchData(block, blockUpdate)
+    _dataChangedSinceCommit = patchData(block, blockUpdate)
 
     if (!disableCommit) {
       commitIfChanged()
@@ -167,7 +175,7 @@ export const useLevelStore = defineStore('level', () => {
     return block
   }
 
-  const defaultBlockColor = () => {
+  const _defaultBlockColor = () => {
     const existingColor = new Set(levelBlocks.value.map((b) => b.color))
     for (const defaultColor of ['root', 'color 1', 'color 2', 'color 3'] as BlockColor[]) {
       if (!existingColor.has(defaultColor)) return defaultColor
@@ -180,7 +188,7 @@ export const useLevelStore = defineStore('level', () => {
       name: `Block ${blockId}`,
       width: 9,
       height: 9,
-      color: defaultBlockColor(),
+      color: _defaultBlockColor(),
       zoomFactor: 1,
       children: [],
     }
@@ -219,7 +227,7 @@ export const useLevelStore = defineStore('level', () => {
   }
 
   const updateHeader = (headerUpdate: UpdateHeaderProps, disableCommit?: boolean) => {
-    dataChangedSinceCommit = patchData(_level.value.header, headerUpdate)
+    _dataChangedSinceCommit = patchData(_level.value.header, headerUpdate)
     if (!disableCommit) commitIfChanged()
   }
 
@@ -253,7 +261,9 @@ export const useLevelStore = defineStore('level', () => {
       return
     }
 
-    dataChangedSinceCommit = patchData(existingObj, objUpdate)
+    _ensureCorrectPlayerOrder(objId, objUpdate)
+
+    _dataChangedSinceCommit = patchData(existingObj, objUpdate)
     if (!disableCommit) {
       commitIfChanged()
     }
@@ -280,6 +290,23 @@ export const useLevelStore = defineStore('level', () => {
     return objInMap
   }
 
+  const _isValidPlayerOrder = (playerOrder: number) => {
+    return playerOrder && players.value.every((p) => p.playerSetting.playerOrder !== playerOrder)
+  }
+
+  const _newPlayerOrder = () => {
+    return Math.max(...players.value.map((p) => p.playerSetting.playerOrder)) + 1
+  }
+
+  const _ensureCorrectPlayerOrder = (objId: number, obj: Partial<LevelObject>) => {
+    const playerSetting = tryGetPlayerSettings(obj)
+    if (playerSetting && !_isValidPlayerOrder(playerSetting.playerOrder)) {
+      const newOrder = _newPlayerOrder()
+      console.log('fix player order of', objId, 'from', playerSetting.playerOrder, 'to', newOrder)
+      playerSetting.playerOrder = newOrder
+    }
+  }
+
   const createObject = (objProps: CreateObjectProps) => {
     const parentBlock = getBlock(objProps.parentId) as LevelBlock
     if (!parentBlock) {
@@ -290,11 +317,7 @@ export const useLevelStore = defineStore('level', () => {
     const objId = newObjId()
     const newObj: LevelObject = { objId, ...objProps }
 
-    if (newObj.type !== 'Floor' && newObj.playerSetting.type === 'player') {
-      const playerSetting = newObj.playerSetting
-      const maxPlayerOrder = Math.max(...players.value.map((p) => p.playerSetting.playerOrder))
-      playerSetting.playerOrder = maxPlayerOrder + 1
-    }
+    _ensureCorrectPlayerOrder(objId, newObj)
 
     parentBlock.children.push(newObj)
 
@@ -348,6 +371,8 @@ export const useLevelStore = defineStore('level', () => {
     updateObject,
     deleteObject,
     createObject,
+
+    players,
     /*
     setOutgoingRef(blockId, refObjectId)
 
