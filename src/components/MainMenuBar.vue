@@ -43,7 +43,7 @@ import LogoSvg from '@/assets/logo.svg'
 
 import { computed } from 'vue'
 import type { MenuItem } from 'primevue/menuitem'
-import useEditorActions from '@/composites/useEditorActions'
+import { useEditorActions } from '@/composites'
 
 const editorActions = useEditorActions()
 

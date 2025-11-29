@@ -55,7 +55,7 @@
   </InfoCard>
 </template>
 <script setup lang="ts">
-import useFocusedBlock from '@/composites/useFocusedBlock'
+import { useFocusedBlock } from '@/composites'
 import InfoCard from './InfoCard.vue'
 import InfoLine from './InfoLine.vue'
 import { Badge, InputNumber, InputText, ToggleSwitch } from 'primevue'

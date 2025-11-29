@@ -3,7 +3,7 @@
 </template>
 <script setup lang="ts">
 import WallSvg from '@/assets/wall.svg'
-import useFocusedBlock from '@/composites/useFocusedBlock'
+import { useFocusedBlock } from '@/composites'
 import { color } from '@/service/convertors'
 import { computed } from 'vue'
 

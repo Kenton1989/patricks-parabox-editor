@@ -40,8 +40,7 @@ import BrushBar from './BrushBar.vue'
 import BlockListCard from './BlockListCard.vue'
 import PaintBoard from './PaintBoard.vue'
 import BlockInfoCard from './BlockInfoCard.vue'
-import useGlobalHotkeys from '@/composites/useGlobalHotkeys'
-import useFocusedBlock from '@/composites/useFocusedBlock'
+import { useGlobalHotkeys, useFocusedBlock } from '@/composites'
 
 const focusedBlock = useFocusedBlock()
 
