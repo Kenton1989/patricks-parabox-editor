@@ -1,24 +1,28 @@
 <template>
   <div ref="cell-ref" class="relative border-2" :style="{ borderColor: cellBorderColor }">
-    <div
+    <LevelObjectCanvas
       v-if="objOnTheFloor"
       :style="{ zIndex: baseZIndex + 1, textAlign: 'right' }"
       class="absolute top-0 right-0 bottom-0 left-0 h-full w-full"
-    >
-      {{ objOnTheFloor.type }}
-    </div>
-    <div v-if="floor" class="absolute top-0 right-0 bottom-0 left-0 h-full w-full">
-      {{ floor.type }}
-    </div>
+      :object="objOnTheFloor"
+      :parentColor="parentColor"
+    />
+    <FloorCanvas
+      v-if="floor"
+      class="absolute top-0 right-0 bottom-0 left-0 h-full w-full"
+      :object="floor"
+    />
     <div v-else class="absolute top-0 right-0 bottom-0 left-0 h-full w-full"></div>
   </div>
 </template>
 <script setup lang="ts">
-import type { BlockCell } from '@/models/level'
+import type { BlockCell, BlockColor } from '@/models/level'
 import type { Immutable } from '@/models/utils'
 import { computed, useTemplateRef } from 'vue'
+import LevelObjectCanvas from './LevelObjectCanvas.vue'
+import { FloorCanvas } from './level-object-canvas'
 
-const props = defineProps<{ cell: Immutable<BlockCell> }>()
+const props = defineProps<{ cell: Immutable<BlockCell>; parentColor?: BlockColor }>()
 
 const cellRef = useTemplateRef('cell-ref')
 

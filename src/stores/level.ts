@@ -116,6 +116,14 @@ export const useLevelStore = defineStore('level', () => {
     isInitialized.value = false
   }
 
+  const getBlock = (blockId: number) => {
+    return levelBlocks.value.find((b) => b.blockId === blockId)
+  }
+
+  const getBlockRef = (blockId: number) => {
+    return computed(() => getBlock(blockId))
+  }
+
   const updateBlock = (
     blockId: number,
     blockUpdate: UpdateBlockProps,
@@ -201,6 +209,8 @@ export const useLevelStore = defineStore('level', () => {
 
     updateHeader,
 
+    getBlock,
+    getBlockRef,
     updateBlock,
     createBlock,
     deleteBlock,

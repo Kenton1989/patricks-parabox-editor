@@ -45,7 +45,7 @@ const draw = {
         draw.box(ctx, x, y, w, h, color.blockToColor(obj.color), obj.playerSetting)
         return
       case 'Wall':
-        draw.wall(ctx, x, y, w, h, parentColor)
+        draw.wall(ctx, x, y, w, h, parentColor, obj.playerSetting)
         return
       case 'Floor':
         draw.floor(ctx, x, y, w, h, parentColor, obj.floorType)
@@ -60,6 +60,7 @@ const draw = {
     w: number,
     h: number,
     parentColor: ColorInstance,
+    playerSetting: PlayerSetting,
   ) {
     const colorStr = wallColor(parentColor)
 
@@ -90,6 +91,8 @@ const draw = {
 
     ctx.fillStyle = colorStr
     ctx.fillRect(cx, cy, cw, ch)
+
+    draw.face(ctx, x, y, w, h, parentColor, playerSetting)
   },
 
   unknown(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number) {
@@ -172,6 +175,27 @@ const draw = {
     ;[dx, dy] = [dx + w * TARGET_FLOOR_BORDER_WIDTH, dy + h * TARGET_FLOOR_BORDER_WIDTH]
     ctx.fillStyle = floorClr
     ctx.fillRect(x + dx, y + dy, w - 2 * dx, h - 2 * dy)
+
+    if (floorType === 'PlayerButton') {
+      draw.eyes(ctx, x, y, w, h, TARGET_FLOOR_OVERLAY_COLOR)
+    }
+  },
+
+  transparentFloor(
+    ctx: CanvasRenderingContext2D,
+    x: number,
+    y: number,
+    w: number,
+    h: number,
+    floorType: FloorType,
+  ) {
+    let [dx, dy] = [w * TARGET_FLOOR_BORDER_PADDING, h * TARGET_FLOOR_BORDER_PADDING]
+
+    ctx.fillStyle = TARGET_FLOOR_OVERLAY_COLOR
+    ctx.fillRect(x + dx, y + dy, w - 2 * dx, h - 2 * dy)
+    ;[dx, dy] = [dx + w * TARGET_FLOOR_BORDER_WIDTH, dy + h * TARGET_FLOOR_BORDER_WIDTH]
+
+    ctx.clearRect(x + dx, y + dy, w - 2 * dx, h - 2 * dy)
 
     if (floorType === 'PlayerButton') {
       draw.eyes(ctx, x, y, w, h, TARGET_FLOOR_OVERLAY_COLOR)

@@ -9,7 +9,7 @@ function useFocusedBlockImpl() {
   const levelStore = useLevelStore()
 
   const focusedBlock = computed(() => {
-    return levelStore.levelBlocks.find((b) => b.blockId === uiStore.focusedBlockId)
+    return levelStore.getBlock(uiStore.focusedBlockId)
   })
 
   const update = (values: UpdateBlockProps) => {

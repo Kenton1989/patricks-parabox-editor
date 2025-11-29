@@ -11,6 +11,7 @@
       v-for="cell in cellsOrderedForGridLayout"
       :key="`${cell.x},${cell.y}`"
       :cell="cell"
+      :parentColor="block?.color"
     />
   </div>
 </template>
