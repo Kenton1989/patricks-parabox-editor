@@ -2,11 +2,13 @@ import { readFileAsText } from '@/service/file'
 import { LevelParser as LevelParserV4 } from '@/service/game-level/v4'
 import { useLevelStore } from '@/stores/level'
 import { useFileDialog } from '@vueuse/core'
+import { useConfirm } from 'primevue/useconfirm'
 import { ref } from 'vue'
 
 export default function useOpenLevel() {
   const fileDialog = useFileDialog()
   const levelStore = useLevelStore()
+  const confirm = useConfirm()
 
   const open = () =>
     fileDialog.open({
@@ -14,8 +16,22 @@ export default function useOpenLevel() {
       reset: true,
     })
 
+  const defaultOnErrorCallback = (e: unknown) => {
+    confirm.require({
+      message: `${e}`,
+      header: 'Upload File Error',
+      icon: 'pi pi-exclamation-triangle',
+      acceptProps: {
+        label: 'OK',
+      },
+      rejectProps: {
+        style: 'display: none',
+      },
+    })
+  }
+
   const onSuccessCallback = ref<() => unknown>(() => {})
-  const onErrorCallback = ref<(e: unknown) => unknown>(() => {})
+  const onErrorCallback = ref<(e: unknown) => unknown>(defaultOnErrorCallback)
 
   fileDialog.onChange(async (files) => {
     const file = files?.item(0)
@@ -38,7 +54,10 @@ export default function useOpenLevel() {
   }
 
   const onError = (callback: (e: unknown) => unknown) => {
-    onErrorCallback.value = callback
+    onErrorCallback.value = (e: unknown) => {
+      defaultOnErrorCallback(e)
+      callback(e)
+    }
   }
 
   return {

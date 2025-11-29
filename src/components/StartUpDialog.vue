@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { Avatar, Button, Dialog, Splitter, SplitterPanel } from 'primevue'
-import { useConfirm } from 'primevue/useconfirm'
 import logoUrl from '@/assets/logo192.png'
 import { useOpenLevel } from '@/composites'
 import { useLevelStore } from '@/stores/level'
@@ -9,22 +8,7 @@ import { useUiStore } from '@/stores/ui'
 const levelStore = useLevelStore()
 const uiStore = useUiStore()
 
-const confirm = useConfirm()
 const openLevel = useOpenLevel()
-
-const notifyUploadError = (message: string) => {
-  confirm.require({
-    message,
-    header: 'Upload File Error',
-    icon: 'pi pi-exclamation-triangle',
-    acceptProps: {
-      label: 'OK',
-    },
-    rejectProps: {
-      style: 'display: none',
-    },
-  })
-}
 
 const onCreateClick = () => {
   levelStore.initEmptyLevel()
@@ -37,10 +21,6 @@ const onUploadClick = () => {
 
 openLevel.onSuccess(() => {
   uiStore.setUpDialogVisible = false
-})
-
-openLevel.onError((e) => {
-  notifyUploadError(`${e}`)
 })
 </script>
 <template>
