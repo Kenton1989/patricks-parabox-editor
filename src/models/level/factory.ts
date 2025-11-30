@@ -15,16 +15,6 @@ export function createDefaultLevelHeader(): LevelHeader {
   }
 }
 
-let objIdCounter = 1
-
-export function resetObjId(resetTo: number = 1) {
-  objIdCounter = resetTo
-}
-
-export function newObjId() {
-  return objIdCounter++
-}
-
 const cast = {
   wall(object?: Immutable<LevelObject>): Immutable<LevelWall> | undefined {
     return object?.type === 'Wall' ? object : undefined

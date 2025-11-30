@@ -5,7 +5,7 @@
       'outline-4': shouldHighlightFocus,
     }"
     :style="{ borderColor: hasOverlapping, zIndex: shouldHighlightFocus ? 10 : 0 }"
-    @click="selectCell"
+    @click="clickCell"
     @dblclick="doubleClickCell"
   >
     <LevelObjectCanvas
@@ -23,32 +23,35 @@ import type { Immutable } from '@/models/utils'
 import { computed } from 'vue'
 import LevelObjectCanvas from './level-object/canvas'
 import { useUiStore } from '@/stores/ui'
+import { usePaintBoard } from '@/composites'
 
 const props = defineProps<{ cell: Immutable<BlockCell>; parentColor?: BlockColor }>()
 
-const layeredChildren = computed(() => toObjsSortedByLayer([...props.cell.objects]))
+const layeredChildren = computed(() => toObjsSortedByLayer([...props.cell.layeredObjects]))
 
 const hasOverlapping = computed(() => (layeredChildren.value.length >= 2 ? 'white' : 'black'))
 
 const uiStore = useUiStore()
 
-const canFocus = computed(() => layeredChildren.value.length > 0)
+const canFocus = computed(
+  () => layeredChildren.value.length > 0 && uiStore.currentBrush.type === 'select',
+)
 
 const shouldHighlightFocus = computed(
   () =>
     canFocus.value &&
-    uiStore.focusedCellInfo?.x === props.cell.x &&
-    uiStore.focusedCellInfo.y === props.cell.y,
+    uiStore.focusedCell?.x === props.cell.x &&
+    uiStore.focusedCell.y === props.cell.y,
 )
 
-const selectCell = () => {
-  if (layeredChildren.value.length === 0) uiStore.focusedCellInfo = undefined
+const paintBoard = usePaintBoard()
 
-  uiStore.focusedCellInfo = {
-    x: props.cell.x,
-    y: props.cell.y,
-    objLayers: layeredChildren.value,
+const clickCell = () => {
+  if (!canFocus.value) {
+    uiStore.focusedCell = undefined
   }
+
+  paintBoard.applyBrush(props.cell)
 }
 
 const doubleClickCell = () => {

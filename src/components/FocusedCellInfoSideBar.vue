@@ -1,10 +1,7 @@
 <template>
-  <div
-    class="flex flex-col-reverse gap-1"
-    v-if="uiStore.focusedCellInfo && uiStore.focusedCellInfo.objLayers.length"
-  >
+  <div class="flex flex-col gap-1" v-if="layeredObjects.length > 0">
     <LevelObjectInfoCard
-      v-for="obj in uiStore.focusedCellInfo.objLayers"
+      v-for="obj in layeredObjects"
       class="w-full grow basis-1"
       :object="obj"
       :key="obj.objId"
@@ -15,6 +12,12 @@
 <script setup lang="ts">
 import { useUiStore } from '@/stores/ui'
 import LevelObjectInfoCard, { EmptyCellInfoCard } from './level-object/info-card'
+import { computed } from 'vue'
+import { toObjsSortedByLayer } from '@/models/level'
 
 const uiStore = useUiStore()
+
+const layeredObjects = computed(() =>
+  uiStore.focusedCell ? toObjsSortedByLayer(uiStore.focusedCell.layeredObjects).reverse() : [],
+)
 </script>

@@ -3,5 +3,13 @@ import useBlock from './useBlock'
 import useEditorActions from './useEditorActions'
 import useFocusedBlock from './useFocusedBlock'
 import useGlobalHotkeys from './useGlobalHotkeys'
+import usePaintBoard from './usePaintBoard'
 
-export { useOpenLevel, useBlock, useEditorActions, useFocusedBlock, useGlobalHotkeys }
+export {
+  useOpenLevel,
+  useBlock,
+  useEditorActions,
+  useFocusedBlock,
+  useGlobalHotkeys,
+  usePaintBoard,
+}

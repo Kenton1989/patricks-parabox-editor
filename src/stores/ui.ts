@@ -3,7 +3,8 @@ import { ref, watch } from 'vue'
 import { useLevelStore } from './level'
 import { BASE_BRUSH, type Brush } from '@/models/brush'
 import { useStorage } from '@vueuse/core'
-import type { LevelObject } from '@/models/level'
+import type { BlockCell } from '@/models/level'
+import { type Immutable } from '@/models/utils'
 
 export const useUiStore = defineStore('ui', () => {
   const levelStore = useLevelStore()
@@ -21,20 +22,16 @@ export const useUiStore = defineStore('ui', () => {
 
   const currentBrush = ref<Brush>(BASE_BRUSH.select)
 
-  const focusedCellInfo = ref<{
-    x: number
-    y: number
-    objLayers: LevelObject[]
-  }>()
+  const focusedCell = ref<Immutable<BlockCell>>()
 
   watch(focusedBlockId, () => {
-    focusedCellInfo.value = undefined
+    focusedCell.value = undefined
   })
 
   return {
     setUpDialogVisible,
     focusedBlockId,
     currentBrush,
-    focusedCellInfo,
+    focusedCell: focusedCell,
   }
 })

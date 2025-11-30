@@ -1,8 +1,7 @@
 import { defineStore } from 'pinia'
 import {
   createDefaultLevelHeader,
-  newObjId,
-  resetObjId,
+  objLayer,
   type ActivePlayerSetting,
   type BlockColor,
   type InfEnterSetting,
@@ -44,8 +43,8 @@ function patchData<DataT extends object>(data: DataT, patch: Partial<DataT>) {
   return changed
 }
 
-function tryGetPlayerSettings(obj: Partial<LevelObject>): ActivePlayerSetting | undefined {
-  const setting = (obj as { playerSetting?: PlayerSetting }).playerSetting
+function tryGetPlayerSettings(obj?: Partial<LevelObject>): ActivePlayerSetting | undefined {
+  const setting = (obj as { playerSetting?: PlayerSetting })?.playerSetting
   if (!setting || setting.type !== 'player') return
   return setting
 }
@@ -137,13 +136,28 @@ export const useLevelStore = defineStore('level', () => {
     { immediate: true },
   )
 
+  let _nextObjId = 1
+  const _newObjId = () => _nextObjId++
+  const _resetObjId = () => {
+    const objs = _level.value.blocks.map((b) => b.children).flat()
+    const maxObjId = Math.max(...objs.map((o) => o.objId))
+    _nextObjId = maxObjId + 1
+    console.log('reset next object ID to: ', _nextObjId)
+  }
+
+  watch(
+    () => _level.value.blocks,
+    () => {
+      _resetObjId()
+    },
+    { once: true, immediate: true },
+  )
+
   const _initLevel = (header: LevelHeader, blocks: LevelBlock[]) => {
     _level.value.header = header
     _level.value.blocks = blocks
 
-    const objs = blocks.map((b) => b.children).flat()
-    const maxObjId = Math.max(...objs.map((o) => o.objId))
-    resetObjId(maxObjId + 1)
+    _resetObjId()
 
     clearEditHistory()
 
@@ -284,7 +298,7 @@ export const useLevelStore = defineStore('level', () => {
       return
     }
 
-    _ensureValidPlayerOrder(objId, objUpdate)
+    _ensureValidPlayerOrder(objId, objUpdate, existingObj)
     _ensureValidInfEnterId(objId, objUpdate)
 
     _dataChangedSinceCommit = patchData(existingObj, objUpdate)
@@ -314,18 +328,30 @@ export const useLevelStore = defineStore('level', () => {
     return objInMap
   }
 
-  const _isValidPlayerOrder = (playerOrder: number) => {
-    return playerOrder && players.value.every((p) => p.playerSetting.playerOrder !== playerOrder)
+  const _isValidPlayerOrder = (objId: number, playerOrder: number) => {
+    return (
+      playerOrder &&
+      players.value.every((p) => {
+        const res = p.objId === objId || p.playerSetting.playerOrder !== playerOrder
+        return res
+      })
+    )
   }
 
   const _newPlayerOrder = () => {
     return Math.max(...players.value.map((p) => p.playerSetting.playerOrder)) + 1
   }
 
-  const _ensureValidPlayerOrder = (objId: number, obj: Partial<LevelObject>) => {
+  const _ensureValidPlayerOrder = (
+    objId: number,
+    obj: Partial<LevelObject>,
+    existingObj?: LevelObject,
+  ) => {
     const playerSetting = tryGetPlayerSettings(obj)
-    if (playerSetting && !_isValidPlayerOrder(playerSetting.playerOrder)) {
-      const newOrder = _newPlayerOrder()
+
+    if (playerSetting && !_isValidPlayerOrder(objId, playerSetting.playerOrder)) {
+      const existingPlayerSetting = tryGetPlayerSettings(existingObj)
+      const newOrder = existingPlayerSetting ? existingPlayerSetting.playerOrder : _newPlayerOrder()
       console.log('fix player order of', objId, 'from', playerSetting.playerOrder, 'to', newOrder)
       playerSetting.playerOrder = newOrder
     }
@@ -362,20 +388,34 @@ export const useLevelStore = defineStore('level', () => {
     refSetting.enterFromBlockId = levelBlocks.value[0]!.blockId
   }
 
-  const createObject = (objProps: CreateObjectProps) => {
+  const upsertObject = (objProps: CreateObjectProps) => {
     const parentBlock = getBlock(objProps.parentId) as LevelBlock
     if (!parentBlock) {
-      console.error('createObject: unknown parent', objProps.parentId)
+      console.error('upsertObject: unknown parent', objProps.parentId)
       return
     }
 
-    const objId = newObjId()
+    const existingBlock = parentBlock.children.find(
+      (o) => o.type === objProps.type && o.x === objProps.x && o.y === objProps.y,
+    )
+    if (existingBlock) {
+      updateObject(existingBlock.type, existingBlock.objId, objProps)
+      return
+    }
+
+    const objId = _newObjId()
     const newObj: LevelObject = { objId, ...objProps }
 
     _ensureValidPlayerOrder(objId, newObj)
     _ensureValidInfEnterId(objId, newObj)
 
-    parentBlock.children.push(newObj)
+    // object only the same layer is mutual exclusive
+    const insertLayer = objLayer(newObj)
+    const newChildren = parentBlock.children.filter(
+      (o) => o.x !== newObj.x || o.y !== newObj.y || objLayer(o) != insertLayer,
+    )
+    newChildren.push(newObj)
+    parentBlock.children = newChildren
 
     commit()
 
@@ -459,7 +499,7 @@ export const useLevelStore = defineStore('level', () => {
     getObjectRef,
     updateObject,
     deleteObject,
-    createObject,
+    upsertObject,
     setExitRef,
 
     players,

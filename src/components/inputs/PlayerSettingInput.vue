@@ -29,26 +29,36 @@
         fluid
         size="small"
         :min="1"
-        :modelValue="model.playerOrder"
+        :modelValue="playerOrderBuffer"
         @update:modelValue="(playerOrder) => update(undefined, playerOrder)"
       />
     </div>
   </div>
 </template>
 <script setup lang="ts">
-import type { PlayerSetting, PlayerSettingType } from '@/models/level'
+import type { ActivePlayerSetting, PlayerSetting, PlayerSettingType } from '@/models/level'
 import HollowBox from '@/assets/hollow-box.svg'
 import HollowPlayer from '@/assets/hollow-player.svg'
 import HollowPossessable from '@/assets/hollow-possessable.svg'
 import { OptionButton, OptionButtonList } from '@/components/templates'
 import { InputNumber } from 'primevue'
+import { nextTick, ref } from 'vue'
 
 const model = defineModel<PlayerSetting>({ default: { type: 'notPlayer' } })
 
-const update = (type?: PlayerSettingType, order?: number) => {
+const getPlayerOrder = () => (model.value as ActivePlayerSetting).playerOrder as number | undefined
+
+const playerOrderBuffer = ref(getPlayerOrder())
+
+const update = async (type?: PlayerSettingType, order?: number) => {
   const newVal = { ...model.value }
   if (type) newVal.type = type
-  if (order !== undefined && newVal.type === 'player') newVal.playerOrder = order
+  if (order !== undefined && newVal.type === 'player') {
+    newVal.playerOrder = order
+    playerOrderBuffer.value = order
+  }
   model.value = newVal
+  await nextTick()
+  playerOrderBuffer.value = getPlayerOrder()
 }
 </script>

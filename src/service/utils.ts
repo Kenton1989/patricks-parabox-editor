@@ -1,3 +1,5 @@
+import type { Immutable } from '@/models/utils'
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function bindEverythingToThis(thisObj: any) {
   for (const key of Object.keys(thisObj)) {
@@ -16,4 +18,8 @@ export function bindEverythingToThis(thisObj: any) {
       thisObj[key] = func.bind(thisObj)
     }
   }
+}
+
+export function last<T>(arr: Immutable<T[]>): T {
+  return arr[arr.length - 1] as T
 }

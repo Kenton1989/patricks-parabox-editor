@@ -17,8 +17,18 @@ import type {
   LevelRef,
   LevelWall,
 } from '@/models/level'
-import { NO_INF, NOT_PLAYER, POSSESSABLE, createDefaultLevelHeader, newObjId } from '@/models/level'
+import { NO_INF, NOT_PLAYER, POSSESSABLE, createDefaultLevelHeader } from '@/models/level'
 import { color } from './color'
+
+let objIdCounter = 1
+
+export function resetObjId(resetTo: number = 1) {
+  objIdCounter = resetTo
+}
+
+export function newObjId() {
+  return objIdCounter++
+}
 
 const v4 = {
   toLevelHeader(rawHeader: RawLevelHeader): LevelHeader {
