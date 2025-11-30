@@ -16,7 +16,7 @@
       </InfoLine>
       <InfoLine label="Clone?">
         <ButtonToggle
-          :hintForNo="object.exitBlock ? undefined : 'will set other ref to clone'"
+          hintForNo="will set other ref to clone"
           :modelValue="!object.exitBlock"
           @update:modelValue="
             (isClone) =>
