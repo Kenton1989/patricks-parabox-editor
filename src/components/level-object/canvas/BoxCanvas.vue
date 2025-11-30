@@ -2,11 +2,11 @@
   <canvas ref="preview-ref" class="block" />
 </template>
 <script setup lang="ts">
-import type { LevelBox } from '@/models/level'
+import type { LevelBoxInfo } from '@/models/level'
 import { render } from '@/service/renderer'
 import { useTemplateRef, watchEffect } from 'vue'
 
-const props = defineProps<{ object?: LevelBox }>()
+const props = defineProps<{ object?: LevelBoxInfo }>()
 
 const ref = useTemplateRef<HTMLCanvasElement>('preview-ref')
 

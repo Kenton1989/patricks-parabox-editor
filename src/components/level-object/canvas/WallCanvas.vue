@@ -2,12 +2,12 @@
   <canvas ref="preview-ref" class="block" />
 </template>
 <script setup lang="ts">
-import type { BlockColor, LevelWall } from '@/models/level'
+import type { BlockColor, LevelWallInfo } from '@/models/level'
 import type { Immutable } from '@/models/utils'
 import { render } from '@/service/renderer'
 import { useTemplateRef, watchEffect } from 'vue'
 
-const props = defineProps<{ object?: Immutable<LevelWall>; parentColor?: BlockColor }>()
+const props = defineProps<{ object?: Immutable<LevelWallInfo>; parentColor?: BlockColor }>()
 
 const ref = useTemplateRef<HTMLCanvasElement>('preview-ref')
 

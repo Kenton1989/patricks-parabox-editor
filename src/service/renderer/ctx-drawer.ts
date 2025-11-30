@@ -2,7 +2,7 @@ import type {
   FloorType,
   LevelBlock,
   LevelObject,
-  LevelRef,
+  LevelRefInfo,
   PlayerSetting,
   PlayerSettingType,
 } from '@/models/level'
@@ -112,7 +112,7 @@ const draw = {
     y: number,
     w: number,
     h: number,
-    ref: LevelRef,
+    ref: LevelRefInfo,
     refSrc: LevelBlock | undefined,
     refBlockPreview: HTMLCanvasElement | undefined,
   ) {

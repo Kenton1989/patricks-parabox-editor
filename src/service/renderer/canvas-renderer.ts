@@ -1,10 +1,10 @@
 import type {
   BlockColor,
   LevelBlock,
-  LevelBox,
-  LevelFloor,
-  LevelRef,
-  LevelWall,
+  LevelBoxInfo,
+  LevelFloorInfo,
+  LevelRefInfo,
+  LevelWallInfo,
 } from '@/models/level'
 import BlockPreviewRenderer from './block-preview-render'
 import { CANVAS_HEIGHT, CANVAS_WIDTH } from './consts'
@@ -45,7 +45,7 @@ const render = {
 
   wall(
     targetCanvas: HTMLCanvasElement,
-    wall: LevelWall,
+    wall: LevelWallInfo,
     parentColor: BlockColor,
     width = CANVAS_WIDTH,
     height = CANVAS_HEIGHT,
@@ -62,7 +62,7 @@ const render = {
 
   box(
     targetCanvas: HTMLCanvasElement,
-    box: LevelBox,
+    box: LevelBoxInfo,
     width = CANVAS_WIDTH,
     height = CANVAS_HEIGHT,
   ) {
@@ -78,7 +78,7 @@ const render = {
 
   floor(
     targetCanvas: HTMLCanvasElement,
-    floor: LevelFloor,
+    floor: LevelFloorInfo,
     parentColor?: BlockColor, // if undefined, draw with transparent background
     width = CANVAS_WIDTH,
     height = CANVAS_HEIGHT,
@@ -98,7 +98,7 @@ const render = {
 
   ref(
     targetCanvas: HTMLCanvasElement,
-    ref: LevelRef,
+    ref: LevelRefInfo,
     refSrc: LevelBlock,
     blockPreview: HTMLCanvasElement,
     width = CANVAS_WIDTH,

@@ -2,13 +2,13 @@
   <canvas ref="preview-ref" class="block" />
 </template>
 <script setup lang="ts">
-import type { LevelBlock, LevelRef } from '@/models/level'
+import type { LevelBlock, LevelRefInfo } from '@/models/level'
 import { render } from '@/service/renderer'
 import { useBlockPreviewsStore } from '@/stores/block-previews'
 import { useLevelStore } from '@/stores/level'
 import { useTemplateRef, watchEffect } from 'vue'
 
-const props = defineProps<{ object?: LevelRef }>()
+const props = defineProps<{ object?: LevelRefInfo }>()
 
 const levelStore = useLevelStore()
 const blockPreviews = useBlockPreviewsStore()
