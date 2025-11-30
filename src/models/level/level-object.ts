@@ -13,15 +13,18 @@ export type MovableLevelObject = LevelRef | LevelBox | LevelWall
 
 export type PlayerLevelObject = MovableLevelObject & { playerSetting: ActivePlayerSetting }
 
-type CommonProps = {
+type LabelObjCommonProps = {
   objId: number
   parentId: number
   x: number
   y: number
 }
 
-export type LevelRef = CommonProps & {
-  type: 'Ref'
+export type TypeFlag<T extends string> = {
+  type: T
+}
+
+export type LevelRefInfo = {
   referToBlockId: number
   exitBlock: boolean
   infSetting: InfSetting
@@ -30,21 +33,26 @@ export type LevelRef = CommonProps & {
   floatInSpace: boolean
 }
 
-export type LevelBox = CommonProps & {
-  type: 'Box'
+export type LevelWallInfo = {
+  playerSetting: PlayerSetting
+}
+
+export type LevelBoxInfo = {
   playerSetting: PlayerSetting
   color: BlockColor
 }
 
-export type LevelWall = CommonProps & {
-  type: 'Wall'
-  playerSetting: PlayerSetting
-}
-
-export type LevelFloor = CommonProps & {
-  type: 'Floor'
+export type LevelFloorInfo = {
   floorType: FloorType
 }
+
+export type LevelRef = TypeFlag<'Ref'> & LabelObjCommonProps & LevelRefInfo
+
+export type LevelBox = TypeFlag<'Box'> & LabelObjCommonProps & LevelBoxInfo
+
+export type LevelWall = TypeFlag<'Wall'> & LabelObjCommonProps & LevelWallInfo
+
+export type LevelFloor = TypeFlag<'Floor'> & LabelObjCommonProps & LevelFloorInfo
 
 export type LevelObjectOfType<TypeT extends LevelObject['type']> = TypeT extends 'Ref'
   ? LevelRef

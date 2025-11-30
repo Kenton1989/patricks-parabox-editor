@@ -24,6 +24,7 @@ import type {
   CreateObjectProps,
   UpdateBlockProps,
   UpdateHeaderProps,
+  UpdateObjectProps,
   UpdateObjectPropsOfType,
 } from '@/models/edit'
 
@@ -113,7 +114,7 @@ export const useLevelStore = defineStore('level', () => {
     _dataChangedSinceCommit = false
   }
 
-  const commitIfChanged = () => {
+  const _commitIfChanged = () => {
     if (!_dataChangedSinceCommit) {
       return
     }
@@ -206,7 +207,7 @@ export const useLevelStore = defineStore('level', () => {
     _dataChangedSinceCommit = patchData(block, blockUpdate)
 
     if (!disableCommit) {
-      commitIfChanged()
+      _commitIfChanged()
     }
 
     return block
@@ -265,7 +266,7 @@ export const useLevelStore = defineStore('level', () => {
 
   const updateHeader = (headerUpdate: UpdateHeaderProps, disableCommit?: boolean) => {
     _dataChangedSinceCommit = patchData(_level.value.header, headerUpdate)
-    if (!disableCommit) commitIfChanged()
+    if (!disableCommit) _commitIfChanged()
   }
 
   const getObject = (objId: number) => {
@@ -300,10 +301,15 @@ export const useLevelStore = defineStore('level', () => {
 
     _ensureValidPlayerOrder(objId, objUpdate, existingObj)
     _ensureValidInfEnterId(objId, objUpdate)
+    const exitSettingsChanged =
+      existingObj.type === 'Ref' && (objUpdate as UpdateObjectProps<LevelRef>).exitBlock
+        ? _ensureSingleExit(existingObj)
+        : false
 
     _dataChangedSinceCommit = patchData(existingObj, objUpdate)
     if (!disableCommit) {
-      commitIfChanged()
+      if (exitSettingsChanged) commit()
+      else _commitIfChanged()
     }
 
     return existingObj as Immutable<LevelObject>
@@ -408,6 +414,7 @@ export const useLevelStore = defineStore('level', () => {
 
     _ensureValidPlayerOrder(objId, newObj)
     _ensureValidInfEnterId(objId, newObj)
+    if (newObj.type === 'Ref') _ensureSingleExit(newObj)
 
     // object only the same layer is mutual exclusive
     const insertLayer = objLayer(newObj)
@@ -435,19 +442,7 @@ export const useLevelStore = defineStore('level', () => {
     return result
   })
 
-  // set ref object to the only exit of the block
-  // all the other ref to the same block will become clone
-  const setExitRef = (refObjId: number) => {
-    const inputObj = getObject(refObjId)
-    if (!inputObj) return
-
-    if (inputObj.type !== 'Ref') {
-      console.error('setExitRef received non-ref ID:', refObjId)
-      return
-    }
-
-    const refObj = inputObj as LevelRef
-
+  const _ensureSingleExit = (refObj: LevelRef) => {
     let changed = false
 
     if (!refObj.exitBlock) {
@@ -464,6 +459,24 @@ export const useLevelStore = defineStore('level', () => {
       ;(obj as LevelRef).exitBlock = false
       changed = true
     }
+
+    return changed
+  }
+
+  // set ref object to the only exit of the block
+  // all the other ref to the same block will become clone
+  const setExitRef = (refObjId: number) => {
+    const inputObj = getObject(refObjId)
+    if (!inputObj) return
+
+    if (inputObj.type !== 'Ref') {
+      console.error('setExitRef received non-ref ID:', refObjId)
+      return
+    }
+
+    const refObj = inputObj as LevelRef
+
+    const changed = _ensureSingleExit(refObj)
 
     if (changed) commit()
   }
@@ -489,7 +502,7 @@ export const useLevelStore = defineStore('level', () => {
 
     undo,
     redo,
-    commitEditHistory: commitIfChanged,
+    commitEditHistory: _commitIfChanged,
     clearEditHistory,
     canUndo,
     canRedo,

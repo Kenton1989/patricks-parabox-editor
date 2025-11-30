@@ -40,8 +40,27 @@ export default function usePaintBoard() {
         })
         break
       case 'floor':
+        levelStore.upsertObject({
+          type: 'Floor',
+          parentId: blockId,
+          floorType: brush.playerFloor ? 'PlayerButton' : 'Button',
+          x: cell.x,
+          y: cell.y,
+        })
         break
       case 'ref':
+        levelStore.upsertObject({
+          type: 'Ref',
+          parentId: blockId,
+          x: cell.x,
+          y: cell.y,
+          exitBlock: true,
+          flipH: false,
+          infSetting: { type: 'noInf' },
+          playerSetting: { type: 'notPlayer' },
+          referToBlockId: brush.blockId,
+          floatInSpace: false,
+        })
         break
     }
   }
