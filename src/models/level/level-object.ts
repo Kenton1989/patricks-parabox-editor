@@ -1,3 +1,4 @@
+import type { Immutable } from '../utils'
 import type {
   ActivePlayerSetting,
   BlockColor,
@@ -54,3 +55,19 @@ export type LevelObjectOfType<TypeT extends LevelObject['type']> = TypeT extends
       : TypeT extends 'Floor'
         ? LevelFloor
         : never
+
+export function objLayer(obj: LevelObject): number {
+  return Number(obj.type !== 'Floor')
+}
+
+export function cmpObjLayer(o1: LevelObject, o2: LevelObject): number {
+  return objLayer(o1) - objLayer(o2)
+}
+
+export function sortObjInPlaceByLayer(objs: LevelObject[]): LevelObject[] {
+  return objs.sort((o1, o2) => cmpObjLayer(o1, o2) || o1.objId - o2.objId)
+}
+
+export function toObjsSortedByLayer(objs: Immutable<LevelObject[]>): LevelObject[] {
+  return sortObjInPlaceByLayer([...objs])
+}

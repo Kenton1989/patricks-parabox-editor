@@ -1,4 +1,4 @@
-import type { LevelBlock, LevelObject } from '@/models/level'
+import { toObjsSortedByLayer, type LevelBlock, type LevelObject } from '@/models/level'
 import { bindEverythingToThis } from '../utils'
 import { draw } from './ctx-drawer'
 import { CANVAS_HEIGHT, CANVAS_WIDTH } from './consts'
@@ -43,11 +43,7 @@ export default class BlockPreviewRenderer {
   private renderBlockWithoutRecursion(block: LevelBlock): HTMLCanvasElement {
     // sort the floor to the front to render them first
     // if any block is above the floor will be overwritten
-    const children = [...block.children].sort((b1, b2) => {
-      const height1 = Number(b1.type === 'Wall')
-      const height2 = Number(b2.type === 'Wall')
-      return height1 - height2
-    })
+    const children = toObjsSortedByLayer(block.children)
 
     const [canvas, ctx] = this.createCanvas()
     const blockColor = color.blockToColor(block.color)

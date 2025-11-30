@@ -14,7 +14,7 @@ const ref = useTemplateRef<HTMLCanvasElement>('preview-ref')
 watchEffect(() => {
   const canvas = ref.value
   const obj = props.object
-  const parentColor = props.parentColor
+  const parentColor = props.parentColor ?? 'root'
 
   if (!canvas) return
 

@@ -24,7 +24,7 @@ export const useUiStore = defineStore('ui', () => {
   const focusedCellInfo = ref<{
     x: number
     y: number
-    objects: LevelObject[]
+    objLayers: LevelObject[]
   }>()
 
   watch(focusedBlockId, () => {

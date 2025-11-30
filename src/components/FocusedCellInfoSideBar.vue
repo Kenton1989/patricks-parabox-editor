@@ -1,10 +1,10 @@
 <template>
   <div
-    class="flex flex-col gap-1"
-    v-if="uiStore.focusedCellInfo && uiStore.focusedCellInfo.objects.length"
+    class="flex flex-col-reverse gap-1"
+    v-if="uiStore.focusedCellInfo && uiStore.focusedCellInfo.objLayers.length"
   >
     <LevelObjectInfoCard
-      v-for="obj in uiStore.focusedCellInfo.objects"
+      v-for="obj in uiStore.focusedCellInfo.objLayers"
       class="w-full grow basis-1"
       :object="obj"
       :key="obj.objId"
