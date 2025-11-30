@@ -27,8 +27,8 @@
       <InputNumber
         fluid
         size="small"
-        :modelValue="model.level"
-        @update:modelValue="(level) => update(undefined, level)"
+        :modelValue="model.enterFromBlockId"
+        @update:modelValue="(enterFromBlockId) => update(undefined, undefined, enterFromBlockId)"
       />
     </div>
   </div>

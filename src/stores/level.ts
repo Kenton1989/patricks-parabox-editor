@@ -53,7 +53,7 @@ function tryGetPlayerSettings(obj: Partial<LevelObject>): ActivePlayerSetting | 
 function tryGetInfSettings(
   obj: Partial<LevelObject>,
 ): InfEnterSetting | InfExitSetting | undefined {
-  const setting = (obj as { infSettings?: InfSetting }).infSettings
+  const setting = (obj as { infSetting?: InfSetting }).infSetting
   if (!setting || setting.type === 'noInf') return
   return setting
 }
