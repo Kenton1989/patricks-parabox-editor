@@ -2,9 +2,10 @@
   <div
     class="outline-primary relative border-2"
     :class="{
-      'outline-4': isFocused,
+      'outline-4': shouldHighlightFocus,
     }"
-    :style="{ borderColor: cellBorderColor, zIndex: isFocused ? 10 : 0 }"
+    :style="{ borderColor: cellBorderColor, zIndex: shouldHighlightFocus ? 10 : 0 }"
+    @click="selectCell"
   >
     <LevelObjectCanvas
       v-if="objOnTheFloor"
@@ -12,14 +13,12 @@
       class="absolute top-0 right-0 bottom-0 left-0 h-full w-full cursor-pointer"
       :object="objOnTheFloor"
       :parentColor="parentColor"
-      @click="selectCell"
       @dblclick="doubleClickCell"
     />
     <FloorCanvas
       v-if="floor"
       class="absolute top-0 right-0 bottom-0 left-0 h-full w-full cursor-pointer"
       :object="floor"
-      @click="selectCell"
     />
     <div v-else class="absolute top-0 right-0 bottom-0 left-0 h-full w-full"></div>
   </div>
@@ -36,8 +35,13 @@ const props = defineProps<{ cell: Immutable<BlockCell>; parentColor?: BlockColor
 const floor = computed(() => props.cell.objects.find((o) => o.type === 'Floor'))
 const objOnTheFloor = computed(() => props.cell.objects.find((o) => o.type !== 'Floor'))
 
-const isFocused = computed(
-  () => uiStore.focusedCellInfo?.x === props.cell.x && uiStore.focusedCellInfo.y === props.cell.y,
+const canFocus = computed(() => Boolean(objOnTheFloor.value || floor.value))
+
+const shouldHighlightFocus = computed(
+  () =>
+    canFocus.value &&
+    uiStore.focusedCellInfo?.x === props.cell.x &&
+    uiStore.focusedCellInfo.y === props.cell.y,
 )
 
 const cellBorderColor = computed(() => (objOnTheFloor.value && floor.value ? 'white' : 'black'))
@@ -45,6 +49,8 @@ const cellBorderColor = computed(() => (objOnTheFloor.value && floor.value ? 'wh
 const uiStore = useUiStore()
 
 const selectCell = () => {
+  if (!objOnTheFloor.value && !floor.value) uiStore.focusedCellInfo = undefined
+
   uiStore.focusedCellInfo = {
     x: props.cell.x,
     y: props.cell.y,

@@ -3,7 +3,7 @@
     <OptionButtonList>
       <OptionButton
         :selected="model.type === 'notPlayer'"
-        hint="Box"
+        hint="Not player"
         @click="() => update('notPlayer')"
       >
         <HollowBox class="aspect-square h-full" />
