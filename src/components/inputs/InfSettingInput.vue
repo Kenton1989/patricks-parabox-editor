@@ -4,10 +4,18 @@
       <OptionButton :selected="model.type === 'noInf'" @click="() => update('noInf')">
         No
       </OptionButton>
-      <OptionButton :selected="model.type === 'infExit'" @click="() => update('infExit')">
+      <OptionButton
+        hint="infinity"
+        :selected="model.type === 'infExit'"
+        @click="() => update('infExit')"
+      >
         ∞
       </OptionButton>
-      <OptionButton :selected="model.type === 'infEnter'" @click="() => update('infEnter')">
+      <OptionButton
+        hint="epsilon"
+        :selected="model.type === 'infEnter'"
+        @click="() => update('infEnter')"
+      >
         ε
       </OptionButton>
     </OptionButtonList>
