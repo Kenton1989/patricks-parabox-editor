@@ -1,5 +1,10 @@
 <template>
-  <div class="flex items-center justify-center p-8">
+  <div
+    class="flex items-center justify-center p-8"
+    :class="{
+      [`${uiStore.currentBrush.type}-brush-active`]: true,
+    }"
+  >
     <BlockCellGrid :blockId="uiStore.focusedBlockId" class="aspect-square h-full" />
   </div>
 </template>

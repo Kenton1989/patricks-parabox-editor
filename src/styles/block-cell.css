@@ -1,0 +1,36 @@
+.block-cell {
+  border-color: black;
+  &.overlapping {
+    border-color: white;
+  }
+
+  outline-style: var(--tw-outline-style);
+  outline-width: 0px;
+
+  .select-brush-active & {
+    outline-color: var(--p-primary-color);
+
+    &:hover {
+      outline-width: 1px;
+      z-index: 5;
+    }
+    &.cell-focused {
+      outline-width: 4px;
+      z-index: 10;
+      border-radius: 2px;
+    }
+  }
+
+  .erase-brush-active & {
+    outline-color: var(--color-red-400);
+
+    &:hover {
+      outline-width: 1px;
+      z-index: 5;
+    }
+
+    *:last-child:hover {
+      opacity: 0.5;
+    }
+  }
+}

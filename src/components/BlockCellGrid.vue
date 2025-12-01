@@ -49,3 +49,6 @@ const cellsOrderedForGridLayout = computed(() => {
 
 const bgColor = computed(() => floorColor(colorCvt.blockToColor(block.value?.color ?? 'root')))
 </script>
+<style lang="css">
+@import '../styles/block-cell.css';
+</style>

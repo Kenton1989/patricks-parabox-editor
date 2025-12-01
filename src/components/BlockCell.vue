@@ -1,10 +1,10 @@
 <template>
   <div
-    class="outline-primary relative border-2"
+    class="block-cell outline-primary relative border-2"
     :class="{
-      'outline-4': shouldHighlightFocus,
+      overlapping: hasOverlapping,
+      'cell-focused': cellFocused,
     }"
-    :style="{ borderColor: hasOverlapping, zIndex: shouldHighlightFocus ? 10 : 0 }"
     @click="clickCell"
     @dblclick="doubleClickCell"
   >
@@ -12,13 +12,13 @@
       v-for="obj in layeredChildren"
       :key="obj.objId"
       :object="obj"
-      class="absolute top-0 right-0 bottom-0 left-0 h-full w-full cursor-pointer"
+      class="object-canvas absolute top-0 right-0 bottom-0 left-0 h-full w-full cursor-pointer"
       :parentColor="parentColor"
     />
   </div>
 </template>
 <script setup lang="ts">
-import { toObjsSortedByLayer, type BlockCell, type BlockColor } from '@/models/level'
+import { type BlockCell, type BlockColor } from '@/models/level'
 import type { Immutable } from '@/models/utils'
 import { computed } from 'vue'
 import LevelObjectCanvas from './level-object/canvas'
@@ -27,30 +27,19 @@ import { usePaintBoard } from '@/composites'
 
 const props = defineProps<{ cell: Immutable<BlockCell>; parentColor?: BlockColor }>()
 
-const layeredChildren = computed(() => toObjsSortedByLayer([...props.cell.layeredObjects]))
+const layeredChildren = computed(() => props.cell.layeredObjects)
 
-const hasOverlapping = computed(() => (layeredChildren.value.length >= 2 ? 'white' : 'black'))
+const hasOverlapping = computed(() => layeredChildren.value.length >= 2)
 
 const uiStore = useUiStore()
 
-const canFocus = computed(
-  () => layeredChildren.value.length > 0 && uiStore.currentBrush.type === 'select',
-)
-
-const shouldHighlightFocus = computed(
-  () =>
-    canFocus.value &&
-    uiStore.focusedCell?.x === props.cell.x &&
-    uiStore.focusedCell.y === props.cell.y,
+const cellFocused = computed(
+  () => uiStore.focusedCell?.x === props.cell.x && uiStore.focusedCell.y === props.cell.y,
 )
 
 const paintBoard = usePaintBoard()
 
 const clickCell = () => {
-  if (!canFocus.value) {
-    uiStore.focusedCell = undefined
-  }
-
   paintBoard.applyBrush(props.cell)
 }
 

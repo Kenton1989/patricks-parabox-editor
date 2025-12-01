@@ -141,6 +141,11 @@ export const useLevelStore = defineStore('level', () => {
   const _newObjId = () => _nextObjId++
   const _resetObjId = () => {
     const objs = _level.value.blocks.map((b) => b.children).flat()
+    if (objs.length === 0) {
+      _nextObjId = 1
+      return
+    }
+
     const maxObjId = Math.max(...objs.map((o) => o.objId))
     _nextObjId = maxObjId + 1
     console.log('reset next object ID to: ', _nextObjId)
@@ -345,7 +350,9 @@ export const useLevelStore = defineStore('level', () => {
   }
 
   const _newPlayerOrder = () => {
-    return Math.max(...players.value.map((p) => p.playerSetting.playerOrder)) + 1
+    return players.value.length === 0
+      ? 1
+      : Math.max(...players.value.map((p) => p.playerSetting.playerOrder)) + 1
   }
 
   const _ensureValidPlayerOrder = (
@@ -481,6 +488,13 @@ export const useLevelStore = defineStore('level', () => {
     if (changed) commit()
   }
 
+  const getObjectsByCell = (blockId: number, x: number, y: number): Immutable<LevelObject[]> => {
+    const block = getBlock(blockId)
+    if (!block) return []
+
+    return block.children.filter((o) => o.x === x && o.y === y)
+  }
+
   return {
     _level,
 
@@ -509,6 +523,7 @@ export const useLevelStore = defineStore('level', () => {
 
     levelObjects,
     getObject,
+    getObjectsByCell,
     getObjectRef,
     updateObject,
     deleteObject,

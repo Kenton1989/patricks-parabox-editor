@@ -1,4 +1,4 @@
-import { NOT_PLAYER, type BlockCell } from '@/models/level'
+import { NOT_PLAYER, toObjsSortedByLayer, type BlockCell } from '@/models/level'
 import type { Immutable } from '@/models/utils'
 import { last } from '@/service/utils'
 import { useLevelStore } from '@/stores/level'
@@ -13,13 +13,10 @@ export default function usePaintBoard() {
     const blockId = uiStore.focusedBlockId
 
     switch (brush.type) {
-      case 'select':
-        uiStore.focusedCell = cell
-        return
       case 'erase':
         if (cell.layeredObjects.length === 0) return
         levelStore.deleteObject(last(cell.layeredObjects).objId)
-        return
+        break
       case 'wall':
         levelStore.upsertObject({
           type: 'Wall',
@@ -62,6 +59,19 @@ export default function usePaintBoard() {
           floatInSpace: false,
         })
         break
+      default:
+        break
+    }
+
+    const latestObjects = levelStore.getObjectsByCell(blockId, cell.x, cell.y)
+    if (latestObjects.length > 0) {
+      uiStore.focusedCell = {
+        x: cell.x,
+        y: cell.y,
+        layeredObjects: toObjsSortedByLayer(latestObjects),
+      }
+    } else {
+      uiStore.focusedCell = undefined
     }
   }
 
