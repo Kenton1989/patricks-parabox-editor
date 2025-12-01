@@ -30,3 +30,5 @@ export type RefBrush = {
 } & LevelRefInfo
 
 export type Brush = SelectBrush | EraseBrush | WallBrush | BoxBrush | FloorBrush | RefBrush
+
+export type LevelObjectBrush = WallBrush | BoxBrush | FloorBrush | RefBrush

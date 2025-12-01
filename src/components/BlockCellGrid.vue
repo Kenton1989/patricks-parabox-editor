@@ -21,8 +21,8 @@
       }"
     />
     <div
-      v-if="uiStore.cursor.inGrid"
-      class="pointer-events-none relative z-20 border-2 border-transparent opacity-10"
+      v-if="uiStore.cursor.inGrid && isLevelObjectBrush(uiStore.currentBrush)"
+      class="pointer-events-none relative z-20 border-2 border-transparent opacity-50"
       :style="{
         'grid-column-start': uiStore.cursor.x + 1,
         'grid-column-end': uiStore.cursor.x + 2,
@@ -30,7 +30,10 @@
         'grid-row-end': (block?.height ?? 1) - uiStore.cursor.y + 1,
       }"
     >
-      <LevelObjectCanvas class="absolute top-0 right-0 bottom-0 left-0 h-full w-full" />
+      <LevelObjectCanvas
+        class="absolute top-0 right-0 bottom-0 left-0 h-full w-full"
+        :object="uiStore.currentBrush"
+      />
     </div>
   </div>
 </template>
@@ -43,6 +46,7 @@ import BlockCell from './BlockCell.vue'
 import { useMouseInElement } from '@vueuse/core'
 import { useUiStore } from '@/stores/ui'
 import LevelObjectCanvas from './level-object/canvas'
+import { isLevelObjectBrush } from '@/models/brush'
 
 const props = defineProps<{
   blockId: number

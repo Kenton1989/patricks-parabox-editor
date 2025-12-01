@@ -39,7 +39,7 @@ export const useUiStore = defineStore('ui', () => {
     setUpDialogVisible,
     focusedBlockId,
     currentBrush,
-    focusedCell: focusedCell,
+    focusedCell,
     cursor,
   }
 })
