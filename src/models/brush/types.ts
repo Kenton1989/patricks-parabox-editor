@@ -1,36 +1,32 @@
-import type { BlockColor } from '../level'
+import type { LevelBoxInfo, LevelFloorInfo, LevelRefInfo, LevelWallInfo } from '../level'
 
 export type SelectBrush = {
-  type: 'select'
+  type: 'Select'
   color?: undefined
 }
 
 export type EraseBrush = {
-  type: 'erase'
+  type: 'Erase'
   color?: undefined
 }
 
 export type WallBrush = {
-  type: 'wall'
+  type: 'Wall'
   color?: undefined
-}
+} & LevelWallInfo
 
 export type BoxBrush = {
-  type: 'box'
-  color: BlockColor
-  player: boolean
-}
+  type: 'Box'
+} & LevelBoxInfo
 
 export type FloorBrush = {
-  type: 'floor'
+  type: 'Floor'
   color?: undefined
-  playerFloor: boolean
-}
+} & LevelFloorInfo
 
 export type RefBrush = {
-  type: 'ref'
+  type: 'Ref'
   color?: undefined
-  blockId: number
-}
+} & LevelRefInfo
 
 export type Brush = SelectBrush | EraseBrush | WallBrush | BoxBrush | FloorBrush | RefBrush

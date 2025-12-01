@@ -1,42 +1,37 @@
-import type { BoxBrush, EraseBrush, FloorBrush, RefBrush, SelectBrush, WallBrush } from './types'
+import type { BoxBrush, EraseBrush, FloorBrush, SelectBrush, WallBrush } from './types'
 
 const BASE_BRUSH = {
-  select: { type: 'select' } as SelectBrush,
+  select: { type: 'Select' } as SelectBrush,
 
   erase: {
-    type: 'erase',
+    type: 'Erase',
   } as EraseBrush,
 
   wall: {
-    type: 'wall',
+    type: 'Wall',
   } as WallBrush,
 
   box: {
-    type: 'box',
+    type: 'Box',
     color: 'box',
-    player: false,
+    playerSetting: { type: 'notPlayer' },
   } as BoxBrush,
 
   player: {
-    type: 'box',
+    type: 'Box',
     color: 'player',
-    player: true,
+    playerSetting: { type: 'player', playerOrder: 0 },
   } as BoxBrush,
 
   floor: {
-    type: 'floor',
-    playerFloor: false,
+    type: 'Floor',
+    floorType: 'Button',
   } as FloorBrush,
 
   playerFloor: {
-    type: 'floor',
-    playerFloor: true,
+    type: 'Floor',
+    floorType: 'PlayerButton',
   } as FloorBrush,
-
-  ref: {
-    type: 'ref',
-    blockId: 0,
-  } as RefBrush,
 }
 
 export { BASE_BRUSH }

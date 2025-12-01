@@ -46,17 +46,17 @@ import BlockCanvas from './BlockCanvas.vue'
 import { SelectableBox } from '@/components/templates'
 import { computed } from 'vue'
 import { useUiStore } from '@/stores/ui'
-import { BASE_BRUSH } from '@/models/brush'
+import { BASE_BRUSH, createRefBrush } from '@/models/brush'
 import { BlockColorPicker } from '@/components/inputs'
 
 const levelStore = useLevelStore()
 const uiStore = useUiStore()
 
 const isRefBrushSelected = (refBrushBlockId: number) =>
-  uiStore.currentBrush.type === 'ref' && uiStore.currentBrush.blockId === refBrushBlockId
+  uiStore.currentBrush.type === 'Ref' && uiStore.currentBrush.referToBlockId === refBrushBlockId
 
 const selectRefBrush = (refBrushBlockId: number) => {
-  uiStore.currentBrush = { type: 'ref', blockId: refBrushBlockId }
+  uiStore.currentBrush = createRefBrush(refBrushBlockId)
 }
 
 const brushHasColor = computed(() => !!uiStore.currentBrush.color)
@@ -78,43 +78,43 @@ const defaultBrushes = computed(() => {
     {
       logoComponent: SelectSvg,
       name: 'Select',
-      isSelected: brush.type === 'select',
+      isSelected: brush.type === 'Select',
       baseBrush: BASE_BRUSH.select,
     },
     {
       logoComponent: EraserSvg,
       name: 'Erase',
-      isSelected: brush.type === 'erase',
+      isSelected: brush.type === 'Erase',
       baseBrush: BASE_BRUSH.erase,
     },
     {
       logoComponent: WallBrushLogo,
       name: 'Wall',
-      isSelected: brush.type === 'wall',
+      isSelected: brush.type === 'Wall',
       baseBrush: BASE_BRUSH.wall,
     },
     {
       logoComponent: BoxSvg,
       name: 'Box',
-      isSelected: brush.type === 'box' && !brush.player,
+      isSelected: brush.type === 'Box' && brush.playerSetting.type === 'notPlayer',
       baseBrush: BASE_BRUSH.box,
     },
     {
       logoComponent: PlayerSvg,
       name: 'Player',
-      isSelected: brush.type === 'box' && brush.player,
+      isSelected: brush.type === 'Box' && brush.playerSetting.type !== 'notPlayer',
       baseBrush: BASE_BRUSH.player,
     },
     {
       logoComponent: FloorSvg,
       name: 'Floor',
-      isSelected: brush.type === 'floor' && !brush.playerFloor,
+      isSelected: brush.type === 'Floor' && brush.floorType === 'Button',
       baseBrush: BASE_BRUSH.floor,
     },
     {
       logoComponent: PlayerFloorSvg,
       name: 'Player Floor',
-      isSelected: brush.type === 'floor' && brush.playerFloor,
+      isSelected: brush.type === 'Floor' && brush.floorType === 'PlayerButton',
       baseBrush: BASE_BRUSH.playerFloor,
     },
   ]

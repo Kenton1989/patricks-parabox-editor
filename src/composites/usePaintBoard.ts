@@ -1,4 +1,4 @@
-import { NOT_PLAYER, toObjsSortedByLayer, type BlockCell } from '@/models/level'
+import { toObjsSortedByLayer, type BlockCell } from '@/models/level'
 import type { Immutable } from '@/models/utils'
 import { last } from '@/service/utils'
 import { useLevelStore } from '@/stores/level'
@@ -13,51 +13,21 @@ export default function usePaintBoard() {
     const blockId = uiStore.focusedBlockId
 
     switch (brush.type) {
-      case 'erase':
+      case 'Erase':
         if (cell.layeredObjects.length === 0) return
         levelStore.deleteObject(last(cell.layeredObjects).objId)
         break
-      case 'wall':
+      case 'Wall':
+      case 'Box':
+      case 'Floor':
+      case 'Ref':
         levelStore.upsertObject({
-          type: 'Wall',
-          parentId: blockId,
-          playerSetting: { ...NOT_PLAYER },
-          x: cell.x,
-          y: cell.y,
-        })
-        break
-      case 'box':
-        levelStore.upsertObject({
-          type: 'Box',
-          parentId: blockId,
-          playerSetting: brush.player ? { type: 'player', playerOrder: 0 } : { ...NOT_PLAYER },
-          color: brush.color!,
-          x: cell.x,
-          y: cell.y,
-        })
-        break
-      case 'floor':
-        levelStore.upsertObject({
-          type: 'Floor',
-          parentId: blockId,
-          floorType: brush.playerFloor ? 'PlayerButton' : 'Button',
-          x: cell.x,
-          y: cell.y,
-        })
-        break
-      case 'ref':
-        levelStore.upsertObject({
-          type: 'Ref',
+          ...brush,
           parentId: blockId,
           x: cell.x,
           y: cell.y,
-          exitBlock: true,
-          flipH: false,
-          infSetting: { type: 'noInf' },
-          playerSetting: { type: 'notPlayer' },
-          referToBlockId: brush.blockId,
-          floatInSpace: false,
         })
+        console.log('draw', brush.type, brush)
         break
       default:
         break
