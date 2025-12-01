@@ -1,5 +1,6 @@
 <template>
   <div
+    ref="block-cell-ref"
     class="block-cell outline-primary relative border-2"
     :class="{
       overlapping: hasOverlapping,
@@ -20,10 +21,11 @@
 <script setup lang="ts">
 import { type BlockCell, type BlockColor } from '@/models/level'
 import type { Immutable } from '@/models/utils'
-import { computed } from 'vue'
+import { computed, useTemplateRef, watch } from 'vue'
 import LevelObjectCanvas from './level-object/canvas'
 import { useUiStore } from '@/stores/ui'
 import { usePaintBoard } from '@/composites'
+import { useMouseInElement } from '@vueuse/core'
 
 const props = defineProps<{ cell: Immutable<BlockCell>; parentColor?: BlockColor }>()
 
@@ -42,6 +44,20 @@ const paintBoard = usePaintBoard()
 const clickCell = () => {
   paintBoard.applyBrush(props.cell)
 }
+
+const blockCellRef = useTemplateRef('block-cell-ref')
+
+const { isOutside } = useMouseInElement(blockCellRef)
+
+watch(isOutside, (isOutside) => {
+  if (!isOutside) {
+    uiStore.cursor = {
+      ...uiStore.cursor,
+      x: props.cell.x,
+      y: props.cell.y,
+    }
+  }
+})
 
 const doubleClickCell = () => {
   if (layeredChildren.value.length === 0) return

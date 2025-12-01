@@ -24,6 +24,13 @@ export const useUiStore = defineStore('ui', () => {
 
   const focusedCell = ref<Immutable<BlockCell>>()
 
+  const cursor = ref({
+    inGrid: false,
+    x: 0,
+    y: 0,
+    isPressed: false,
+  })
+
   watch(focusedBlockId, () => {
     focusedCell.value = undefined
   })
@@ -33,5 +40,6 @@ export const useUiStore = defineStore('ui', () => {
     focusedBlockId,
     currentBrush,
     focusedCell: focusedCell,
+    cursor,
   }
 })
