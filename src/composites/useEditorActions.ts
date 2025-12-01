@@ -11,8 +11,8 @@ function keyPressed(e: KeyboardEvent, key: string) {
 
 function ctrl(key: string) {
   return isMac
-    ? (e: KeyboardEvent) => e.metaKey && keyPressed(e, key)
-    : (e: KeyboardEvent) => e.ctrlKey && keyPressed(e, key)
+    ? (e: KeyboardEvent) => e.metaKey && !e.shiftKey && keyPressed(e, key)
+    : (e: KeyboardEvent) => e.ctrlKey && !e.shiftKey && keyPressed(e, key)
 }
 
 function ctrlShift(key: string) {
