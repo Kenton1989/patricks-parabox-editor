@@ -506,9 +506,9 @@ export const useLevelStore = defineStore('level', () => {
 
     const refObj = inputObj as LevelRef
 
-    const changed = _ensureSingleExit(refObj)
+    _ensureSingleExit(refObj)
 
-    if (changed) commit()
+    _commitIfChanged()
   }
 
   const getObjectsByCell = (blockId: number, x: number, y: number): Immutable<LevelObject[]> => {
