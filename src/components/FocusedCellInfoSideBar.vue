@@ -13,11 +13,10 @@
 import { useUiStore } from '@/stores/ui'
 import LevelObjectInfoCard, { EmptyCellInfoCard } from './level-object/info-card'
 import { computed } from 'vue'
-import { toObjsSortedByLayer } from '@/models/level'
 
 const uiStore = useUiStore()
 
 const layeredObjects = computed(() =>
-  uiStore.focusedCell ? toObjsSortedByLayer(uiStore.focusedCell.layeredObjects).reverse() : [],
+  uiStore.focusedCell ? [...uiStore.focusedCell.layeredObjects].reverse() : [],
 )
 </script>

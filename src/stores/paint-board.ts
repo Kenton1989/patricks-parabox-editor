@@ -2,7 +2,7 @@ import { defineStore } from 'pinia'
 import { computed, ref } from 'vue'
 import { useLevelStore } from './level'
 import type { Immutable } from '@/models/utils'
-import { toObjsSortedByLayer, type BlockCell } from '@/models/level'
+import { type BlockCell } from '@/models/level'
 import { useUiStore } from './ui'
 import { last } from '@/service/utils'
 import { watchImmediate } from '@vueuse/core'
@@ -73,16 +73,7 @@ export const usePaintBoard = defineStore('paint-board', () => {
         break
     }
 
-    const latestObjects = levelStore.getObjectsByCell(blockId, cell.x, cell.y)
-    if (latestObjects.length > 0) {
-      uiStore.focusedCell = {
-        x: cell.x,
-        y: cell.y,
-        layeredObjects: toObjsSortedByLayer(latestObjects),
-      }
-    } else {
-      uiStore.focusedCell = undefined
-    }
+    uiStore.focusCell(cell.x, cell.y)
   }
 
   return {
