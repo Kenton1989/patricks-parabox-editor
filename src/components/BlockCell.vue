@@ -9,7 +9,7 @@
     @mousedown="handleMouseDown"
     @click="handleClick"
     @dblclick="doubleClickCell"
-    @dragstart.prevent="handleStartDrag"
+    @dragstart="handleCellStartDrag"
   >
     <LevelObjectCanvas
       v-for="obj in layeredChildren"
@@ -17,6 +17,8 @@
       :object="obj"
       class="object-canvas absolute top-0 right-0 bottom-0 left-0 h-full w-full"
       :parentColor="parentColor"
+      :draggable="isDraggable(obj.objId)"
+      @dragstart="(e: DragEvent) => handleObjStartDrag(e, obj.objId)"
     />
   </div>
 </template>
@@ -28,6 +30,7 @@ import LevelObjectCanvas from './level-object/canvas'
 import { useUiStore } from '@/stores/ui'
 import { useMouseInElement } from '@vueuse/core'
 import { usePaintBoard } from '@/stores/paint-board'
+import { last } from '@/service/utils'
 
 const props = defineProps<{ cell: Immutable<BlockCell>; parentColor?: BlockColor }>()
 
@@ -66,8 +69,6 @@ const handleMouseDown = (e: MouseEvent) => {
   paintBoard.startDrawing(e)
 }
 
-const handleStartDrag = () => {}
-
 const doubleClickCell = () => {
   if (layeredChildren.value.length === 0) return
 
@@ -76,5 +77,24 @@ const doubleClickCell = () => {
   if (refObj.parentId === refObj.referToBlockId) return
 
   uiStore.focusedBlockId = refObj.referToBlockId
+}
+
+const draggable = computed(() => uiStore.currentBrush.type === 'Select')
+
+const isDraggable = (objId: number) => {
+  return last(layeredChildren.value)?.objId === objId
+}
+
+const handleObjStartDrag = (e: DragEvent, objId: number) => {
+  if (!draggable.value || !isDraggable(objId)) {
+    e.preventDefault()
+    return
+  }
+}
+
+const handleCellStartDrag = (e: DragEvent) => {
+  if (!draggable.value || props.cell.layeredObjects.length === 0) {
+    e.preventDefault()
+  }
 }
 </script>
