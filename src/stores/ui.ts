@@ -73,5 +73,6 @@ export const useUiStore = defineStore('ui', () => {
     currentBrush,
     focusedCell,
     cursor,
+    handleMousePressed,
   }
 })

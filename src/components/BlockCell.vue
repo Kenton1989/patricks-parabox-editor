@@ -6,8 +6,10 @@
       overlapping: hasOverlapping,
       'cell-focused': cellFocused,
     }"
-    @click="clickCell"
+    @mousedown="handleMouseDown"
+    @click="handleClick"
     @dblclick="doubleClickCell"
+    @dragstart.prevent="handleStartDrag"
   >
     <LevelObjectCanvas
       v-for="obj in layeredChildren"
@@ -24,8 +26,8 @@ import type { Immutable } from '@/models/utils'
 import { computed, useTemplateRef, watch } from 'vue'
 import LevelObjectCanvas from './level-object/canvas'
 import { useUiStore } from '@/stores/ui'
-import { usePaintBoard } from '@/composites'
 import { useMouseInElement } from '@vueuse/core'
+import { usePaintBoard } from '@/stores/paint-board'
 
 const props = defineProps<{ cell: Immutable<BlockCell>; parentColor?: BlockColor }>()
 
@@ -34,16 +36,11 @@ const layeredChildren = computed(() => props.cell.layeredObjects)
 const hasOverlapping = computed(() => layeredChildren.value.length >= 2)
 
 const uiStore = useUiStore()
+const paintBoard = usePaintBoard()
 
 const cellFocused = computed(
   () => uiStore.focusedCell?.x === props.cell.x && uiStore.focusedCell.y === props.cell.y,
 )
-
-const paintBoard = usePaintBoard()
-
-const clickCell = () => {
-  paintBoard.applyBrush(props.cell)
-}
 
 const blockCellRef = useTemplateRef('block-cell-ref')
 
@@ -58,6 +55,18 @@ watch(isOutside, (isOutside) => {
     }
   }
 })
+
+const handleClick = () => {
+  if (uiStore.currentBrush.type !== 'Select') return
+  paintBoard.applyBrush(props.cell)
+}
+
+const handleMouseDown = (e: MouseEvent) => {
+  if (uiStore.currentBrush.type === 'Select') return
+  paintBoard.startDrawing(e)
+}
+
+const handleStartDrag = () => {}
 
 const doubleClickCell = () => {
   if (layeredChildren.value.length === 0) return
