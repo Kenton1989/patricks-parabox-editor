@@ -13,7 +13,7 @@
       v-for="obj in layeredChildren"
       :key="obj.objId"
       :object="obj"
-      class="object-canvas absolute top-0 right-0 bottom-0 left-0 h-full w-full cursor-pointer"
+      class="object-canvas absolute top-0 right-0 bottom-0 left-0 h-full w-full"
       :parentColor="parentColor"
     />
   </div>
