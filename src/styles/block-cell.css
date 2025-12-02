@@ -29,7 +29,7 @@
     }
 
     .dragging {
-      opacity: 0.4;
+      opacity: 0.5;
       cursor: grabbing;
     }
   }
@@ -42,7 +42,7 @@
       z-index: 5;
     }
 
-    *:last-child:hover {
+    & > :last-child:hover {
       opacity: 0.5;
     }
   }
