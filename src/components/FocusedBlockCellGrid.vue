@@ -4,20 +4,20 @@
     class="grid"
     :style="{
       backgroundColor: bgColor,
-      gridTemplateColumns: `repeat(${block?.width ?? 1}, 1fr)`,
-      gridTemplateRows: `repeat(${block?.height ?? 1},  1fr)`,
+      gridTemplateColumns: `repeat(${focusedBlock?.width ?? 1}, 1fr)`,
+      gridTemplateRows: `repeat(${focusedBlock?.height ?? 1},  1fr)`,
     }"
   >
     <BlockCell
       v-for="cell in cells"
       :key="`${cell.x},${cell.y}`"
       :cell="cell"
-      :parentColor="block?.color"
+      :parentColor="focusedBlock?.color"
       :style="{
         'grid-column-start': cell.x + 1,
         'grid-column-end': cell.x + 2,
-        'grid-row-start': (block?.height ?? 1) - cell.y,
-        'grid-row-end': (block?.height ?? 1) - cell.y + 1,
+        'grid-row-start': (focusedBlock?.height ?? 1) - cell.y,
+        'grid-row-end': (focusedBlock?.height ?? 1) - cell.y + 1,
       }"
     />
     <div
@@ -26,8 +26,8 @@
       :style="{
         'grid-column-start': uiStore.cursor.x + 1,
         'grid-column-end': uiStore.cursor.x + 2,
-        'grid-row-start': (block?.height ?? 1) - uiStore.cursor.y,
-        'grid-row-end': (block?.height ?? 1) - uiStore.cursor.y + 1,
+        'grid-row-start': (focusedBlock?.height ?? 1) - uiStore.cursor.y,
+        'grid-row-end': (focusedBlock?.height ?? 1) - uiStore.cursor.y + 1,
       }"
     >
       <LevelObjectCanvas
@@ -38,7 +38,7 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { useBlock } from '@/composites'
+import { useFocusedBlock } from '@/composites'
 import { color as colorCvt } from '@/service/convertors'
 import { floorColor } from '@/service/renderer/factory'
 import { computed, useTemplateRef } from 'vue'
@@ -48,19 +48,17 @@ import { useUiStore } from '@/stores/ui'
 import LevelObjectCanvas from './level-object/canvas'
 import { isLevelObjectBrush } from '@/models/brush'
 
-const props = defineProps<{
-  blockId: number
-}>()
-
-const { block, grid } = useBlock(computed(() => props.blockId))
+const { focusedBlock, grid } = useFocusedBlock()
 
 const cells = computed(() => {
-  if (!block.value || !grid.value) return []
+  if (!focusedBlock.value || !grid.value) return []
 
   return grid.value.cells.flat()
 })
 
-const bgColor = computed(() => floorColor(colorCvt.blockToColor(block.value?.color ?? 'root')))
+const bgColor = computed(() =>
+  floorColor(colorCvt.blockToColor(focusedBlock.value?.color ?? 'root')),
+)
 
 const blockCellRef = useTemplateRef('block-grid-ref')
 

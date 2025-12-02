@@ -195,10 +195,10 @@ export const useLevelStore = defineStore('level', () => {
     return result
   }
 
-  const getBlockRef = (blockId: MaybeRef<number>) => {
+  const getBlockRef = (blockId: MaybeRef<number | undefined>) => {
     return typeof blockId === 'number'
       ? computed(() => getBlock(blockId))
-      : computed(() => getBlock(blockId.value))
+      : computed(() => (blockId?.value !== undefined ? getBlock(blockId.value) : undefined))
   }
 
   const updateBlock = (

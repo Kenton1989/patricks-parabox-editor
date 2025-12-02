@@ -5,12 +5,12 @@
       [`${uiStore.currentBrush.type.toLocaleLowerCase()}-brush-active`]: true,
     }"
   >
-    <BlockCellGrid :blockId="uiStore.focusedBlockId" class="aspect-square h-full" />
+    <FocusedBlockCellGrid class="aspect-square h-full" />
   </div>
 </template>
 <script setup lang="ts">
 import { useUiStore } from '@/stores/ui'
-import BlockCellGrid from './BlockCellGrid.vue'
+import FocusedBlockCellGrid from './FocusedBlockCellGrid.vue'
 
 const uiStore = useUiStore()
 </script>

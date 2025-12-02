@@ -1,30 +1,16 @@
-import type { UpdateBlockProps } from '@/models/edit'
-import { useLevelStore } from '@/stores/level'
 import { useUiStore } from '@/stores/ui'
 import { createSharedComposable } from '@vueuse/core'
 import { computed } from 'vue'
+import useBlock from './useBlock'
 
 function useFocusedBlockImpl() {
   const uiStore = useUiStore()
-  const levelStore = useLevelStore()
 
-  const focusedBlock = computed(() => {
-    return levelStore.getBlock(uiStore.focusedBlockId)
-  })
+  const { block, update, updateNoCommit, commit, grid } = useBlock(
+    computed(() => uiStore.focusedBlockId),
+  )
 
-  const update = (values: UpdateBlockProps) => {
-    if (uiStore.focusedBlockId === undefined) return
-
-    levelStore.updateBlock(uiStore.focusedBlockId, values)
-  }
-
-  const updateNoCommit = (values: UpdateBlockProps) => {
-    if (uiStore.focusedBlockId === undefined) return
-
-    levelStore.updateBlock(uiStore.focusedBlockId, values, true)
-  }
-
-  return { focusedBlock, update, commit: levelStore.commitEditHistory, updateNoCommit }
+  return { focusedBlock: block, update, commit, updateNoCommit, grid }
 }
 
 const useFocusedBlock = createSharedComposable(useFocusedBlockImpl)

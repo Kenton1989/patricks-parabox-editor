@@ -2,7 +2,7 @@ import type { Immutable } from '../utils'
 import type { LevelObject } from './level-object'
 
 export type BlockGrid = {
-  blockId: number
+  blockId?: number
   cells: Immutable<BlockCell>[][]
   outliers: Immutable<LevelObject>[]
 }
