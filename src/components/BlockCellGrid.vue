@@ -41,9 +41,9 @@
 import { useBlock } from '@/composites'
 import { color as colorCvt } from '@/service/convertors'
 import { floorColor } from '@/service/renderer/factory'
-import { computed, useTemplateRef, watch } from 'vue'
+import { computed, useTemplateRef } from 'vue'
 import BlockCell from './BlockCell.vue'
-import { useMouseInElement } from '@vueuse/core'
+import { useMouseInElement, watchImmediate } from '@vueuse/core'
 import { useUiStore } from '@/stores/ui'
 import LevelObjectCanvas from './level-object/canvas'
 import { isLevelObjectBrush } from '@/models/brush'
@@ -68,7 +68,7 @@ const { isOutside } = useMouseInElement(blockCellRef)
 
 const uiStore = useUiStore()
 
-watch(isOutside, (isOutside) => {
+watchImmediate(isOutside, (isOutside) => {
   uiStore.cursor = {
     ...uiStore.cursor,
     inGrid: !isOutside,
