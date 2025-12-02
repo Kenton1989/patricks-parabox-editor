@@ -1,8 +1,11 @@
 import { createSharedComposable, useActiveElement } from '@vueuse/core'
 import { computed, onUnmounted } from 'vue'
 import useEditorActions from './useEditorActions'
+import { usePaintBoard } from '@/stores/paint-board'
 
 function useHotkeys() {
+  const paintBoard = usePaintBoard()
+
   const activeElement = useActiveElement()
   const usingInput = computed(
     () => activeElement.value?.tagName === 'INPUT' || activeElement.value?.tagName === 'TEXTAREA',
@@ -13,6 +16,8 @@ function useHotkeys() {
   const triggerAction = (e: KeyboardEvent) => {
     Object.values(actions).forEach((action) => {
       if (usingInput.value) return
+
+      if (paintBoard.isDrawing) return
 
       if (!action.hotkeyPressed(e)) return
 
