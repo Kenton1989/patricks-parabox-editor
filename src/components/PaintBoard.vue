@@ -2,7 +2,7 @@
   <div
     class="flex items-center justify-center p-8"
     :class="{
-      [`${uiStore.currentBrush.type}-brush-active`]: true,
+      [`${uiStore.currentBrush.type.toLocaleLowerCase()}-brush-active`]: true,
     }"
   >
     <BlockCellGrid :blockId="uiStore.focusedBlockId" class="aspect-square h-full" />
