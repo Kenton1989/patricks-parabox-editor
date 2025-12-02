@@ -8,25 +8,28 @@ export default function usePaintBoard() {
   const uiStore = useUiStore()
   const levelStore = useLevelStore()
 
-  const applyBrush = (cell: Immutable<BlockCell>) => {
+  const applyBrush = (cell: Immutable<BlockCell>, disableCommit?: boolean) => {
     const brush = uiStore.currentBrush
     const blockId = uiStore.focusedBlockId
 
     switch (brush.type) {
       case 'Erase':
         if (cell.layeredObjects.length === 0) return
-        levelStore.deleteObject(last(cell.layeredObjects).objId)
+        levelStore.deleteObject(last(cell.layeredObjects).objId, disableCommit)
         break
       case 'Wall':
       case 'Box':
       case 'Floor':
       case 'Ref':
-        levelStore.upsertObject({
-          ...brush,
-          parentId: blockId,
-          x: cell.x,
-          y: cell.y,
-        })
+        levelStore.upsertObject(
+          {
+            ...brush,
+            parentId: blockId,
+            x: cell.x,
+            y: cell.y,
+          },
+          disableCommit,
+        )
         console.log('draw', brush.type, brush)
         break
       default:

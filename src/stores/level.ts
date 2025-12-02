@@ -320,7 +320,7 @@ export const useLevelStore = defineStore('level', () => {
     return existingObj as Immutable<LevelObject>
   }
 
-  const deleteObject = (objId: number) => {
+  const deleteObject = (objId: number, disableCommit?: boolean) => {
     const objInMap = getObject(objId)
     if (!objInMap) return
 
@@ -334,7 +334,11 @@ export const useLevelStore = defineStore('level', () => {
     }
     parentBlock.children.splice(childIndex, 1)
 
-    commit()
+    if (!disableCommit) {
+      commit()
+    } else {
+      _dataChangedSinceCommit = true
+    }
 
     return objInMap
   }
@@ -401,7 +405,7 @@ export const useLevelStore = defineStore('level', () => {
     refSetting.enterFromBlockId = levelBlocks.value[0]!.blockId
   }
 
-  const upsertObject = (objProps: CreateObjectProps) => {
+  const upsertObject = (objProps: CreateObjectProps, disableCommit?: boolean) => {
     const parentBlock = getBlock(objProps.parentId) as LevelBlock
     if (!parentBlock) {
       console.error('upsertObject: unknown parent', objProps.parentId)
@@ -412,7 +416,7 @@ export const useLevelStore = defineStore('level', () => {
       (o) => o.type === objProps.type && o.x === objProps.x && o.y === objProps.y,
     )
     if (existingBlock) {
-      updateObject(existingBlock.type, existingBlock.objId, objProps)
+      updateObject(existingBlock.type, existingBlock.objId, objProps, disableCommit)
       return
     }
 
@@ -431,7 +435,11 @@ export const useLevelStore = defineStore('level', () => {
     newChildren.push(newObj)
     parentBlock.children = newChildren
 
-    commit()
+    if (!disableCommit) {
+      commit()
+    } else {
+      _dataChangedSinceCommit = true
+    }
 
     return newObj
   }
