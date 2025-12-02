@@ -23,6 +23,11 @@
     .object-canvas {
       cursor: pointer;
     }
+
+    .dragging {
+      opacity: 0.4;
+      cursor: grabbing;
+    }
   }
 
   .erase-brush-active & {

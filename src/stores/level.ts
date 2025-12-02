@@ -28,22 +28,6 @@ import type {
   UpdateObjectPropsOfType,
 } from '@/models/edit'
 
-function patchData<DataT extends object>(data: DataT, patch: Partial<DataT>) {
-  let changed = false
-  for (const key in patch) {
-    if (patch[key] === undefined) continue
-
-    if (!(key in data)) continue
-
-    if (data[key] === patch[key]) continue
-
-    changed = true
-
-    data[key] = patch[key]
-  }
-  return changed
-}
-
 function tryGetPlayerSettings(obj?: Partial<LevelObject>): ActivePlayerSetting | undefined {
   const setting = (obj as { playerSetting?: PlayerSetting })?.playerSetting
   if (!setting || setting.type !== 'player') return
@@ -91,6 +75,7 @@ export const useLevelStore = defineStore('level', () => {
   const levelBlocks = computed<Immutable<LevelBlock[]>>(() => _level.value.blocks)
 
   let _dataChangedSinceCommit = false
+  const _markDataChanged = () => (_dataChangedSinceCommit ||= true)
 
   const levelObjects: Ref<Map<LevelObject['objId'], Immutable<LevelObject>>> = computed(() => {
     const result = new Map<LevelObject['objId'], Immutable<LevelObject>>()
@@ -125,6 +110,20 @@ export const useLevelStore = defineStore('level', () => {
     if (lastJson === currentJson) return
 
     commit()
+  }
+
+  const _patchData = <DataT extends object>(data: DataT, patch: Partial<DataT>) => {
+    for (const key in patch) {
+      if (patch[key] === undefined) continue
+
+      if (!(key in data)) continue
+
+      if (data[key] === patch[key]) continue
+
+      _markDataChanged()
+
+      data[key] = patch[key]
+    }
   }
 
   watch(
@@ -209,7 +208,7 @@ export const useLevelStore = defineStore('level', () => {
     const block = getBlock(blockId)
     if (!block) return undefined
 
-    _dataChangedSinceCommit ||= patchData(block, blockUpdate)
+    _patchData(block, blockUpdate)
 
     if (!disableCommit) {
       _commitIfChanged()
@@ -270,7 +269,7 @@ export const useLevelStore = defineStore('level', () => {
   }
 
   const updateHeader = (headerUpdate: UpdateHeaderProps, disableCommit?: boolean) => {
-    _dataChangedSinceCommit = patchData(_level.value.header, headerUpdate)
+    _patchData(_level.value.header, headerUpdate)
     if (!disableCommit) _commitIfChanged()
   }
 
@@ -287,6 +286,23 @@ export const useLevelStore = defineStore('level', () => {
     return typeof objId === 'number'
       ? computed(() => getObject(objId))
       : computed(() => getObject(objId.value))
+  }
+
+  function _ensureOneBlockPerLayer(newObj: LevelObject, parentBlock: LevelBlock) {
+    // object on the same layer is mutual exclusive
+    const conflictingLayer = objLayer(newObj)
+    const newChildren = parentBlock.children.filter(
+      (o) =>
+        o.x !== newObj.x ||
+        o.y !== newObj.y ||
+        objLayer(o) != conflictingLayer ||
+        o.objId === newObj.objId,
+    )
+
+    if (newChildren.length !== parentBlock.children.length) {
+      _markDataChanged()
+      parentBlock.children = newChildren
+    }
   }
 
   function updateObject<TypeT extends LevelObject['type']>(
@@ -306,12 +322,21 @@ export const useLevelStore = defineStore('level', () => {
 
     _ensureValidPlayerOrder(objId, objUpdate, existingObj)
     _ensureValidInfEnterId(objId, objUpdate)
-    const exitSettingsChanged =
-      existingObj.type === 'Ref' && (objUpdate as UpdateObjectProps<LevelRef>).exitBlock
-        ? _ensureSingleExit(existingObj)
-        : false
+    if (existingObj.type === 'Ref' && (objUpdate as UpdateObjectProps<LevelRef>).exitBlock) {
+      _ensureSingleExit(existingObj)
+    }
 
-    _dataChangedSinceCommit ||= patchData(existingObj, objUpdate) || exitSettingsChanged
+    _patchData(existingObj, objUpdate)
+
+    if (objUpdate.x !== undefined || objUpdate.y !== undefined) {
+      const parentBlock = getBlock(existingObj.parentId)
+      if (parentBlock) {
+        _ensureOneBlockPerLayer(existingObj, parentBlock as LevelBlock)
+      } else {
+        console.error('unknown parent block: ', existingObj.parentId)
+      }
+    }
+
     if (!disableCommit) {
       _commitIfChanged()
     }
@@ -336,7 +361,7 @@ export const useLevelStore = defineStore('level', () => {
     if (!disableCommit) {
       commit()
     } else {
-      _dataChangedSinceCommit = true
+      _markDataChanged()
     }
 
     return objInMap
@@ -426,18 +451,13 @@ export const useLevelStore = defineStore('level', () => {
     _ensureValidInfEnterId(objId, newObj)
     if (newObj.type === 'Ref') _ensureSingleExit(newObj)
 
-    // object only the same layer is mutual exclusive
-    const insertLayer = objLayer(newObj)
-    const newChildren = parentBlock.children.filter(
-      (o) => o.x !== newObj.x || o.y !== newObj.y || objLayer(o) != insertLayer,
-    )
-    newChildren.push(newObj)
-    parentBlock.children = newChildren
+    parentBlock.children.push(newObj)
+    _ensureOneBlockPerLayer(newObj, parentBlock)
 
     if (!disableCommit) {
       commit()
     } else {
-      _dataChangedSinceCommit = true
+      _markDataChanged()
     }
 
     return newObj
@@ -457,11 +477,9 @@ export const useLevelStore = defineStore('level', () => {
   })
 
   const _ensureSingleExit = (refObj: LevelRef) => {
-    let changed = false
-
     if (!refObj.exitBlock) {
       refObj.exitBlock = true
-      changed = true
+      _markDataChanged()
     }
 
     for (const obj of levelObjects.value.values()) {
@@ -471,10 +489,8 @@ export const useLevelStore = defineStore('level', () => {
       if (infLevel(refObj) !== infLevel(obj)) continue
       if (!obj.exitBlock) continue
       ;(obj as LevelRef).exitBlock = false
-      changed = true
+      _markDataChanged()
     }
-
-    return changed
   }
 
   // set ref object to the only exit of the block

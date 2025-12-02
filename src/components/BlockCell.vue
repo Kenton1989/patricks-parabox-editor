@@ -1,6 +1,11 @@
 <template>
   <div
-    ref="block-cell-ref"
+    :ref="
+      (el) => {
+        drop(el as HTMLElement)
+        blockCellRef = el as HTMLElement
+      }
+    "
     class="block-cell outline-primary relative border-2"
     :class="{
       overlapping: hasOverlapping,
@@ -23,13 +28,15 @@
 </template>
 <script setup lang="ts">
 import { type BlockCell, type BlockColor } from '@/models/level'
-import type { Immutable } from '@/models/utils'
-import { computed, useTemplateRef, watch } from 'vue'
+import { ItemType, type Immutable } from '@/models/utils'
+import { computed, ref, watch } from 'vue'
 import { useUiStore } from '@/stores/ui'
 import { useMouseInElement } from '@vueuse/core'
 import { usePaintBoard } from '@/stores/paint-board'
 import { last } from '@/service/utils'
 import BlockObject from './BlockObject.vue'
+import { useDrop } from 'vue3-dnd'
+import { useLevelStore } from '@/stores/level'
 
 const props = defineProps<{ cell: Immutable<BlockCell>; parentColor?: BlockColor }>()
 
@@ -38,13 +45,30 @@ const layeredChildren = computed(() => props.cell.layeredObjects)
 const hasOverlapping = computed(() => layeredChildren.value.length >= 2)
 
 const uiStore = useUiStore()
+const levelStore = useLevelStore()
+
 const paintBoard = usePaintBoard()
 
 const cellFocused = computed(
   () => uiStore.focusedCell?.x === props.cell.x && uiStore.focusedCell.y === props.cell.y,
 )
 
-const blockCellRef = useTemplateRef('block-cell-ref')
+const [, drop] = useDrop<{ objId?: number }>({
+  accept: ItemType.LevelObject,
+  drop(item) {
+    if (!item.objId) return
+    const obj = levelStore.getObject(item.objId)
+    if (!obj) return
+    if (obj.x !== props.cell.x || obj.y !== props.cell.y) {
+      levelStore.updateObject(obj.type, obj.objId, {
+        x: props.cell.x,
+        y: props.cell.y,
+      })
+    }
+  },
+})
+
+const blockCellRef = ref<HTMLElement>()
 
 const { isOutside } = useMouseInElement(blockCellRef)
 

@@ -17,7 +17,7 @@ function useHotkeys() {
     Object.values(actions).forEach((action) => {
       if (usingInput.value) return
 
-      if (paintBoard.isDrawing) return
+      if (paintBoard.isEditing) return
 
       if (!action.hotkeyPressed(e)) return
 

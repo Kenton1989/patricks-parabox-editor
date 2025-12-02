@@ -79,7 +79,7 @@ export const usePaintBoard = defineStore('paint-board', () => {
   return {
     _isDrawing,
 
-    isDrawing: computed(() => _isDrawing.value),
+    isEditing: computed(() => _isDrawing.value),
 
     startDrawing,
     applyBrush,
