@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import { useLevelStore } from './level'
 import type { Immutable } from '@/models/utils'
 import { toObjsSortedByLayer, type BlockCell } from '@/models/level'
@@ -61,7 +61,7 @@ export const usePaintBoard = defineStore('paint-board', () => {
       case 'Ref':
         levelStore.upsertObject(
           {
-            ...brush,
+            ...JSON.parse(JSON.stringify(brush)),
             parentId: blockId,
             x: cell.x,
             y: cell.y,
@@ -87,6 +87,8 @@ export const usePaintBoard = defineStore('paint-board', () => {
 
   return {
     _isDrawing,
+
+    isDrawing: computed(() => _isDrawing.value),
 
     startDrawing,
     applyBrush,
