@@ -67,7 +67,7 @@ export const useLevelStore = defineStore('level', () => {
     canRedo,
     canUndo,
     clear: _clear,
-    commit: _commit,
+    commit: _rawCommit,
     last,
   } = useManualRefHistory(_level, { clone: true, capacity: 1000 })
 
@@ -91,11 +91,11 @@ export const useLevelStore = defineStore('level', () => {
     _clear()
 
     // commit to ensure at least one record is in history
-    _commit()
+    _rawCommit()
   }
 
-  const commit = () => {
-    _commit()
+  const _commit = () => {
+    _rawCommit()
     _dataChangedSinceCommit = false
   }
 
@@ -109,7 +109,7 @@ export const useLevelStore = defineStore('level', () => {
 
     if (lastJson === currentJson) return
 
-    commit()
+    _commit()
   }
 
   const _patchData = <DataT extends object>(data: DataT, patch: Partial<DataT>) => {
@@ -251,7 +251,7 @@ export const useLevelStore = defineStore('level', () => {
 
     _level.value.blocks.push(newBlock)
 
-    commit()
+    _commit()
 
     return newId
   }
@@ -265,7 +265,7 @@ export const useLevelStore = defineStore('level', () => {
 
     _level.value.blocks.splice(blockIndex, 1)
 
-    commit()
+    _commit()
   }
 
   const updateHeader = (headerUpdate: UpdateHeaderProps, disableCommit?: boolean) => {
@@ -359,7 +359,7 @@ export const useLevelStore = defineStore('level', () => {
     parentBlock.children.splice(childIndex, 1)
 
     if (!disableCommit) {
-      commit()
+      _commit()
     } else {
       _markDataChanged()
     }
@@ -455,7 +455,7 @@ export const useLevelStore = defineStore('level', () => {
     _ensureOneBlockPerLayer(newObj, parentBlock)
 
     if (!disableCommit) {
-      commit()
+      _commit()
     } else {
       _markDataChanged()
     }
