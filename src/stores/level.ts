@@ -85,7 +85,7 @@ export const useLevelStore = defineStore('level', () => {
     clear: _clear,
     commit: _commit,
     last,
-  } = useManualRefHistory(_level, { clone: true })
+  } = useManualRefHistory(_level, { clone: true, capacity: 1000 })
 
   const levelHeader = computed<Immutable<LevelHeader>>(() => _level.value.header)
   const levelBlocks = computed<Immutable<LevelBlock[]>>(() => _level.value.blocks)
