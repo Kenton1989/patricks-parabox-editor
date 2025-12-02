@@ -209,7 +209,7 @@ export const useLevelStore = defineStore('level', () => {
     const block = getBlock(blockId)
     if (!block) return undefined
 
-    _dataChangedSinceCommit = patchData(block, blockUpdate)
+    _dataChangedSinceCommit ||= patchData(block, blockUpdate)
 
     if (!disableCommit) {
       _commitIfChanged()
@@ -311,10 +311,9 @@ export const useLevelStore = defineStore('level', () => {
         ? _ensureSingleExit(existingObj)
         : false
 
-    _dataChangedSinceCommit = patchData(existingObj, objUpdate)
+    _dataChangedSinceCommit ||= patchData(existingObj, objUpdate) || exitSettingsChanged
     if (!disableCommit) {
-      if (exitSettingsChanged) commit()
-      else _commitIfChanged()
+      _commitIfChanged()
     }
 
     return existingObj as Immutable<LevelObject>
