@@ -13,6 +13,10 @@
     &:hover {
       outline-width: 1px;
       z-index: 5;
+
+      .dragging-in-progress & {
+        outline-width: 0;
+      }
     }
     &.cell-focused {
       outline-width: 4px;

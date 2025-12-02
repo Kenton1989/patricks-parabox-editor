@@ -56,14 +56,19 @@ const cellFocused = computed(
 const [, drop] = useDrop<{ objId?: number }>({
   accept: ItemType.LevelObject,
   drop(item) {
-    if (!item.objId) return
-    const obj = levelStore.getObject(item.objId)
-    if (!obj) return
-    if (obj.x !== props.cell.x || obj.y !== props.cell.y) {
-      levelStore.updateObject(obj.type, obj.objId, {
-        x: props.cell.x,
-        y: props.cell.y,
-      })
+    try {
+      if (!item.objId) return
+      const obj = levelStore.getObject(item.objId)
+      if (!obj) return
+      if (obj.x !== props.cell.x || obj.y !== props.cell.y) {
+        levelStore.updateObject(obj.type, obj.objId, {
+          x: props.cell.x,
+          y: props.cell.y,
+        })
+        uiStore.focusCell(props.cell.x, props.cell.y)
+      }
+    } finally {
+      paintBoard.setIsDragging(false)
     }
   },
 })

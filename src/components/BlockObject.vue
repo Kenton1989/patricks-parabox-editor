@@ -21,6 +21,8 @@ import type { BlockColor, LevelObject } from '@/models/level'
 import LevelObjectCanvas from './level-object/canvas'
 import { useDrag } from 'vue3-dnd'
 import { ItemType } from '@/models/utils'
+import { usePaintBoard } from '@/stores/paint-board'
+import { watch } from 'vue'
 
 const props = defineProps<{
   object: LevelObject
@@ -28,12 +30,23 @@ const props = defineProps<{
   canDrag?: boolean
 }>()
 
+const paintBoard = usePaintBoard()
+
 const [collected, drag] = useDrag(() => ({
   type: ItemType.LevelObject,
   item: () => ({ objId: props.object.objId }),
   canDrag: () => props.canDrag,
-  collect: (monitor) => ({
-    isDragging: !!monitor.isDragging(),
-  }),
+  collect: (monitor) => {
+    return {
+      isDragging: !!monitor.isDragging(),
+    }
+  },
 }))
+
+watch(
+  () => collected.value.isDragging,
+  (newVal) => {
+    paintBoard.setIsDragging(newVal)
+  },
+)
 </script>

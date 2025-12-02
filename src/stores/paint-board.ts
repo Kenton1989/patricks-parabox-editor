@@ -76,13 +76,21 @@ export const usePaintBoard = defineStore('paint-board', () => {
     uiStore.focusCell(cell.x, cell.y)
   }
 
+  const _isDragging = ref(false)
+
   return {
     _isDrawing,
+    _isDragging,
 
-    isEditing: computed(() => _isDrawing.value),
+    isEditing: computed(() => _isDrawing.value || _isDragging.value),
 
     startDrawing,
     applyBrush,
+
+    isDragging: computed(() => _isDragging.value),
+    setIsDragging(value: boolean) {
+      if (value !== _isDragging.value) _isDragging.value = value
+    },
   }
 })
 
