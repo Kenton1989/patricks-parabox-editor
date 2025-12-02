@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import { ConfirmDialog } from 'primevue'
+import ErrorBoundary from './components/templates/ErrorBoundary.vue'
 </script>
 
 <template>
-  <router-view></router-view>
-  <ConfirmDialog />
+  <ErrorBoundary>
+    <router-view></router-view>
+    <ConfirmDialog />
+  </ErrorBoundary>
 </template>
-
-<style scoped></style>

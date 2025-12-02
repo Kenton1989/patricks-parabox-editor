@@ -41,27 +41,31 @@ export default class BlockPreviewRenderer {
   }
 
   private renderBlockWithoutRecursion(block: LevelBlock): HTMLCanvasElement {
-    // sort the floor to the front to render them first
-    // if any block is above the floor will be overwritten
-    const children = toObjsSortedByLayer(block.children)
-
     const [canvas, ctx] = this.createCanvas()
-    const blockColor = color.blockToColor(block.color)
-    const floorClr = floorColor(blockColor)
-    draw.rect(ctx, 0, 0, canvas.width, canvas.height, floorClr)
+    this.drawUnknownOnError(ctx, 0, 0, canvas.width, canvas.height, () => {
+      // sort the floor to the front to render them first
+      // if any block is above the floor will be overwritten
+      const children = toObjsSortedByLayer(block.children)
 
-    this.forEachWithCellBox(children, block, (child, x, y, w, h) => {
-      if (child.type !== 'Ref') {
-        draw.levelObject(ctx, x, y, w, h, child, blockColor)
-        return
-      }
+      const blockColor = color.blockToColor(block.color)
+      const floorClr = floorColor(blockColor)
+      draw.rect(ctx, 0, 0, canvas.width, canvas.height, floorClr)
 
-      const referBlock = this.blockMap.get(child.referToBlockId)
-      if (referBlock) {
-        draw.box(ctx, x, y, w, h, estimateRefColor(referBlock), child.playerSetting)
-      } else {
-        draw.unknown(ctx, x, y, w, h)
-      }
+      this.forEachWithCellBox(children, block, (child, x, y, w, h) => {
+        this.drawUnknownOnError(ctx, x, y, w, h, () => {
+          if (child.type !== 'Ref') {
+            draw.levelObject(ctx, x, y, w, h, child, blockColor)
+            return
+          }
+
+          const referBlock = this.blockMap.get(child.referToBlockId)
+          if (referBlock) {
+            draw.box(ctx, x, y, w, h, estimateRefColor(referBlock), child.playerSetting)
+          } else {
+            draw.unknown(ctx, x, y, w, h)
+          }
+        })
+      })
     })
 
     return canvas
@@ -71,16 +75,18 @@ export default class BlockPreviewRenderer {
     const [canvas, ctx] = this.createCanvas(blockPreviews.get(block.blockId))
 
     this.forEachWithCellBox(block.children, block, (child, x, y, w, h) => {
-      if (child.type !== 'Ref') return
+      this.drawUnknownOnError(ctx, x, y, w, h, () => {
+        if (child.type !== 'Ref') return
 
-      const refBlock = this.blockMap.get(child.referToBlockId)
-      const refPreview = blockPreviews.get(child.referToBlockId)
-      if (!refPreview || !refPreview) {
-        draw.unknown(ctx, x, y, w, h)
-        return
-      }
+        const refBlock = this.blockMap.get(child.referToBlockId)
+        const refPreview = blockPreviews.get(child.referToBlockId)
+        if (!refPreview || !refPreview) {
+          draw.unknown(ctx, x, y, w, h)
+          return
+        }
 
-      draw.ref(ctx, x, y, w, h, child, refBlock, refPreview)
+        draw.ref(ctx, x, y, w, h, child, refBlock, refPreview)
+      })
     })
 
     return canvas
@@ -124,5 +130,21 @@ export default class BlockPreviewRenderer {
     }
 
     return [canvas, ctx]
+  }
+
+  private drawUnknownOnError(
+    ctx: CanvasRenderingContext2D,
+    x: number,
+    y: number,
+    w: number,
+    h: number,
+    action: () => unknown,
+  ) {
+    try {
+      action()
+    } catch (e) {
+      console.log('error when drawing, draw unknown instead:', e)
+      draw.unknown(ctx, x, y, w, h)
+    }
   }
 }
