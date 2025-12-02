@@ -9,6 +9,7 @@ const BASE_BRUSH = {
 
   wall: {
     type: 'Wall',
+    playerSetting: { type: 'notPlayer' },
   } as WallBrush,
 
   box: {
