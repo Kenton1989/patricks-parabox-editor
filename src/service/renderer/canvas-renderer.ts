@@ -11,6 +11,7 @@ import { CANVAS_HEIGHT, CANVAS_WIDTH } from './consts'
 import type { BlockPreviewsMap } from '@/models/level/previews'
 import { draw } from './ctx-drawer'
 import { color } from '../convertors'
+import { drawUnknownOnError } from './utils'
 
 // define a object to generate/draw HTML canvas element
 const render = {
@@ -31,8 +32,9 @@ const render = {
     }
 
     const ctx = targetCanvas.getContext('2d') as CanvasRenderingContext2D
-
-    draw.canvasCopy(ctx, 0, 0, targetCanvas.width, targetCanvas.height, sourceCanvas)
+    drawUnknownOnError(ctx, 0, 0, targetCanvas.width, targetCanvas.height, () => {
+      draw.canvasCopy(ctx, 0, 0, targetCanvas.width, targetCanvas.height, sourceCanvas)
+    })
   },
 
   unknown(targetCanvas: HTMLCanvasElement, width = CANVAS_WIDTH, height = CANVAS_HEIGHT) {
@@ -53,11 +55,13 @@ const render = {
     targetCanvas.width = width
     targetCanvas.height = height
 
-    const baseColor = color.blockToColor(parentColor)
-
     const ctx = targetCanvas.getContext('2d') as CanvasRenderingContext2D
 
-    draw.wall(ctx, 0, 0, width, height, baseColor, wall.playerSetting)
+    drawUnknownOnError(ctx, 0, 0, width, height, () => {
+      const baseColor = color.blockToColor(parentColor)
+
+      draw.wall(ctx, 0, 0, width, height, baseColor, wall.playerSetting)
+    })
   },
 
   box(
@@ -69,11 +73,13 @@ const render = {
     targetCanvas.width = width
     targetCanvas.height = height
 
-    const baseColor = color.blockToColor(box.color)
-
     const ctx = targetCanvas.getContext('2d') as CanvasRenderingContext2D
 
-    draw.box(ctx, 0, 0, width, height, baseColor, box.playerSetting)
+    drawUnknownOnError(ctx, 0, 0, width, height, () => {
+      const baseColor = color.blockToColor(box.color)
+
+      draw.box(ctx, 0, 0, width, height, baseColor, box.playerSetting)
+    })
   },
 
   floor(
@@ -88,12 +94,14 @@ const render = {
 
     const ctx = targetCanvas.getContext('2d') as CanvasRenderingContext2D
 
-    const baseColor = parentColor ? color.blockToColor(parentColor) : undefined
-    if (baseColor) {
-      draw.floor(ctx, 0, 0, width, height, baseColor, floor.floorType)
-    } else {
-      draw.transparentFloor(ctx, 0, 0, width, height, floor.floorType)
-    }
+    drawUnknownOnError(ctx, 0, 0, width, height, () => {
+      const baseColor = parentColor ? color.blockToColor(parentColor) : undefined
+      if (baseColor) {
+        draw.floor(ctx, 0, 0, width, height, baseColor, floor.floorType)
+      } else {
+        draw.transparentFloor(ctx, 0, 0, width, height, floor.floorType)
+      }
+    })
   },
 
   ref(
@@ -108,8 +116,9 @@ const render = {
     targetCanvas.height = height
 
     const ctx = targetCanvas.getContext('2d') as CanvasRenderingContext2D
-
-    draw.ref(ctx, 0, 0, width, height, ref, refSrc, blockPreview)
+    drawUnknownOnError(ctx, 0, 0, width, height, () => {
+      draw.ref(ctx, 0, 0, width, height, ref, refSrc, blockPreview)
+    })
   },
 }
 

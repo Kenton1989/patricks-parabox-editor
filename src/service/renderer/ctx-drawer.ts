@@ -25,6 +25,7 @@ import {
 import { type ColorInstance } from 'color'
 import { color } from '../convertors'
 import { borderColor, eyeColor, floorColor, wallColor } from './factory'
+import { drawUnknown } from './utils'
 
 // define some drawing operations to apply on a pre-existing canvas context
 // no new context will be created
@@ -96,14 +97,7 @@ const draw = {
   },
 
   unknown(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number) {
-    const [halfW, halfH] = [w * 0.5, h * 0.5]
-    const [centerX, centerY] = [x + halfW, y + halfH]
-    ctx.fillStyle = 'purple'
-    ctx.fillRect(x, y, halfW, halfH)
-    ctx.fillRect(centerX, centerY, halfW, halfH)
-    ctx.fillStyle = 'black'
-    ctx.fillRect(x, centerY, halfW, halfH)
-    ctx.fillRect(centerX, y, halfW, halfH)
+    drawUnknown(ctx, x, y, w, h)
   },
 
   ref(
