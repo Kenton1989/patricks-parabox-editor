@@ -27,6 +27,7 @@ import type {
   UpdateObjectProps,
   UpdateObjectPropsOfType,
 } from '@/models/edit'
+import type { EditorSaveData } from '@/service/editor-save'
 
 function tryGetPlayerSettings(obj?: Partial<LevelObject>): ActivePlayerSetting | undefined {
   const setting = (obj as { playerSetting?: PlayerSetting })?.playerSetting
@@ -167,6 +168,20 @@ export const useLevelStore = defineStore('level', () => {
     clearEditHistory()
 
     isInitialized.value = true
+  }
+
+  const initEditorSaveData = (levelData: EditorSaveData['level']) => {
+    _level.value = JSON.parse(JSON.stringify(levelData))
+
+    _resetObjId()
+
+    clearEditHistory()
+
+    isInitialized.value = true
+  }
+
+  const exportEditorSaveData = (): EditorSaveData['level'] => {
+    return JSON.parse(JSON.stringify(_level.value))
   }
 
   const initLevelV4 = (rawLevel: RawLevelRoot) => {
@@ -527,6 +542,8 @@ export const useLevelStore = defineStore('level', () => {
 
     initLevelV4,
     initEmptyLevel,
+    initEditorSaveData,
+    exportEditorSaveData,
     clearLevel,
 
     updateHeader,

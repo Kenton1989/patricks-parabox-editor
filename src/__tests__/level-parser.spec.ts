@@ -31,7 +31,7 @@ Block -1 -1 0 9 9 0.6 0.8 1 1 0 0 0 0 0 0 0
 		Ref 1 1 1 1 0 0 0 0 -1 0 0 0 0 0 0
 		Floor 1 0 PlayerButton
 		Floor 2 0 Button
-	Block 5 5 2 5 5 0.9 1 0.7 1 1 1 1 0 0 0 0
+	Block 5 5 2 5 5 0.9 1 0.7 1 1 1 0 1 0 0 0
 `.trim()
 
 function levelWithHeader(key: string, ...props: string[]) {

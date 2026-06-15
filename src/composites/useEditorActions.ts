@@ -1,5 +1,7 @@
 import { useLevelStore } from '@/stores/level'
 import useOpenLevel from './useOpenLevel'
+import useSaveLevel from './useSaveLevel'
+import useExportLevel from './useExportLevel'
 import { useUiStore } from '@/stores/ui'
 
 const platform = window.navigator.platform
@@ -36,6 +38,8 @@ export default function useEditorActions() {
   const uiStore = useUiStore()
   const levelStore = useLevelStore()
   const openLevel = useOpenLevel()
+  const saveLevel = useSaveLevel()
+  const exportLevel = useExportLevel()
 
   const actions = {
     open: {
@@ -48,13 +52,13 @@ export default function useEditorActions() {
       name: 'export',
       hotkeyPressed: ctrl('E'),
       displayHotkey: displayCtrl('E'),
-      command: () => alert('not support export yet'),
+      command: exportLevel.export,
     },
     save: {
       name: 'save',
       hotkeyPressed: ctrl('S'),
       displayHotkey: displayCtrl('S'),
-      command: () => alert('not support save yet'),
+      command: saveLevel.save,
     },
     new: {
       name: 'new',

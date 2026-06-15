@@ -2,6 +2,7 @@ import type {
   RawBlockChild,
   RawBlock,
   RawFloor,
+  RawLevelRoot,
   RawLevelHeader,
   RawRef,
   RawWall,
@@ -18,6 +19,7 @@ import type {
   LevelWall,
 } from '@/models/level'
 import { NO_INF, NOT_PLAYER, POSSESSABLE, createDefaultLevelHeader } from '@/models/level'
+import type { Immutable } from '@/models/utils'
 import { color } from './color'
 
 let objIdCounter = 1
@@ -71,7 +73,7 @@ const v4 = {
     }
 
     if (props.infExit) {
-      return { type: 'infExit', level: props.infEnterNum }
+      return { type: 'infExit', level: props.infExitNum }
     }
 
     return NO_INF
@@ -180,6 +182,142 @@ const v4 = {
       playerSetting: v4.toPlayerSetting(child),
       flipH: child.flipH,
       floatInSpace: child.floatInSpace,
+    }
+  },
+
+  fromLevel(header: Immutable<LevelHeader>, blocks: Immutable<LevelBlock[]>): RawLevelRoot {
+    return {
+      type: 'Root',
+      header: v4.fromLevelHeader(header),
+      body: v4.levelBlocksToBody(blocks),
+    }
+  },
+
+  fromLevelHeader(header: Immutable<LevelHeader>): RawLevelHeader {
+    return {
+      type: 'Header',
+      version: '4',
+      attemptOrder: [
+        header.attemptOrder[0]!,
+        header.attemptOrder[1]!,
+        header.attemptOrder[2]!,
+        header.attemptOrder[3]!,
+      ],
+      shed: header.shed,
+      innerPush: header.innerPush,
+      drawStyle: header.drawStyle === 'default' ? '' : header.drawStyle,
+      customLevelMusic: header.customLevelMusic,
+      customLevelPalette: header.customLevelPalette,
+    }
+  },
+
+  levelBlocksToBody(blocks: Immutable<LevelBlock[]>): RawBlock[] {
+    return blocks.map((block) => v4.fromLevelBlock(block))
+  },
+
+  fromLevelBlock(block: Immutable<LevelBlock>): RawBlock {
+    const { hue, sat, val } = color.blockToRaw(block.color)
+
+    return {
+      type: 'Block',
+      x: -1,
+      y: -1,
+      id: block.blockId,
+      width: block.width,
+      height: block.height,
+      hue,
+      sat,
+      val,
+      zoomFactor: block.zoomFactor,
+      fillWithWalls: false,
+      player: false,
+      playerOrder: 0,
+      possessable: false,
+      flipH: false,
+      floatInSpace: false,
+      specialEffect: 0,
+      children: block.children.map((child) => v4.fromLevelObject(child)),
+    }
+  },
+
+  fromLevelObject(obj: Immutable<LevelObject>): RawBlockChild {
+    switch (obj.type) {
+      case 'Ref':
+        return v4.fromLevelRef(obj)
+      case 'Floor':
+        return v4.fromLevelFloor(obj)
+      case 'Wall':
+        return v4.fromLevelWall(obj)
+      case 'Box':
+        return v4.fromLevelBox(obj)
+    }
+  },
+
+  rawPlayerProps(playerSetting: Immutable<PlayerSetting>) {
+    return {
+      player: playerSetting.type === 'player',
+      playerOrder: playerSetting.type === 'player' ? playerSetting.playerOrder : 0,
+      possessable: playerSetting.type === 'possessable',
+    }
+  },
+
+  fromLevelRef(obj: Immutable<LevelRef>): RawRef {
+    return {
+      type: 'Ref',
+      x: obj.x,
+      y: obj.y,
+      id: obj.referToBlockId,
+      exitBlock: obj.exitBlock,
+      infExit: obj.infSetting.type === 'infExit',
+      infExitNum: obj.infSetting.type === 'infExit' ? obj.infSetting.level : 0,
+      infEnter: obj.infSetting.type === 'infEnter',
+      infEnterNum: obj.infSetting.type === 'infEnter' ? obj.infSetting.level : 0,
+      infEnterId: obj.infSetting.type === 'infEnter' ? obj.infSetting.enterFromBlockId : -1,
+      ...v4.rawPlayerProps(obj.playerSetting),
+      flipH: obj.flipH,
+      floatInSpace: obj.floatInSpace,
+      specialEffect: 0,
+    }
+  },
+
+  fromLevelFloor(obj: Immutable<LevelFloor>): RawFloor {
+    return {
+      type: 'Floor',
+      x: obj.x,
+      y: obj.y,
+      floorType: obj.floorType,
+    }
+  },
+
+  fromLevelWall(obj: Immutable<LevelWall>): RawWall {
+    return {
+      type: 'Wall',
+      x: obj.x,
+      y: obj.y,
+      ...v4.rawPlayerProps(obj.playerSetting),
+    }
+  },
+
+  fromLevelBox(obj: Immutable<LevelBox>): RawBlock {
+    const { hue, sat, val } = color.blockToRaw(obj.color)
+
+    return {
+      type: 'Block',
+      x: obj.x,
+      y: obj.y,
+      id: -1,
+      width: 1,
+      height: 1,
+      hue,
+      sat,
+      val,
+      zoomFactor: 1,
+      fillWithWalls: true,
+      ...v4.rawPlayerProps(obj.playerSetting),
+      flipH: false,
+      floatInSpace: false,
+      specialEffect: 0,
+      children: [],
     }
   },
 }

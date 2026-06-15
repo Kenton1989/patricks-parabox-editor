@@ -59,7 +59,7 @@ const items = computed<MenuItem[]>(() => [
         shortcut: editorActions.export.displayHotkey,
       },
       {
-        label: 'Save .ppbox',
+        label: 'Save .ppeproj',
         icon: 'pi pi-save',
         command: editorActions.save.command,
         shortcut: editorActions.save.displayHotkey,

@@ -41,6 +41,15 @@ export const useUiStore = defineStore('ui', () => {
     unfocusCell()
   })
 
+  const exportEditorSaveData = () => ({
+    focusedBlockId: focusedBlockId.value,
+  })
+
+  const initEditorSaveData = (data: { focusedBlockId: number }) => {
+    focusedBlockId.value = data.focusedBlockId
+    unfocusCell()
+  }
+
   const focusedCell = computed<Immutable<BlockCell> | undefined>(() => {
     if (!_focusedCellPos.value) return
     const { x, y } = _focusedCellPos.value
@@ -92,6 +101,8 @@ export const useUiStore = defineStore('ui', () => {
 
     setUpDialogVisible,
     focusedBlockId,
+    exportEditorSaveData,
+    initEditorSaveData,
     currentBrush,
     focusedCell,
     focusCell,
