@@ -96,6 +96,17 @@ const items = computed<MenuItem[]>(() => [
       },
     ],
   },
+  {
+    label: 'Help',
+    icon: 'pi pi-question-circle',
+    items: [
+      {
+        label: 'How to play custom level',
+        icon: 'pi pi-external-link',
+        command: () => window.open('https://www.patricksparabox.com/custom-levels/', '_blank'),
+      },
+    ],
+  },
 ])
 
 const externalLinks = [
