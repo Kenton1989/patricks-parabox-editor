@@ -384,7 +384,7 @@ export const useLevelStore = defineStore('level', () => {
 
   const _isValidPlayerOrder = (objId: number, playerOrder: number) => {
     return (
-      playerOrder &&
+      playerOrder >= 0 &&
       players.value.every((p) => {
         const res = p.objId === objId || p.playerSetting.playerOrder !== playerOrder
         return res

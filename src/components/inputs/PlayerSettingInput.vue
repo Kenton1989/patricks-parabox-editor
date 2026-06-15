@@ -28,7 +28,7 @@
       <InputNumber
         fluid
         size="small"
-        :min="1"
+        :min="0"
         :modelValue="playerOrderBuffer"
         @update:modelValue="(playerOrder) => update(undefined, playerOrder)"
       />
