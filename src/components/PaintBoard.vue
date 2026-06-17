@@ -13,15 +13,7 @@
 import { useUiStore } from '@/stores/ui'
 import FocusedBlockCellGrid from './FocusedBlockCellGrid.vue'
 import { usePaintBoard } from '@/stores/paint-board'
-import { watch } from 'vue'
 
 const uiStore = useUiStore()
 const paintBoard = usePaintBoard()
-
-watch(
-  () => paintBoard.isDragging,
-  () => {
-    console.log(paintBoard)
-  },
-)
 </script>

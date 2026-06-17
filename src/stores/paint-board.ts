@@ -8,28 +8,47 @@ import { last } from '@/service/utils'
 import { watchImmediate } from '@vueuse/core'
 import { useFocusedBlock } from '@/composites'
 
+export type EditAction = 'none' | 'brush' | 'drag' | 'erase'
+
 export const usePaintBoard = defineStore('paint-board', () => {
   const uiStore = useUiStore()
   const levelStore = useLevelStore()
   const { grid } = useFocusedBlock()
 
-  const _isDrawing = ref(false)
+  const editAction = ref<EditAction>('none')
 
-  const startDrawing = (e?: MouseEvent) => {
+  const tryStartEditAction = (action: Exclude<EditAction, 'none'>): boolean => {
+    if (editAction.value !== 'none') return false
+    editAction.value = action
+    return true
+  }
+
+  const endEditAction = (action: EditAction, disableCommit = false): boolean => {
+    if (editAction.value !== action) return false
+    editAction.value = 'none'
+    if (!disableCommit) levelStore.commitEditHistory()
+    return true
+  }
+
+  const startDrawing = (e?: MouseEvent): boolean => {
     if (e) uiStore.handleMousePressed(e)
-    _isDrawing.value = true
+    return tryStartEditAction('brush')
+  }
+
+  const startErasing = (e?: MouseEvent): boolean => {
+    if (e) uiStore.handleMousePressed(e)
+    return tryStartEditAction('erase')
   }
 
   watchImmediate(
-    () => ({ isDrawing: _isDrawing.value, cursor: uiStore.cursor }),
-    ({ isDrawing, cursor }) => {
-      if (!isDrawing) {
+    () => ({ editAction: editAction.value, cursor: uiStore.cursor }),
+    ({ editAction, cursor }) => {
+      if (editAction === 'none' || editAction === 'drag') {
         return
       }
 
-      if (needToEndDrawing(isDrawing, cursor.isPressed)) {
-        _isDrawing.value = false
-        levelStore.commitEditHistory()
+      if (needToEndEditAction(editAction, cursor.leftPressed, cursor.rightPressed)) {
+        endEditAction(editAction)
         return
       }
 
@@ -42,7 +61,15 @@ export const usePaintBoard = defineStore('paint-board', () => {
       }
 
       const currentCell = grid.value.cells[cursor.x]![cursor.y]!
-      applyBrush(currentCell, true)
+
+      switch (editAction) {
+        case 'brush':
+          applyBrush(currentCell, true)
+          break
+        case 'erase':
+          applyErase(currentCell, true)
+          break
+      }
     },
   )
 
@@ -52,8 +79,7 @@ export const usePaintBoard = defineStore('paint-board', () => {
 
     switch (brush.type) {
       case 'Erase':
-        if (cell.layeredObjects.length === 0) return
-        levelStore.deleteObject(last(cell.layeredObjects).objId, disableCommit)
+        if (!applyErase(cell, disableCommit)) return
         break
       case 'Wall':
       case 'Box':
@@ -76,24 +102,38 @@ export const usePaintBoard = defineStore('paint-board', () => {
     uiStore.focusCell(cell.x, cell.y)
   }
 
-  const _isDragging = ref(false)
+  const applyErase = (cell: Immutable<BlockCell>, disableCommit?: boolean): boolean => {
+    if (cell.layeredObjects.length === 0) return false
+    levelStore.deleteObject(last(cell.layeredObjects).objId, disableCommit)
+    uiStore.focusCell(cell.x, cell.y)
+    return true
+  }
 
   return {
-    _isDrawing,
-    _isDragging,
+    isEditing: computed(() => editAction.value !== 'none'),
+    isDragging: computed(() => editAction.value === 'drag'),
 
-    isEditing: computed(() => _isDrawing.value || _isDragging.value),
-
-    startDrawing,
     applyBrush,
+    applyErase,
 
-    isDragging: computed(() => _isDragging.value),
-    setIsDragging(value: boolean) {
-      if (value !== _isDragging.value) _isDragging.value = value
-    },
+    tryStartEditAction,
+    startDrawing,
+    startErasing,
+    endEditAction,
   }
 })
 
-function needToEndDrawing(isDrawing: boolean, isPressed: boolean): boolean {
-  return isDrawing && !isPressed
+function needToEndEditAction(
+  editAction: EditAction,
+  leftPressed: boolean,
+  rightPressed: boolean,
+): boolean {
+  switch (editAction) {
+    case 'brush':
+      return !leftPressed
+    case 'erase':
+      return !rightPressed
+    default:
+      return false
+  }
 }

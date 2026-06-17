@@ -45,8 +45,8 @@ const [collected, drag] = useDrag(() => ({
 
 watch(
   () => collected.value.isDragging,
-  (newVal) => {
-    paintBoard.setIsDragging(newVal)
+  (isDragging) => {
+    if (isDragging) paintBoard.tryStartEditAction('drag')
   },
 )
 </script>

@@ -26,7 +26,8 @@ export const useUiStore = defineStore('ui', () => {
     inGrid: false,
     x: 0,
     y: 0,
-    isPressed: false,
+    leftPressed: false,
+    rightPressed: false,
   })
 
   const _focusedCellPos = ref<{ x: number; y: number }>()
@@ -65,13 +66,17 @@ export const useUiStore = defineStore('ui', () => {
   })
 
   const handleMousePressed = (e: MouseEvent) => {
-    const leftButtonPressed = Boolean(e.buttons & 1)
+    const leftPressed = Boolean(e.buttons & 1)
+    const rightPressed = Boolean(e.buttons & 2)
 
-    if (leftButtonPressed === cursor.value.isPressed) return
+    if (leftPressed === cursor.value.leftPressed && rightPressed === cursor.value.rightPressed) {
+      return
+    }
 
     cursor.value = {
       ...cursor.value,
-      isPressed: leftButtonPressed,
+      leftPressed,
+      rightPressed,
     }
   }
 
@@ -81,8 +86,8 @@ export const useUiStore = defineStore('ui', () => {
         handleMousePressed(e)
         return
       }
-      if (!cursor.value.isPressed) {
-        cursor.value = { ...cursor.value, isPressed: true }
+      if (!cursor.value.leftPressed) {
+        cursor.value = { ...cursor.value, leftPressed: true }
       }
     },
     onReleased(e) {
@@ -90,8 +95,8 @@ export const useUiStore = defineStore('ui', () => {
         handleMousePressed(e)
         return
       }
-      if (cursor.value.isPressed) {
-        cursor.value = { ...cursor.value, isPressed: false }
+      if (cursor.value.leftPressed) {
+        cursor.value = { ...cursor.value, leftPressed: false }
       }
     },
   })

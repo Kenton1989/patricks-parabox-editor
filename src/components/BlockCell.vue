@@ -12,6 +12,7 @@
       'cell-focused': cellFocused,
     }"
     @mousedown="handleMouseDown"
+    @contextmenu.prevent
     @click="handleClick"
     @dblclick="doubleClickCell"
     @dragstart="handleCellStartDrag"
@@ -68,7 +69,7 @@ const [, drop] = useDrop<{ objId?: number }>({
         uiStore.focusCell(props.cell.x, props.cell.y)
       }
     } finally {
-      paintBoard.setIsDragging(false)
+      paintBoard.endEditAction('drag', true)
     }
   },
 })
@@ -93,6 +94,11 @@ const handleClick = () => {
 }
 
 const handleMouseDown = (e: MouseEvent) => {
+  if (isRightButtonEvent(e) && paintBoard.startErasing(e)) {
+    return
+  }
+
+  if (!isLeftButtonEvent(e)) return
   if (uiStore.currentBrush.type === 'Select') return
   paintBoard.startDrawing(e)
 }
@@ -117,5 +123,13 @@ const handleCellStartDrag = (e: DragEvent) => {
   if (!draggable.value || props.cell.layeredObjects.length === 0) {
     e.preventDefault()
   }
+}
+
+function isLeftButtonEvent(e: MouseEvent): boolean {
+  return e.button === 0
+}
+
+function isRightButtonEvent(e: MouseEvent): boolean {
+  return e.button === 2
 }
 </script>
