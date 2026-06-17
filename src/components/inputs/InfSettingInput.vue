@@ -2,25 +2,27 @@
   <div class="flex flex-col gap-2">
     <OptionButtonList>
       <OptionButton :selected="model.type === 'noInf'" @click="() => update('noInf')">
-        No
+        {{ t('common.no') }}
       </OptionButton>
       <OptionButton
-        hint="infinity"
+        :hint="t('infSetting.infinity')"
         :selected="model.type === 'infExit'"
         @click="() => update('infExit')"
       >
-        ∞
+        &infin;
       </OptionButton>
       <OptionButton
-        hint="epsilon"
+        :hint="t('infSetting.epsilon')"
         :selected="model.type === 'infEnter'"
         @click="() => update('infEnter')"
       >
-        ε
+        &epsilon;
       </OptionButton>
     </OptionButtonList>
     <div v-if="model.type !== 'noInf'" class="flex flex-row items-center justify-center gap-1">
-      Level:
+      <span class="min-w-12">
+        {{ t('infSetting.level') }}
+      </span>
       <InputNumber
         fluid
         size="small"
@@ -30,7 +32,7 @@
         @update:modelValue="(level) => update(undefined, level)"
       />
     </div>
-    <p v-if="model.type === 'infEnter'">ε enter from:</p>
+    <p v-if="model.type === 'infEnter'">{{ t('infSetting.enterFrom') }}</p>
     <div v-if="model.type === 'infEnter'" class="flex flex-row items-center justify-center gap-1">
       <InputNumber
         fluid
@@ -46,8 +48,10 @@ import { NO_INF, type InfSetting, type InfType } from '@/models/level'
 import OptionButton from '@/components/templates/OptionButton.vue'
 import OptionButtonList from '@/components/templates/OptionButtonList.vue'
 import { InputNumber } from 'primevue'
+import { useI18n } from 'vue-i18n'
 
 const model = defineModel<InfSetting>({ default: NO_INF })
+const { t } = useI18n()
 
 const update = (type?: InfType, level?: number, infEnterFrom?: number) => {
   const newVal = { ...model.value }

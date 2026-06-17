@@ -7,7 +7,6 @@
       <a class="flex items-center" v-bind="props.action">
         <i :class="item.icon"></i>
         <span>{{ item.label }}</span>
-        <Badge v-if="item.badge" :class="{ 'ml-auto': !root, 'ml-2': root }" :value="item.badge" />
         <span
           v-if="item.shortcut"
           class="border-surface bg-emphasis text-muted-color ml-auto rounded border p-1 text-xs"
@@ -44,34 +43,36 @@ import LogoSvg from '@/assets/logo.svg'
 import { computed } from 'vue'
 import type { MenuItem } from 'primevue/menuitem'
 import { useEditorActions } from '@/composites'
+import { useI18n } from 'vue-i18n'
 
 const editorActions = useEditorActions()
+const { t } = useI18n()
 
 const items = computed<MenuItem[]>(() => [
   {
-    label: 'File',
+    label: t('menu.file.label'),
     icon: 'pi pi-file',
     items: [
       {
-        label: 'Export level',
+        label: t('menu.file.exportLevel'),
         icon: 'pi pi-file-export',
         command: editorActions.export.command,
         shortcut: editorActions.export.displayHotkey,
       },
       {
-        label: 'Save .ppeproj',
+        label: t('menu.file.saveProject'),
         icon: 'pi pi-save',
         command: editorActions.save.command,
         shortcut: editorActions.save.displayHotkey,
       },
       {
-        label: 'New',
+        label: t('menu.file.new'),
         icon: 'pi pi-file-plus',
         command: editorActions.new.command,
         shortcut: editorActions.new.displayHotkey,
       },
       {
-        label: 'Open',
+        label: t('menu.file.open'),
         icon: 'pi pi-folder-open',
         command: editorActions.open.command,
         shortcut: editorActions.open.displayHotkey,
@@ -79,17 +80,17 @@ const items = computed<MenuItem[]>(() => [
     ],
   },
   {
-    label: 'Edit',
+    label: t('menu.edit.label'),
     icon: 'pi pi-pen-to-square',
     items: [
       {
-        label: 'Undo',
+        label: t('menu.edit.undo'),
         icon: 'pi pi-undo',
         command: editorActions.undo.command,
         shortcut: editorActions.undo.displayHotkey,
       },
       {
-        label: 'Redo',
+        label: t('menu.edit.redo'),
         icon: 'pi pi-refresh',
         command: editorActions.redo.command,
         shortcut: editorActions.redo.displayHotkey,
@@ -97,11 +98,11 @@ const items = computed<MenuItem[]>(() => [
     ],
   },
   {
-    label: 'Help',
+    label: t('menu.help.label'),
     icon: 'pi pi-question-circle',
     items: [
       {
-        label: 'How to play custom level',
+        label: t('menu.help.customLevelGuide'),
         icon: 'pi pi-external-link',
         command: () => window.open('https://www.patricksparabox.com/custom-levels/', '_blank'),
       },

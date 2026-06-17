@@ -1,7 +1,7 @@
 <template>
-  <InfoCard title="Ref Info">
+  <InfoCard :title="$t('objectInfo.refTitle')">
     <div class="flex flex-col gap-2">
-      <InfoLine label="Link to">
+      <InfoLine :label="$t('objectInfo.linkTo')">
         <div
           class="flex w-full flex-row items-center justify-start gap-2 rounded-sm"
           :class="{
@@ -14,9 +14,9 @@
           <p>{{ block?.name }}</p>
         </div>
       </InfoLine>
-      <InfoLine label="Clone?">
+      <InfoLine :label="$t('objectInfo.clone')">
         <ButtonToggle
-          hintForNo="will set other ref to clone"
+          :hintForNo="$t('refSetting.setOtherRefToClone')"
           :modelValue="!object.exitBlock"
           @update:modelValue="
             (isClone) =>
@@ -24,20 +24,20 @@
           "
         />
       </InfoLine>
-      <InfoLine label="Flip?">
+      <InfoLine :label="$t('objectInfo.flip')">
         <ButtonToggle
           :modelValue="object.flipH"
           @update:modelValue="(flipH) => update({ flipH })"
         />
       </InfoLine>
-      <InfoLine label="Infinity?">
+      <InfoLine :label="$t('objectInfo.infinity')">
         <InfSettingInput
           class="w-full"
           :modelValue="object.infSetting"
           @update:modelValue="(infSetting) => update({ infSetting })"
         />
       </InfoLine>
-      <InfoLine label="Player?">
+      <InfoLine :label="$t('objectInfo.player')">
         <PlayerSettingInput
           class="w-full"
           :modelValue="object.playerSetting"

@@ -1,7 +1,11 @@
 <template>
   <OptionButtonList>
-    <OptionButton :hint="hintForNo" :selected="!model" @click="model = false"> No </OptionButton>
-    <OptionButton :hint="hintForYes" :selected="model" @click="model = true"> Yes </OptionButton>
+    <OptionButton :hint="hintForNo" :selected="!model" @click="model = false">
+      {{ $t('common.no') }}
+    </OptionButton>
+    <OptionButton :hint="hintForYes" :selected="model" @click="model = true">
+      {{ $t('common.yes') }}
+    </OptionButton>
   </OptionButtonList>
 </template>
 <script setup lang="ts">

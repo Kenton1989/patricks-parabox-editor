@@ -1,7 +1,7 @@
 <template>
-  <InfoCard title="Wall Info">
+  <InfoCard :title="$t('objectInfo.wallTitle')">
     <div class="flex flex-col gap-2">
-      <InfoLine label="Player?">
+      <InfoLine :label="$t('objectInfo.player')">
         <PlayerSettingInput
           class="w-full"
           :modelValue="object.playerSetting"

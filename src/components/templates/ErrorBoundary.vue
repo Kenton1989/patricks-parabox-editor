@@ -21,8 +21,8 @@ const resetStorage = () => {
   </div>
   <div v-else>
     <slot name="error">
-      <p>Error: {{ `${error}` }}</p>
-      <button @click="resetStorage">Reset Storage</button>
+      <p>{{ $t('common.error') }}: {{ `${error}` }}</p>
+      <button @click="resetStorage">{{ $t('common.resetStorage') }}</button>
     </slot>
   </div>
 </template>

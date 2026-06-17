@@ -1,5 +1,5 @@
 <template>
-  <InfoCard title="Blocks" bodyNoPadding>
+  <InfoCard :title="$t('blocks.title')" bodyNoPadding>
     <div class="flex h-full w-full flex-col items-stretch overflow-auto" ref="block-list-ref">
       <BlockListItem
         v-for="block in levelStore.levelBlocks"
@@ -10,7 +10,7 @@
       <Button
         icon="pi pi-plus"
         class="mx-auto my-4 shrink-0 grow-0"
-        label="Create New Block"
+        :label="$t('blocks.create')"
         @click="createBlock"
       />
     </div>

@@ -1,0 +1,98 @@
+export default {
+  common: {
+    no: '否',
+    yes: '是',
+    ok: '确定',
+    error: '错误',
+    resetStorage: '重置存储',
+  },
+  menu: {
+    file: {
+      label: '文件',
+      exportLevel: '导出关卡',
+      saveProject: '保存 .ppeproj',
+      new: '新建',
+      open: '打开',
+    },
+    edit: {
+      label: '编辑',
+      undo: '撤销',
+      redo: '重做',
+    },
+    help: {
+      label: '帮助',
+      customLevelGuide: '如何游玩自定义关卡',
+    },
+  },
+  startup: {
+    header: "你打算怎么用 Patrick's Parabox 关卡编辑器...",
+    createDescription: '创建新关卡',
+    createAction: '创建',
+    uploadDescription: '打开已有关卡',
+    uploadAction: '打开',
+  },
+  brush: {
+    title: '笔刷',
+    select: '选择',
+    erase: '擦除',
+    wall: '墙',
+    box: '箱子',
+    player: '玩家',
+    floor: '目标地板',
+    playerFloor: '玩家地板',
+    refToBlock: '引用{name}',
+  },
+  blocks: {
+    title: '方块列表',
+    create: '新建方块',
+  },
+  blockInfo: {
+    title: '方块信息',
+    name: '名称',
+    square: '正方网格',
+    width: '宽度',
+    height: '高度',
+    zoom: '缩放',
+    color: '颜色',
+    otherColors: '其他颜色',
+  },
+  cellInfo: {
+    title: '格子信息',
+    empty: '选择一个格子查看信息',
+  },
+  objectInfo: {
+    boxTitle: '箱子',
+    floorTitle: '地板',
+    refTitle: '引用',
+    wallTitle: '墙',
+    player: '操控类型',
+    color: '颜色',
+    type: '类型',
+    linkTo: '链接到',
+    clone: '克隆？',
+    flip: '镜像？',
+    infinity: '无穷？',
+  },
+  floor: {
+    targetBlocks: '方块目标',
+    targetPlayer: '玩家目标',
+  },
+  playerSetting: {
+    notPlayer: '无法操控',
+    possessable: '可操控',
+    player: '默认操控',
+    order: '顺序:',
+  },
+  infSetting: {
+    infinity: '无穷大',
+    epsilon: '无穷小',
+    level: '等级:',
+    enterFrom: '无穷小入口:',
+  },
+  refSetting: {
+    setOtherRefToClone: '会将其他引用设为克隆',
+  },
+  dialog: {
+    uploadFileError: '上传文件错误',
+  },
+} as const

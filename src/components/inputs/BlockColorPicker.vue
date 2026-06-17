@@ -20,7 +20,7 @@
 
     <SelectableBox
       class="p-0"
-      hint="other colors"
+      :hint="$t('blockInfo.otherColors')"
       @click="(e: Event) => colorPickerPopoverRef?.toggle(e)"
     >
       <div class="m-auto flex h-full items-center justify-center">

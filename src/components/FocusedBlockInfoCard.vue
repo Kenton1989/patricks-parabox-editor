@@ -1,7 +1,7 @@
 <template>
-  <InfoCard v-if="focusedBlock" class="w-full" title="Block Info">
+  <InfoCard v-if="focusedBlock" class="w-full" :title="$t('blockInfo.title')">
     <div class="flex flex-col gap-2">
-      <InfoLine label="Name">
+      <InfoLine :label="$t('blockInfo.name')">
         <InputText
           :modelValue="focusedBlock.name"
           @update:modelValue="(name) => updateNoCommit({ name })"
@@ -10,10 +10,10 @@
           fluid
         />
       </InfoLine>
-      <InfoLine label="Square">
+      <InfoLine :label="$t('blockInfo.square')">
         <ToggleSwitch v-model="enforceSquare" />
       </InfoLine>
-      <InfoLine label="Width">
+      <InfoLine :label="$t('blockInfo.width')">
         <InputNumber
           :modelValue="focusedBlock.width"
           @update:modelValue="(width) => resize(width, undefined)"
@@ -23,7 +23,7 @@
           :min="1"
         />
       </InfoLine>
-      <InfoLine label="Height" v-if="!enforceSquare">
+      <InfoLine :label="$t('blockInfo.height')" v-if="!enforceSquare">
         <InputNumber
           :modelValue="focusedBlock.height"
           @update:modelValue="(height) => resize(undefined, height)"
@@ -33,7 +33,7 @@
           :min="1"
         />
       </InfoLine>
-      <InfoLine label="Zoom">
+      <InfoLine :label="$t('blockInfo.zoom')">
         <InputNumber
           :modelValue="focusedBlock.zoomFactor"
           @update:modelValue="(zoomFactor) => updateNoCommit({ zoomFactor })"
@@ -43,7 +43,7 @@
           fluid
         />
       </InfoLine>
-      <InfoLine label="Color">
+      <InfoLine :label="$t('blockInfo.color')">
         <BlockColorPicker
           :modelValue="focusedBlock.color"
           @update:modelValue="(color) => update({ color })"

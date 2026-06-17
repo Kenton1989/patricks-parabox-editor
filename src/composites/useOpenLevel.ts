@@ -6,12 +6,14 @@ import { useUiStore } from '@/stores/ui'
 import { useFileDialog } from '@vueuse/core'
 import { useConfirm } from 'primevue/useconfirm'
 import { ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 export default function useOpenLevel() {
   const fileDialog = useFileDialog()
   const levelStore = useLevelStore()
   const uiStore = useUiStore()
   const confirm = useConfirm()
+  const { t } = useI18n()
 
   const open = () =>
     fileDialog.open({
@@ -21,10 +23,10 @@ export default function useOpenLevel() {
   const defaultOnErrorCallback = (e: unknown) => {
     confirm.require({
       message: `${e}`,
-      header: 'Upload File Error',
+      header: t('dialog.uploadFileError'),
       icon: 'pi pi-exclamation-triangle',
       acceptProps: {
-        label: 'OK',
+        label: t('common.ok'),
       },
       rejectProps: {
         style: 'display: none',

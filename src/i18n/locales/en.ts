@@ -1,0 +1,98 @@
+export default {
+  common: {
+    no: 'No',
+    yes: 'Yes',
+    ok: 'OK',
+    error: 'Error',
+    resetStorage: 'Reset Storage',
+  },
+  menu: {
+    file: {
+      label: 'File',
+      exportLevel: 'Export level',
+      saveProject: 'Save .ppeproj',
+      new: 'New',
+      open: 'Open',
+    },
+    edit: {
+      label: 'Edit',
+      undo: 'Undo',
+      redo: 'Redo',
+    },
+    help: {
+      label: 'Help',
+      customLevelGuide: 'How to play custom level',
+    },
+  },
+  startup: {
+    header: "Starts Patrick's Parabox level editor with...",
+    createDescription: 'Creating a new level',
+    createAction: 'Create',
+    uploadDescription: 'Opening a existing level',
+    uploadAction: 'Open',
+  },
+  brush: {
+    title: 'Brush',
+    select: 'Select',
+    erase: 'Erase',
+    wall: 'Wall',
+    box: 'Box',
+    player: 'Player',
+    floor: 'Floor',
+    playerFloor: 'Player Floor',
+    refToBlock: 'Ref to {name}',
+  },
+  blocks: {
+    title: 'Blocks',
+    create: 'Create New Block',
+  },
+  blockInfo: {
+    title: 'Block Info',
+    name: 'Name',
+    square: 'Square',
+    width: 'Width',
+    height: 'Height',
+    zoom: 'Zoom',
+    color: 'Color',
+    otherColors: 'other colors',
+  },
+  cellInfo: {
+    title: 'Cell Info',
+    empty: 'Select a cell to view info',
+  },
+  objectInfo: {
+    boxTitle: 'Box Info',
+    floorTitle: 'Floor Info',
+    refTitle: 'Ref Info',
+    wallTitle: 'Wall Info',
+    player: 'Player?',
+    color: 'Color',
+    type: 'Type',
+    linkTo: 'Link to',
+    clone: 'Clone?',
+    flip: 'Flip?',
+    infinity: 'Infinity?',
+  },
+  floor: {
+    targetBlocks: 'target of blocks',
+    targetPlayer: 'target of player',
+  },
+  playerSetting: {
+    notPlayer: 'Not player',
+    possessable: 'Possessable',
+    player: 'Player',
+    order: 'Order:',
+  },
+  infSetting: {
+    infinity: 'infinity',
+    epsilon: 'epsilon',
+    level: 'Level:',
+    enterFrom: 'epsilon enter from:',
+  },
+  refSetting: {
+    setOtherRefToClone: 'will set other ref to clone',
+  },
+  dialog: {
+    uploadFileError: 'Upload File Error',
+  },
+} as const

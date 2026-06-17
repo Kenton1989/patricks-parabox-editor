@@ -1,5 +1,5 @@
 <template>
-  <InfoCard title="Cell Info"> Select a cell to view info </InfoCard>
+  <InfoCard :title="$t('cellInfo.title')">{{ $t('cellInfo.empty') }}</InfoCard>
 </template>
 <script setup lang="ts">
 import { InfoCard } from '@/components/templates'

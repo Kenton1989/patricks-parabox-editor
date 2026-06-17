@@ -1,18 +1,18 @@
 <template>
-  <InfoCard title="Floor Info">
+  <InfoCard :title="$t('objectInfo.floorTitle')">
     <div class="flex flex-col gap-2">
-      <InfoLine label="Type">
+      <InfoLine :label="$t('objectInfo.type')">
         <OptionButtonList>
           <OptionButton
             :selected="object.floorType === 'Button'"
-            hint="target of blocks"
+            :hint="$t('floor.targetBlocks')"
             @click="() => update({ floorType: 'Button' })"
           >
             <HollowBox class="aspect-square h-full" />
           </OptionButton>
           <OptionButton
             :selected="object.floorType === 'PlayerButton'"
-            hint="target of player"
+            :hint="$t('floor.targetPlayer')"
             @click="() => update({ floorType: 'PlayerButton' })"
           >
             <HollowPlayer class="aspect-square h-full" />

@@ -3,28 +3,30 @@
     <OptionButtonList>
       <OptionButton
         :selected="model.type === 'notPlayer'"
-        hint="Not player"
+        :hint="t('playerSetting.notPlayer')"
         @click="() => update('notPlayer')"
       >
         <HollowBox class="aspect-square h-full" />
       </OptionButton>
       <OptionButton
         :selected="model.type === 'possessable'"
-        hint="Possessable"
+        :hint="t('playerSetting.possessable')"
         @click="() => update('possessable')"
       >
         <HollowPossessable class="aspect-square h-full" />
       </OptionButton>
       <OptionButton
         :selected="model.type === 'player'"
-        hint="Player"
+        :hint="t('playerSetting.player')"
         @click="() => update('player')"
       >
         <HollowPlayer class="aspect-square h-full" />
       </OptionButton>
     </OptionButtonList>
     <div v-if="model.type === 'player'" class="flex flex-row items-center justify-center gap-1">
-      Order:
+      <span class="min-w-12">
+        {{ t('playerSetting.order') }}
+      </span>
       <InputNumber
         fluid
         size="small"
@@ -43,8 +45,10 @@ import HollowPossessable from '@/assets/hollow-possessable.svg'
 import { OptionButton, OptionButtonList } from '@/components/templates'
 import { InputNumber } from 'primevue'
 import { nextTick, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 const model = defineModel<PlayerSetting>({ default: { type: 'notPlayer' } })
+const { t } = useI18n()
 
 const getPlayerOrder = () => (model.value as ActivePlayerSetting).playerOrder as number | undefined
 
