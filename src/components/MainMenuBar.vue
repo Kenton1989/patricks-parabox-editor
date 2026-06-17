@@ -5,6 +5,7 @@
     </template>
     <template #item="{ item, props, hasSubmenu, root }">
       <a class="flex items-center" v-bind="props.action">
+        <i :class="item.icon"></i>
         <span>{{ item.label }}</span>
         <Badge v-if="item.badge" :class="{ 'ml-auto': !root, 'ml-2': root }" :value="item.badge" />
         <span
@@ -38,9 +39,8 @@
   </Menubar>
 </template>
 <script setup lang="ts">
-import { Badge, Menubar } from 'primevue'
+import { Menubar } from 'primevue'
 import LogoSvg from '@/assets/logo.svg'
-
 import { computed } from 'vue'
 import type { MenuItem } from 'primevue/menuitem'
 import { useEditorActions } from '@/composites'
